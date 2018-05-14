@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:23:58
  * Author: 魏巍
  * -----
- * Last Modified: '2018-03-29 11:36:46
+ * Last Modified: '2018-05-14 8:08:57
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -24,8 +24,5 @@ export default{
 	},
 	setLogin:({commit},userInfo)=>{
 		commit(types.SET_LOGIN,userInfo);
-	},
-	setArticle:({commit},article)=>{
-		commit(types.CATCH_ARTICLE,article);
 	}
 }
