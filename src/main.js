@@ -50,6 +50,10 @@ axios.interceptors.request.use(function (config) {
 import Filters from './filters'
 Object.keys(Filters).forEach(key => Vue.filter(key, Filters[key]))
 
+//方法
+import Metheds from './metheds'
+Object.keys(Metheds).forEach(key => Vue.prototype[key] = Metheds[key])
+
 //Vuex
 import store from './store'
 //toasted

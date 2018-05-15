@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-14 3:16:07
+ * Modified By: 2018-05-15 5:16:03
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -22,65 +22,52 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button type="primary" icon="delete" class="handle-del mr10" 
-                @click="delAll">批量删除</el-button>
-                <el-select v-model="select_cate" placeholder="状态" class="handle-select mr10">
-                    <el-option key="0" label="正常" value="0"></el-option>
-                    <el-option key="1" label="禁用" value="1"></el-option>
-                </el-select>
-                <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="search" @click="search">搜索</el-button>
-                <el-button type="danger" class="add" @click="add"><i class="iconfont icon-tianjia"></i>添加</el-button>
+                <el-button type="primary" class="handle-del mr10" 
+                @click="delAll"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
+                <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i>添加栏目</el-button>
             </div>
             <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
               @selection-change="handleSelectionChange">
-                <el-table-column type="id" width="55"></el-table-column>
-                <el-table-column prop="title" label="栏目名称" sortable width="150">
+                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column prop="title" label="栏目名称">
                 </el-table-column>
-                <el-table-column prop="name" label="栏目标识" width="120">
+                <el-table-column prop="name" label="栏目标识" >
                 </el-table-column>
-                <el-table-column prop="status" label="状态" :formatter="formatter"></el-table-column>
-                <el-table-column label="操作" width="180">
+                <el-table-column prop="status" label="状态" :formatter="formatter" sortable></el-table-column>
+                 <el-table-column prop="update_time" label="操作时间" sortable>
+                </el-table-column>
+                <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <!-- <div class="pagination">
-                <el-pagination 
-                @current-change="handleCurrentChange" 
-                layout="prev, pager, next" :total="total"
-                background
-                :page-size="10">
-                </el-pagination>
-            </div> -->
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog title="栏目管理" :visible.sync="editVisible" width="30%" :show-close="false">
-            <el-form ref="form" :model="form" label-width="90px" 
-              :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
-                <el-form-item label="栏目名" prop="title">
-                  <el-input v-model="form.title"></el-input>
+        <el-dialog title="栏目管理" :visible.sync="editVisible" width="25%" :show-close="false">
+            <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
+                <el-form-item label="栏目名称" prop="title">
+                  <el-input v-model="form.title" placeholder="栏目名称"></el-input>
                 </el-form-item>
                 <el-form-item label="栏目标识" prop="name">
-                    <el-input v-model="form.name"></el-input>
+                  <el-input v-model="form.name" placeholder="栏目标识"></el-input>
                 </el-form-item>
                 <el-form-item label="所属栏目" prop="fid">
-                  <el-select v-model="form.fid" placeholder="栏目" class="handle-select mr10">
+                  <el-select v-model="form.fid" placeholder="所属栏目" class="handle-select mr10">
                     <el-option key="0" label="顶级栏目" value="0"></el-option>
-                    <el-option :label="item.title" :value="item.id" v-for="(item,index) in cate_list" :key="index"></el-option>
+                    <el-option :label="item.title" :value="item.id" v-for="(item,index) in cate_list" ></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="关键词">
-                    <el-input type="textarea"  v-model="form.keywords"></el-input>
+                    <el-input type="textarea" v-model="form.keywords" placeholder="关键词"></el-input>
                 </el-form-item>
                 <el-form-item label="说明">
-                    <el-input type="textarea" v-model="form.description"></el-input>
+                    <el-input type="textarea" v-model="form.description" placeholder="说明"></el-input>
                 </el-form-item>
                 <el-form-item label="启用">
-                  <el-radio-group v-model="form.status">
-                    <el-radio label="是" value="0"></el-radio>
+                  <el-radio-group v-model="form.sta">
+                    <el-radio label="是" value="0" selected></el-radio>
                     <el-radio label="否" value="1"></el-radio>
                   </el-radio-group>
                 </el-form-item>
@@ -106,31 +93,25 @@ export default {
   data() {
     return {
       tableData: [],
-      cur_page: 1,
-      total: 100,
-      multipleSelection: [],
-      select_cate: "",
-      select_word: "",
-      select_date: "", //'2017-8-12 and 2018-8-12'
       cate_list: [],
-      del_list: [],
-      is_search: false,
+      delList: [],
       editVisible: false,
       delVisible: false,
+      isDelAll: false,
+      row: [],
       form: {
         title: "",
         name: "",
         fid: "",
         keywords: "",
         description: "",
-        status: "是"
+        sta: "是"
       },
       rules: {
         title: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
         name: [{ required: true, message: "请输入栏目标识", trigger: "blur" }],
         fid: [{ required: true, message: "请选择栏归属", trigger: "change" }]
-      },
-      idx: -1
+      }
     };
   },
   created() {
@@ -141,11 +122,9 @@ export default {
     handleCurrentChange(val) {
       this.getData(val);
     },
-    getData(page) {
-      page = page || this.cur_page;
+    getData() {
       this.axios
-        .post("/column", {
-          p: page,
+        .get("/column", {
           where: [
             { field: "title", op: "eq", value: this.select_word },
             { field: "status", op: "eq", value: this.select_cate },
@@ -155,8 +134,7 @@ export default {
         .then(res => {
           res = res.data;
           if (res.status) {
-            res = res.result;
-            this.tableData = res.data;
+            this.tableData = res.result;
             this.cur_page = res.current_page;
             this.totals = res.last_page;
           }
@@ -166,7 +144,7 @@ export default {
       this.getData();
     },
     formatter(row, column) {
-      return row.status?'禁用':'正常';
+      return row.status ? "禁用" : "正常";
     },
     filterTag(value, row) {
       return row.tag === value;
@@ -175,19 +153,29 @@ export default {
       this.idx = index;
       const item = this.tableData[index];
       this.form = {
+        title: item.title,
         name: item.name,
-        date: item.date,
-        address: item.address
+        name: item.name
       };
       this.editVisible = true;
     },
     handleDelete(index, row) {
       this.idx = index;
+      this.row = row;
       this.delVisible = true;
     },
-    delAll() {},
+    delAll() {
+      if (!this.delList.length) {
+        this.$message.error("至少选择一条数据");
+        return;
+      }
+      this.isDelAll = true;
+      this.delVisible = true;
+    },
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      val.forEach(item => {
+        this.delList.push(item.id);
+      });
     },
     // 保存编辑
     saveEdit(formName) {
@@ -195,12 +183,49 @@ export default {
         if (!valid) {
           return false;
         }
+        this.form.status = this.form.sta == "是" ? 0 : 1;
+        this.$store.commit("SHOW_LOADING");
+        this.axios.post("/column", this.form).then(res => {
+          res = res.data;
+          this.$store.commit("HIDE_LOADING");
+          if (!res.status) {
+            this.$message.error(res.msg);
+          }
+          this.$refs[formName].resetFields();
+          this.form.keywords = "";
+          this.form.description = "";
+          //this.tableData.push(res.result);
+          this.getData();
+          this.$message.success(res.msg);
+        });
       });
+      this.editVisible = false;
     },
     // 确定删除
     deleteRow() {
-      this.tableData.splice(this.idx, 1);
-      this.$message.success("删除成功");
+      this.$store.commit("SHOW_LOADING");
+      if (!this.isDelAll) {
+        this.axios.delete(`/column/${this.row.id}`).then(res => {
+          this.$store.commit("HIDE_LOADING");
+          res = res.data;
+          if (!res.status) {
+            this.$message.error(res.msg);
+          }
+          this.tableData.splice(this.idx, 1);
+          this.$message.success(res.msg);
+        });
+      } else {
+        this.axios.delete(`/column/${this.delList.join("_")}`).then(res => {
+          res = res.data;
+          this.$store.commit("HIDE_LOADING");
+          if (!res.status) {
+            this.$message.error(res.msg);
+          }
+          this.delList = [];
+          this.getData();
+          this.$message.success(res.msg);
+        });
+      }
       this.delVisible = false;
     },
     add() {
@@ -215,6 +240,8 @@ export default {
     },
     cancel(formName) {
       this.$refs[formName].resetFields();
+      this.form.keywords = "";
+      this.form.description = "";
       this.editVisible = false;
     }
   }
@@ -238,9 +265,13 @@ export default {
     font-size: 16px;
     text-align: center;
   }
-  .add {
+  button {
     height: 35px;
-    float: right;
+    float: left;
+    margin-bottom: 10px;
+    i {
+      margin-right: 2px;
+    }
   }
 }
 </style>
