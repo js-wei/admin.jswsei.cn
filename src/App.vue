@@ -20,9 +20,6 @@ export default {
       loading: state => state.mutations.loading,
       loadingText: state => state.mutations.loadingText
     })
-  },
-  created() {
-    console.log(this.loading);
   }
 };
 </script>

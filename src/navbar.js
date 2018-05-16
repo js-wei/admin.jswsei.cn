@@ -3,7 +3,7 @@
  * Created Date: '2018-05-14 8:12:52
  * Author: 魏巍
  * -----
- * Last Modified: '2018-05-15 2:26:39
+ * Last Modified: '2018-05-16 10:30:15
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -23,15 +23,15 @@ export default[
         title: '栏目管理',
         index: 'column'
     },
-    {
-        icon: 'el-icon-tickets',
-        index: 'table',
-        title: '基础表格'
-    },
+    // {
+    //     icon: 'el-icon-tickets',
+    //     index: 'table',
+    //     title: '基础表格'
+    // },
     {
         icon: 'el-icon-message',
-        index: 'tabs',
-        title: 'tab选项卡'
+        index: 'message',
+        title: '消息管理'
     },
     {
         icon: 'el-icon-date',

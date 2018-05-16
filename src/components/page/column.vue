@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-15 5:16:03
+ * Modified By: 2018-05-16 11:29:36
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -30,11 +30,23 @@
               @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="title" label="栏目名称">
+                  <template slot-scope="scope">
+                    <span v-html="scope.row.html"></span>
+                    <span>{{scope.row.title}}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="name" label="栏目标识" >
                 </el-table-column>
-                <el-table-column prop="status" label="状态" :formatter="formatter" sortable></el-table-column>
-                 <el-table-column prop="update_time" label="操作时间" sortable>
+                <el-table-column prop="tag" label="标签" width="100">
+                  <template slot-scope="scope">
+                    <el-tag
+                      :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                      {{scope.row.status}}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="sort" label="排序" sortable width="100"></el-table-column>
+                <el-table-column prop="update_time" label="操作时间" sortable>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -45,7 +57,7 @@
             </el-table>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog title="栏目管理" :visible.sync="editVisible" width="25%" :show-close="false">
+        <el-dialog title="栏目管理" :visible.sync="editVisible" width="30%" :show-close="false">
             <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
                 <el-form-item label="栏目名称" prop="title">
                   <el-input v-model="form.title" placeholder="栏目名称"></el-input>
@@ -56,7 +68,8 @@
                 <el-form-item label="所属栏目" prop="fid">
                   <el-select v-model="form.fid" placeholder="所属栏目" class="handle-select mr10">
                     <el-option key="0" label="顶级栏目" value="0"></el-option>
-                    <el-option :label="item.title" :value="item.id" v-for="(item,index) in cate_list" ></el-option>
+                    <el-option :label="item.html+item.title" :value="item.id" 
+                      v-for="item in cate_list" :key="item.id"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="关键词">
@@ -65,9 +78,12 @@
                 <el-form-item label="说明">
                     <el-input type="textarea" v-model="form.description" placeholder="说明"></el-input>
                 </el-form-item>
+                <el-form-item label="栏目排序">
+                  <el-input v-model="form.sort" placeholder="栏目排序"></el-input>
+                </el-form-item>
                 <el-form-item label="启用">
                   <el-radio-group v-model="form.sta">
-                    <el-radio label="是" value="0" selected></el-radio>
+                    <el-radio label="是" value="0"></el-radio>
                     <el-radio label="否" value="1"></el-radio>
                   </el-radio-group>
                 </el-form-item>
@@ -91,6 +107,13 @@
 <script>
 export default {
   data() {
+    var validateFid = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请选择所属栏目"));
+        return;
+      }
+      callback();
+    };
     return {
       tableData: [],
       cate_list: [],
@@ -100,17 +123,19 @@ export default {
       isDelAll: false,
       row: [],
       form: {
+        id: 0,
         title: "",
         name: "",
         fid: "",
         keywords: "",
         description: "",
+        sort: 100,
         sta: "是"
       },
       rules: {
         title: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
         name: [{ required: true, message: "请输入栏目标识", trigger: "blur" }],
-        fid: [{ required: true, message: "请选择栏归属", trigger: "change" }]
+        fid: [{ validator: validateFid, trigger: "change" }]
       }
     };
   },
@@ -118,10 +143,6 @@ export default {
     this.getData();
   },
   methods: {
-    // 分页导航
-    handleCurrentChange(val) {
-      this.getData(val);
-    },
     getData() {
       this.axios
         .get("/column", {
@@ -143,20 +164,25 @@ export default {
     search() {
       this.getData();
     },
-    formatter(row, column) {
-      return row.status ? "禁用" : "正常";
-    },
-    filterTag(value, row) {
-      return row.tag === value;
-    },
     handleEdit(index, row) {
-      this.idx = index;
-      const item = this.tableData[index];
-      this.form = {
-        title: item.title,
-        name: item.name,
-        name: item.name
-      };
+      this.getCateList();
+      this.axios.get(`/column/${row.id}/edit`).then(res => {
+        res = res.data;
+        if (!res.status) {
+          this.$message.error(res.msg);
+        }
+        const data = res.result;
+        this.form = {
+          id: data.id,
+          title: data.title,
+          name: data.name,
+          fid: data.fid,
+          keywords: data.keywords,
+          description: data.description,
+          sort:data.sort,
+          sta: data.status === "禁用" ? "否" : "是"
+        };
+      });
       this.editVisible = true;
     },
     handleDelete(index, row) {
@@ -183,6 +209,7 @@ export default {
         if (!valid) {
           return false;
         }
+        this.editVisible = false;
         this.form.status = this.form.sta == "是" ? 0 : 1;
         this.$store.commit("SHOW_LOADING");
         this.axios.post("/column", this.form).then(res => {
@@ -194,12 +221,10 @@ export default {
           this.$refs[formName].resetFields();
           this.form.keywords = "";
           this.form.description = "";
-          //this.tableData.push(res.result);
           this.getData();
           this.$message.success(res.msg);
         });
       });
-      this.editVisible = false;
     },
     // 确定删除
     deleteRow() {
@@ -229,13 +254,7 @@ export default {
       this.delVisible = false;
     },
     add() {
-      this.axios.get("/column_list").then(res => {
-        res = res.data;
-        if (!res.status) {
-          return;
-        }
-        this.cate_list = res.result;
-      });
+      this.getCateList();
       this.editVisible = true;
     },
     cancel(formName) {
@@ -243,6 +262,15 @@ export default {
       this.form.keywords = "";
       this.form.description = "";
       this.editVisible = false;
+    },
+    getCateList() {
+      this.axios.get("/column_list").then(res => {
+        res = res.data;
+        if (!res.status) {
+          return;
+        }
+        this.cate_list = res.result;
+      });
     }
   }
 };

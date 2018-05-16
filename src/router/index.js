@@ -44,10 +44,10 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/tabs',
-                    component: resolve => require(['../components/page/Tabs.vue'], resolve),
+                    path: '/message',
+                    component: resolve => require(['../components/page/message.vue'], resolve),
                     meta: {
-                        title: 'tab选项卡'
+                        title: '消息管理'
                     }
                 },
                 {

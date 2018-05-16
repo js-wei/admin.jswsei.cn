@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-10 9:52:54
+ * Modified By: 2018-05-16 2:47:48
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -52,6 +52,10 @@ $range: (muted:#777, primary:#409EFF, success: #3c763d, info:#d9edf7, warning:#8
     display: block;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 $px: 1,
 5,
 10,
@@ -61,14 +65,23 @@ $px: 1,
 35;
 $_width: 0,
 10,
+15,
 20,
+25,
 30,
+35,
 40,
+45,
 50,
+55,
 60,
+66,
 70,
+75,
 80,
+85,
 90,
+95,
 100;
 @each $x in $px {
     .mt-#{$x} {
