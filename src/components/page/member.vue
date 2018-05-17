@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-17 2:15:14
+ * Modified By: 2018-05-17 5:03:40
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -15,14 +15,14 @@
     <div class="message">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-message"></i> 消息管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i :class="metaIcon"></i> {{metaTitle}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
                <div class="pull-left">
                     <el-button type="primary" class="handle-del" @click="delAll"><i class="iconfont icon-shanchu"></i> 批量删除</el-button>
-                    <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i> 发布消息</el-button>
+                    <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i> 添加会员</el-button>
                </div>
                <div class="pull-right">
                     <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
@@ -45,19 +45,18 @@
             <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
               @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="title" label="标题"></el-table-column>
-                <el-table-column prop="content" label="内容" >
-                    <template slot-scope="scope">
-                        <a class="pointer" @click="see(scope.$index,scope.row)">{{scope.row.content|sub_string(20,true)}}</a>
-                    </template>
+                <el-table-column prop="username" label="会员账号">
+                  <template slot-scope="scope">
+                    <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
+                  </template>
                 </el-table-column>
-                <el-table-column prop="tag" label="标签" width="100">
+                <el-table-column prop="pass" label="会员密码" ></el-table-column>
+                <el-table-column prop="tag" label="状态" width="100">
                   <template slot-scope="scope">
                     <a @click="changeStatus(scope.row)" class="pointer">
                         <el-tag
                           :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
-                          disable-transitions
-                        >
+                          disable-transitions>
                         {{scope.row.status}}
                       </el-tag>
                     </a>
@@ -82,25 +81,14 @@
             </el-pagination>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog title="消息管理" :visible.sync="editVisible" width="40%" :show-close="false">
-            <el-form :model="form" :rules="rules" ref="form" label-width="50px" class="form" auto-complete="off">
-                <el-form-item label="标题" prop="title">
-                    <el-input  v-model="form.title" height="120"></el-input>
+        <el-dialog :title="metaTitle" :visible.sync="editVisible" width="25%" :show-close="false">
+            <el-form :model="form" :rules="rules" ref="form" label-width="80px" class="form" auto-complete="off">
+                <el-form-item label="会员账号" prop="username">
+                    <el-input v-model="form.username" height="120"></el-input>
                 </el-form-item>
-                <el-form-item label="内容" prop="content">
-                    <el-input type="textarea" v-model="form.content"></el-input>
-                </el-form-item>
-                <el-form-item label="用户" prop="userList">
-                    <el-transfer  :titles="['可选用户', '已选用户']"
-                    v-model="selectUser" :data="userList"  @change="handleChange"></el-transfer>
-                </el-form-item>
-                <el-form-item label="类型">
-                  <el-radio-group v-model="form.type">                    
-                    <el-radio label="系统" value="1"></el-radio>
-                    <el-radio label="降价" value="2"></el-radio>
-                    <el-radio label="优惠" value="3"></el-radio>
-                    <el-radio label="其他" value="4"></el-radio>
-                  </el-radio-group>
+                <el-form-item label="会员密码" prop="pass">
+                    <el-input v-model="form.pass"></el-input>
+                    <a class="pointer" @click="createPassword">生成密码</a>
                 </el-form-item>
                 <el-form-item label="状态">
                   <el-radio-group v-model="form.sta">
@@ -124,10 +112,16 @@
         </el-dialog>
         <!-- 查看内容 -->
         <el-dialog
-            :title="detail.title"
+            title="查看账号"
             :visible.sync="detailVisible"
-            width="30%">
-            <span>{{detail.content}}</span>
+            width="15%">
+            <div>
+              <p>账号:{{detail.username}}</p>
+              <p>密码:{{detail.pass}}</p>
+              <p>添加时间:{{detail.create_time}}</p>
+              <p>最后登录IP:{{detail.last_login_ip}}</p>
+              <p>最后登录时间:{{detail.last_login_time|is_default('未登录')}}</p>
+            </div>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="detailVisible=false">确 定</el-button>
             </span>
@@ -138,13 +132,6 @@
 <script>
 export default {
   data() {
-    var validateUser = (rule, value, callback) => {
-      if (!this.selectUser.length && this.editVisible) {
-        callback(new Error("请选择用户"));
-        return;
-      }
-      callback();
-    };
     return {
       tableData: [],
       editVisible: false,
@@ -159,38 +146,52 @@ export default {
       row: [],
       is_search: false,
       delList: [],
-      dateRange: "",
       detail: [],
       form: {
         id: 0,
-        mid: "",
-        title: "",
-        content: "",
-        type: "系统",
+        pass: "",
+        username: "",
+        password: "",
         sta: "正常"
       },
       rules: {
-        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        content: [{ required: true, message: "请输入内容", trigger: "blur" }],
-        userList: [{ validator: validateUser, trigger: "change" }]
+        username: [{ required: true, message: "请输入账号", trigger: "blur" }],
+        pass: [{ required: true, message: "请输入密码", trigger: "blur" }]
       },
-      userList: [
-        {
-          key: 0,
-          label: "所有用户",
-          disabled: false
-        }
-      ],
-      selectUser: [],
-      idx: null
+      idx: 0
     };
   },
   created() {
     this.getData();
   },
+  computed: {
+    metaTitle() {
+      return this.$route.meta.title;
+    },
+    metaIcon() {
+      return "iconfont " + this.$route.meta.icon;
+    }
+  },
   methods: {
+    createPassword() {
+      let text = [
+        "abcdefghijklmnopqrstuvwxyz",
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "1234567890"
+      ];
+      let rand = function(min, max) {
+        return Math.floor(Math.max(min, Math.random() * (max + 1)));
+      };
+      let len = 16;
+      let pw = "";
+      for (let i = 0; i < len; ++i) {
+        let strpos = rand(0, 2);
+        pw += text[strpos].charAt(rand(0, text[strpos].length));
+      }
+      this.form.pass = pw;
+    },
     handleEdit(index, scope) {
-      this.axios.get(`/message/${scope.id}/edit`).then(res => {
+      this.axios.get(`/member/${scope.id}/edit`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -224,7 +225,7 @@ export default {
     deleteRow() {
       this.$store.commit("SHOW_LOADING");
       if (!this.isDelAll) {
-        this.axios.delete(`/message/${this.row.id}`).then(res => {
+        this.axios.delete(`/member/${this.row.id}`).then(res => {
           this.$store.commit("HIDE_LOADING");
           res = res.data;
           if (!res.status) {
@@ -236,7 +237,7 @@ export default {
         });
       } else {
         let id = this.delList.join("_");
-        this.axios.delete(`/message/${id}`).then(res => {
+        this.axios.delete(`/member/${id}`).then(res => {
           this.$store.commit("HIDE_LOADING");
           res = res.data;
           if (!res.status) {
@@ -253,7 +254,7 @@ export default {
     },
     changeStatus(scope) {
       let status = scope.status == "正常" ? 2 : 1;
-      this.axios.put(`/message/${scope.id}?status=${status}`).then(res => {
+      this.axios.put(`/member/${scope.id}?status=${status}`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -287,9 +288,9 @@ export default {
         }
         this.editVisible = false;
         this.form.status = this.form.sta == "正常" ? 1 : 2;
-        this.form.mid = this.selectUser.join(",");
+        this.form.password = this.form.pass;
         this.$store.commit("SHOW_LOADING");
-        this.axios.post("/message", this.form).then(res => {
+        this.axios.post("/member", this.form).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
@@ -303,13 +304,12 @@ export default {
       });
     },
     add() {
-      this.form.type = "系统";
       this.form.sta = "正常";
       this.selectUser = [];
       this.editVisible = true;
     },
     see(index, scope) {
-      this.axios.get(`/message/${scope.id}`).then(res => {
+      this.axios.get(`/member/${scope.id}`).then(res => {
         res = res.data;
         if (!res.status) {
           return;
@@ -320,14 +320,14 @@ export default {
     },
     cancel(formName) {
       this.$refs[formName].resetFields();
-      this.form.sta = "是";
+      this.form.sta = "正常";
       this.selectUser = [];
       this.editVisible = false;
     },
     getData(p) {
       p = p || this.current_page;
       this.axios
-        .get("/message", {
+        .get("/member", {
           params: {
             p: p,
             sql: 1,
@@ -380,6 +380,9 @@ export default {
 textarea.el-textarea__inner {
   height: 88px;
   resize: none;
+}
+.el-input--small .el-input__inner {
+  width: 90%;
 }
 </style>
 

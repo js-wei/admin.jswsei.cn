@@ -23,10 +23,18 @@ export default new Router({
                     }
                 },
                 {
-                    path:'/column',
-                    component:resolve=>require(['../components/page/column.vue'],resolve),
+                    path: '/column',
+                    component: resolve => require(['../components/page/column.vue'], resolve),
                     meta: {
                         title: '栏目管理'
+                    }
+                },
+                {
+                    path: '/member',
+                    component: resolve => require(['../components/page/member.vue'], resolve),
+                    meta: {
+                        title: '会员管理',
+                        icon:'icon-shouye'
                     }
                 },
                 {

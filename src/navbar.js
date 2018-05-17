@@ -3,7 +3,7 @@
  * Created Date: '2018-05-14 8:12:52
  * Author: 魏巍
  * -----
- * Last Modified: '2018-05-16 10:30:15
+ * Last Modified: '2018-05-17 2:30:59
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -32,6 +32,11 @@ export default[
         icon: 'el-icon-message',
         index: 'message',
         title: '消息管理'
+    },
+    {
+        icon: 'icon-shouye',
+        index: 'member',
+        title: '会员管理'
     },
     {
         icon: 'el-icon-date',
