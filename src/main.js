@@ -16,22 +16,6 @@ import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
 
 axios.defaults.baseURL = 'http://api.jswei.cn/admin';
-//添加一个请求拦截器
-axios.interceptors.request.use(function (config) {
-    //在请求发送之前做一些事
-    return config;
-}, function (error) {
-    //当出现请求错误是做一些事
-    return Promise.reject(error);
-});
-//添加一个返回拦截器
-axios.interceptors.response.use(function (response) {
-    //对返回的数据进行一些处理
-    return response;
-}, function (error) {
-    //对返回的错误进行一些处理
-    return Promise.reject(error);
-});
 //过滤OPTINS
 axios.interceptors.request.use(function (config) {
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
@@ -67,10 +51,14 @@ Vue.use(Toasted, {
 router.beforeEach((to, from, next) => {
     const role = JSON.parse(sessionStorage.getItem('ms_username'));
     if (!role && to.path !== '/login') {
-        next('/login');
+        next({path: '/login'});
     } else if (to.meta.permission) {
         // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
         role.gid === -1 ? next() : next('/403');
+    } else if (to.path == "*") {
+        next({
+            path: '/404'
+        });
     } else {
         // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
         if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {

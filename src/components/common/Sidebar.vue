@@ -4,17 +4,18 @@
             text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
             <template v-for="item in items">
                 <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+                    <el-submenu :index="'/'+item.index" :key="item.index">
                         <template slot="title">
-                            <i class="iconfont" :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+                            <i class="iconfont" :class="item.icon"></i>
+                            <span slot="title">{{ item.title }}</span>
                         </template>
-                        <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.index">
-                            {{ subItem.title }}
+                        <el-menu-item :index="'/'+s.cate_type+'/'+s.index" v-for="(s,i) in item.subs" :key="i">
+                           {{ s.title }}
                         </el-menu-item>
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.index" :key="item.index">
+                    <el-menu-item :index="'/'+item.index" :key="item.index">
                         <i class="iconfont" :class="item.icon"></i><span slot="title">{{ item.title }}</span>
                     </el-menu-item>
                 </template>
@@ -25,23 +26,35 @@
 
 <script>
 import bus from "../common/bus";
-import navbar from "../../navbar";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
       collapse: false,
-      items: navbar
+      isActive: ""
     };
   },
   computed: {
     onRoutes() {
-      return this.$route.path.replace("/", "");
-    }
+      return this.$route.path;
+    },
+    ...mapState({
+      items: state => state.mutations.navbar
+    })
   },
   created() {
-    // 通过 Event Bus 进行组件间通信，来折叠侧边栏
     bus.$on("collapse", msg => {
       this.collapse = msg;
+    });
+    this.$nextTick(() => {
+      this.axios.get("/navbar?tree=1&status=1").then(res => {
+        res = res.data;
+        if (!res.status) {
+          return;
+        }
+        let data = res.result;
+        this.$store.commit("SET_NAVBAR", data);
+      });
     });
   }
 };
@@ -61,8 +74,12 @@ export default {
 .sidebar > ul {
   height: 100%;
 }
-.iconfont{
-  padding-right:5px;
-  font-size:1.2rem;
+.iconfont {
+  padding-right: 5px;
+  font-size: 1.2rem;
+}
+.iconfont.icon-mokuai {
+  font-size: 1.6rem;
+  margin-left: -4px;
 }
 </style>

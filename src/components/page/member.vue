@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-17 5:03:40
+ * Modified By: 2018-05-18 2:10:45
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -51,6 +51,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="pass" label="会员密码" ></el-table-column>
+                <el-table-column prop="type" label="注册方式" ></el-table-column>
                 <el-table-column prop="tag" label="状态" width="100">
                   <template slot-scope="scope">
                     <a @click="changeStatus(scope.row)" class="pointer">
@@ -62,7 +63,7 @@
                     </a>
                   </template>
                 </el-table-column>
-                <el-table-column prop="update_time" label="操作时间" sortable>
+                <el-table-column prop="create_time" label="添加时间" sortable>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -90,6 +91,14 @@
                     <el-input v-model="form.pass"></el-input>
                     <a class="pointer" @click="createPassword">生成密码</a>
                 </el-form-item>
+                <el-form-item label="常用地址">
+                    <el-cascader
+                      :options="options"
+                      v-model="form.code"
+                      @change="handleAddressChange" 
+                      class="el_cascader_small" placeholder="请选择常用地址">
+                    </el-cascader>
+                </el-form-item>
                 <el-form-item label="状态">
                   <el-radio-group v-model="form.sta">
                     <el-radio label="正常" value="0"></el-radio>
@@ -114,10 +123,12 @@
         <el-dialog
             title="查看账号"
             :visible.sync="detailVisible"
-            width="15%">
+            width="20%">
             <div>
               <p>账号:{{detail.username}}</p>
               <p>密码:{{detail.pass}}</p>
+              <p>生成方式:{{detail.type}}</p>
+              <p>常用地址:{{detail.region}}</p>
               <p>添加时间:{{detail.create_time}}</p>
               <p>最后登录IP:{{detail.last_login_ip}}</p>
               <p>最后登录时间:{{detail.last_login_time|is_default('未登录')}}</p>
@@ -130,9 +141,12 @@
 </template>
 
 <script>
+import md5 from "js-md5";
+import { regionData, CodeToText } from "element-china-area-data";
 export default {
   data() {
     return {
+      options: regionData,
       tableData: [],
       editVisible: false,
       delVisible: false,
@@ -140,7 +154,8 @@ export default {
       select_word: "",
       select_type: "",
       select_date: "",
-      current_page: 0,
+      current_page: 1,
+      last_page: 0,
       per_page: 5,
       totals: 0,
       row: [],
@@ -152,11 +167,16 @@ export default {
         pass: "",
         username: "",
         password: "",
-        sta: "正常"
+        sta: "正常",
+        type: 2,
+        code: [],
+        region: ""
       },
       rules: {
         username: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        pass: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        pass: [
+          { required: true, message: "请输入密码", trigger: ["blur", "change"] }
+        ]
       },
       idx: 0
     };
@@ -173,6 +193,12 @@ export default {
     }
   },
   methods: {
+    handleAddressChange(value) {
+      this.form.code = value;
+      this.form.region = `${CodeToText[value[0]]},${CodeToText[value[1]]},${
+        CodeToText[value[2]]
+      }`;
+    },
     createPassword() {
       let text = [
         "abcdefghijklmnopqrstuvwxyz",
@@ -200,10 +226,11 @@ export default {
         let data = res.result;
         this.form = {
           id: data.id,
-          title: data.title,
-          content: data.content,
-          type: data.type,
-          sta: data.status
+          username: data.username,
+          pass: data.pass,
+          type: data.type == "系统生成" ? 2 : 1,
+          sta: data.status,
+          code: data.code
         };
         this.selectUser = data.mid;
         this.editVisible = true;
@@ -268,7 +295,7 @@ export default {
     },
     currentChange(value) {
       this.current_page = value;
-      this.getData(value);
+      this.getData();
     },
     handleChange(value, direction, movedKeys) {
       if (!this.selectUser) {
@@ -288,7 +315,7 @@ export default {
         }
         this.editVisible = false;
         this.form.status = this.form.sta == "正常" ? 1 : 2;
-        this.form.password = this.form.pass;
+        this.form.password = md5(this.form.pass);
         this.$store.commit("SHOW_LOADING");
         this.axios.post("/member", this.form).then(res => {
           res = res.data;
@@ -298,15 +325,26 @@ export default {
             return;
           }
           this.$refs[formName].resetFields();
+          this.form.id = 0;
+          this.form.sta = "正常";
+          this.form.code = [];
+          this.form.region = "";
+          this.form.username = "";
+          this.form.pass = "";
           this.$message.success(res.msg);
           this.getData();
         });
       });
     },
     add() {
-      this.form.sta = "正常";
       this.selectUser = [];
       this.editVisible = true;
+      this.form.id = 0;
+      this.form.sta = "正常";
+      this.form.code = [];
+      this.form.region = "";
+      this.form.username = "";
+      this.form.pass = "";
     },
     see(index, scope) {
       this.axios.get(`/member/${scope.id}`).then(res => {
@@ -323,16 +361,16 @@ export default {
       this.form.sta = "正常";
       this.selectUser = [];
       this.editVisible = false;
+      this.form.id = 0;
+      this.form.selectedOptions = [];
     },
-    getData(p) {
-      p = p || this.current_page;
+    getData() {
       this.axios
         .get("/member", {
           params: {
-            p: p,
-            sql: 1,
+            p: this.current_page,
             where: [
-              { field: "title", op: "like", value: this.select_word },
+              { field: "username", op: "like", value: this.select_word },
               { field: "status", op: "eq", value: this.select_type },
               { field: "update_time", op: "between", value: this.select_date }
             ]
@@ -346,6 +384,7 @@ export default {
           this.current_page = res.current_page;
           this.totals = res.total;
           this.per_page = res.per_page;
+          this.last_page = res.last_page;
         });
     }
   }
@@ -383,6 +422,9 @@ textarea.el-textarea__inner {
 }
 .el-input--small .el-input__inner {
   width: 90%;
+}
+.el-cascader--small .el-input__suffix {
+  right: 20px;
 }
 </style>
 

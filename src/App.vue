@@ -11,6 +11,9 @@
 @import "../static/css/main.css";
 @import "../static/css/color-dark.css"; /*深色主题*/
 /*@import "../static/css/theme-green/color-green.css";   浅绿色主题*/
+.el-dialog__header{
+  border-bottom: 1px solid #e2e2e2;
+}
 </style>
 <script>
 import { mapState } from "vuex";

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-21 11:30:39
+ * Modified By: 2018-05-21 3:15:42
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,28 +16,30 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-date"></i>栏目</el-breadcrumb-item>
-                <el-breadcrumb-item>栏目列表</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-date"></i>{{metaTitle}}管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" class="handle-del mr10" 
                 @click="delAll"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
-                <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i>添加栏目</el-button>
+                <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i>添加{{metaTitle}}</el-button>
             </div>
             <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
               @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="title" label="栏目名称">
+                <el-table-column prop="title" :label="metaTitle+'名称'">
                   <template slot-scope="scope">
                     <span v-html="scope.row.html"></span>
                     <span>{{scope.row.title}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="name" label="栏目标识" >
+                <el-table-column prop="name" :label="metaTitle+'标识'" >
                 </el-table-column>
-                <el-table-column prop="type" label="栏目类型" >
+                <el-table-column prop="ico" label="图标" width="100">
+                  <template slot-scope="scope">
+                    <i :class="'iconfont iconfont_cell '+scope.row.ico"></i>
+                  </template>
                 </el-table-column>
                 <el-table-column prop="tag" label="状态" width="100">
                   <template slot-scope="scope">
@@ -50,7 +52,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="sort" label="排序" sortable width="100"></el-table-column>
-                <el-table-column prop="update_time" label="操作时间" sortable>
+                <el-table-column prop="create_time" label="添加时间" sortable>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -61,43 +63,32 @@
             </el-table>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog title="栏目管理" :visible.sync="editVisible" width="30%" :show-close="false">
+        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">
             <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
-                <el-form-item label="栏目名称" prop="title">
-                  <el-input v-model="form.title" placeholder="栏目名称"></el-input>
+                <el-form-item :label="metaTitle+'名称'" prop="title">
+                  <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
                 </el-form-item>
-                <el-form-item label="栏目标识" prop="name">
-                  <el-input v-model="form.name" placeholder="栏目标识"></el-input>
+                <el-form-item :label="metaTitle+'标识'" prop="name">
+                  <el-input v-model="form.name" :placeholder="metaTitle+'标识'"></el-input>
                 </el-form-item>
-                <el-form-item label="所属栏目" prop="fid">
-                  <el-select v-model="form.fid" placeholder="所属栏目" class="handle-select mr10">
-                    <el-option key="0" label="顶级栏目" value="0"></el-option>
+                <el-form-item :label="metaTitle+'图标'">
+                  <el-input v-model="form.ico" :placeholder="metaTitle+'图标(iconfont字体图标)'"></el-input>
+                </el-form-item>
+                <el-form-item :label="'所属'+metaTitle" prop="fid">
+                  <el-select v-model="form.fid" :placeholder="'所属'+metaTitle" class="handle-select mr10">
+                    <el-option key="0" :label="'顶级'+metaTitle" value="0"></el-option>
                     <el-option :label="item.html+item.title" :value="item.id" 
                       v-for="item in cate_list" :key="item.id"></el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="关键词">
-                    <el-input type="textarea" v-model="form.keywords" placeholder="关键词"></el-input>
+                <el-form-item :label="metaTitle+'说明'">
+                    <el-input type="textarea" v-model="form.info" :placeholder="metaTitle+'说明'"></el-input>
                 </el-form-item>
-                <el-form-item label="说明">
-                    <el-input type="textarea" v-model="form.description" placeholder="说明"></el-input>
-                </el-form-item>
-                <el-form-item label="类型">
-                  <el-radio-group v-model="form.type">
-                    <el-radio label="列表页" value="1"></el-radio>
-                    <el-radio label="下载页" value="2"></el-radio>
-                    <el-radio label="单页面" value="3"></el-radio>
-                    <el-radio label="封面页" value="4"></el-radio>
-                    <el-radio label="表单页" value="5"></el-radio>
-                    <el-radio label="跳转页" value="6"></el-radio>
-                  </el-radio-group>
-                  <el-input v-model="form.url" v-if="isRedirect" placeholder="跳转地址(http://baidu.com)" class="mt-10"></el-input>
-                </el-form-item>
-                <el-form-item label="栏目排序">
-                  <el-input v-model="form.sort" placeholder="栏目排序"></el-input>
+                <el-form-item :label="metaTitle+'排序'">
+                  <el-input v-model="form.sort" :placeholder="metaTitle+'排序'"></el-input>
                 </el-form-item>
                 <el-form-item label="启用">
-                  <el-radio-group v-model="form.sta">
+                  <el-radio-group v-model="form.status">
                     <el-radio label="正常" value="0"></el-radio>
                     <el-radio label="禁用" value="1"></el-radio>
                   </el-radio-group>
@@ -138,23 +129,32 @@ export default {
       isDelAll: false,
       isRedirect: false,
       last_url: "",
-      type: 1,
       row: [],
       form: {
         id: 0,
         title: "",
         name: "",
         fid: "",
-        keywords: "",
-        description: "",
+        info: "",
+        ico: "",
         sort: 100,
-        sta: "正常",
-        type: "列表页",
-        url: ""
+        status: "正常"
       },
       rules: {
-        title: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
-        name: [{ required: true, message: "请输入栏目标识", trigger: "blur" }],
+        title: [
+          {
+            required: true,
+            message: "请输入模块名称",
+            trigger: "blur"
+          }
+        ],
+        name: [
+          {
+            required: true,
+            message: "请输入模块标识",
+            trigger: "blur"
+          }
+        ],
         fid: [{ validator: validateFid, trigger: "change" }]
       }
     };
@@ -162,39 +162,19 @@ export default {
   created() {
     this.getData();
   },
-  watch: {
-    "form.type"(newValue, oldValue) {
-      this.isRedirect = false;
-      switch (newValue) {
-        case "下载页":
-          this.type = 2;
-          break;
-        case "单页面":
-          this.type = 3;
-          break;
-        case "封面页":
-          this.type = 4;
-          break;
-        case "表单页":
-          this.type = 5;
-          break;
-        case "跳转页":
-          this.type = 6;
-          this.isRedirect = true;
-          break;
-        default:
-          this.type = 1;
-      }
+  computed: {
+    metaTitle() {
+      return this.$route.meta.title;
     }
   },
   methods: {
     getData() {
       this.axios
-        .get("/column", {
+        .get("/module", {
           where: [
             { field: "title", op: "eq", value: this.select_word },
             { field: "status", op: "eq", value: this.select_cate },
-            { field: "date", op: "between", value: this.select_date }
+            { field: "create_time", op: "between", value: this.select_date }
           ]
         })
         .then(res => {
@@ -208,7 +188,7 @@ export default {
     },
     changeStatus(scope) {
       let status = scope.status == "正常" ? 1 : 0;
-      this.axios.put(`/column/${scope.id}?status=${status}`).then(res => {
+      this.axios.put(`/module/${scope.id}?status=${status}`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -222,7 +202,7 @@ export default {
     },
     handleEdit(index, row) {
       this.getCateList();
-      this.axios.get(`/column/${row.id}/edit`).then(res => {
+      this.axios.get(`/module/${row.id}/edit`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -234,15 +214,13 @@ export default {
         }
         this.form = {
           id: data.id,
+          fid: data.fid,
           title: data.title,
           name: data.name,
-          fid: data.fid,
-          keywords: data.keywords,
-          description: data.description,
+          info: data.info,
+          ico: data.ico,
           sort: data.sort,
-          sta: data.status,
-          type: data.type,
-          url: data.url
+          status: data.status
         };
       });
       this.editVisible = true;
@@ -272,10 +250,9 @@ export default {
           return false;
         }
         this.editVisible = false;
-        this.form.status = this.form.sta == "正常" ? 0 : 1;
-        this.form.type = this.type;
+        //this.form.status = this.form.sta == "正常" ? 0 : 1;
         this.$store.commit("SHOW_LOADING");
-        this.axios.post("/column", this.form).then(res => {
+        this.axios.post("/module", this.form).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
@@ -319,18 +296,20 @@ export default {
     add() {
       this.getCateList();
       this.form.id = 0;
-      this.form.type = "列表页";
       this.form.srot = 100;
+      this.form.info = "";
+      this.form.ico = "";
       this.editVisible = true;
     },
     cancel(formName) {
       this.$refs[formName].resetFields();
-      this.form.keywords = "";
-      this.form.description = "";
+      this.form.id = 0;
+      this.form.info = "";
+      this.form.ico = "";
       this.editVisible = false;
     },
     getCateList() {
-      this.axios.get("/column_list").then(res => {
+      this.axios.get("/module_list").then(res => {
         res = res.data;
         if (!res.status) {
           return;
@@ -369,7 +348,7 @@ export default {
     }
   }
 }
-.el-radio {
-  margin: 10px 20px 0 0;
-}
+.iconfont_cell{
+      font-size:1.5rem;
+  }
 </style>

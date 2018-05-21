@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-17 2:15:14
+ * Modified By: 2018-05-18 10:22:50
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -307,6 +307,7 @@ export default {
       this.form.sta = "正常";
       this.selectUser = [];
       this.editVisible = true;
+      this.form.id = 0;
     },
     see(index, scope) {
       this.axios.get(`/message/${scope.id}`).then(res => {

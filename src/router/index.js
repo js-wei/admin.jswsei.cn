@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-    mod: 'histroy',
+    mode: 'history',
     routes: [{
             path: '/',
             redirect: '/dashboard'
@@ -23,8 +23,22 @@ export default new Router({
                     }
                 },
                 {
+                    path: '/module',
+                    component: resolve => require(['../components/page/module.vue'], resolve),
+                    meta: {
+                        title: '模块'
+                    }
+                },
+                {
                     path: '/column',
                     component: resolve => require(['../components/page/column.vue'], resolve),
+                    meta: {
+                        title: '栏目管理'
+                    }
+                },
+                {
+                    path: '/column/:id',
+                    component: resolve => require(['../components/page/columnPage.vue'], resolve),
                     meta: {
                         title: '栏目管理'
                     }
@@ -34,7 +48,15 @@ export default new Router({
                     component: resolve => require(['../components/page/member.vue'], resolve),
                     meta: {
                         title: '会员管理',
-                        icon:'icon-shouye'
+                        icon: 'icon-shouye'
+                    }
+                },
+                {
+                    path: '/auth',
+                    component: resolve => require(['../components/page/auth.vue'], resolve),
+                    meta: {
+                        title: '权限',
+                        icon: 'icon-12quanxianguanli'
                     }
                 },
                 {
@@ -130,7 +152,7 @@ export default new Router({
         },
         {
             path: '*',
-            redirect: '/404'
+            redirect: '/404',
         }
     ]
 })
