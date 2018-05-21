@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-18 2:10:45
+ * Modified By: 2018-05-21 4:06:05
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -68,6 +68,7 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="small" type="primary" @click="handleAuth(scope.$index, scope.row.id)">配置权限</el-button>
                         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -386,6 +387,9 @@ export default {
           this.per_page = res.per_page;
           this.last_page = res.last_page;
         });
+    },
+    handleAuth(index,scope){
+      console.log(index,scope)
     }
   }
 };

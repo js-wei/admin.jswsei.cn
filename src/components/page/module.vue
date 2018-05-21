@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-21 11:19:16
+ * Modified By: 2018-05-21 3:53:54
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -185,6 +185,14 @@ export default {
             this.totals = res.last_page;
           }
         });
+      this.axios.get("/navbar?tree=1&status=1").then(res => {
+        res = res.data;
+        if (!res.status) {
+          return;
+        }
+        let data = res.result;
+        this.$store.commit("SET_NAVBAR", data);
+      });
     },
     changeStatus(scope) {
       let status = scope.status == "正常" ? 1 : 0;
@@ -348,7 +356,7 @@ export default {
     }
   }
 }
-.iconfont_cell{
-      font-size:1.5rem;
-  }
+.iconfont_cell {
+  font-size: 1.5rem;
+}
 </style>

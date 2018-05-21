@@ -23,7 +23,7 @@
                     <span class="btn-bell-badge" v-if="message"></span>
                 </div>
                 <!-- 用户头像 -->
-                <div class="user-avator"><img src="static/img/img.jpg"></div>
+                <div class="user-avator"><img src="static/images/10104372.gif"></div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
@@ -78,11 +78,11 @@ export default {
     },
     logout() {
       this.$store.commit("SHOW_LOADING");
-     this.$store.commit('STE_LOADING_TEXT','正在登出中...');
+      this.$store.commit("STE_LOADING_TEXT", "正在登出中...");
       let self = this;
       self.detailVisible = false;
       setTimeout(() => {
-          this.$store.commit('STE_LOADING_TEXT',null);
+        this.$store.commit("STE_LOADING_TEXT", null);
         this.$store.commit("HIDE_LOADING");
         sessionStorage.removeItem("ms_username");
         self.$router.push("/login");
@@ -187,8 +187,8 @@ export default {
 }
 .user-avator img {
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
 }
 .el-dropdown-link {

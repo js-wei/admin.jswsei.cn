@@ -9,8 +9,10 @@
                             <i class="iconfont" :class="item.icon"></i>
                             <span slot="title">{{ item.title }}</span>
                         </template>
-                        <el-menu-item :index="'/'+s.cate_type+'/'+s.index" v-for="(s,i) in item.subs" :key="i">
-                           {{ s.title }}
+                        <el-menu-item :index="s.cate_type=='column'?'/'+s.cate_type+'/'+s.index:'/'+s.index" 
+                          v-for="(s,i) in item.subs" :key="i">
+                            <i class="iconfont" :class="s.icon"></i>
+                            <span slot="title">{{ s.title }}</span>
                         </el-menu-item>
                     </el-submenu>
                 </template>
@@ -46,15 +48,13 @@ export default {
     bus.$on("collapse", msg => {
       this.collapse = msg;
     });
-    this.$nextTick(() => {
-      this.axios.get("/navbar?tree=1&status=1").then(res => {
-        res = res.data;
-        if (!res.status) {
-          return;
-        }
-        let data = res.result;
-        this.$store.commit("SET_NAVBAR", data);
-      });
+    this.axios.get("/navbar?tree=1&status=1").then(res => {
+      res = res.data;
+      if (!res.status) {
+        return;
+      }
+      let data = res.result;
+      this.$store.commit("SET_NAVBAR", data);
     });
   }
 };

@@ -6,7 +6,7 @@
                     <el-col>
                         <el-card shadow="hover" class="mgb20">
                             <div class="user-info">
-                                <img src="static/img/img.jpg" class="user-avator" alt="">
+                                <img src="static/images/10104372.gif" class="user-avator" alt="">
                                 <div class="user-info-cont">
                                     <div class="user-info-name">{{user.username}}</div>
                                     <div>{{role}}</div>
@@ -15,18 +15,18 @@
                             <div class="user-info-list">最后登录时间：<span>{{user.last_date|formart_date}}</span></div>
                             <div class="user-info-list">最后登录的IP：<span>{{user.last_ip}}</span></div>
                         </el-card>
-                        <el-card shadow="hover">
+                        <el-card shadow="hover" style="padding-bottom:5px;">
                             <div slot="header" class="clearfix">
-                                <span>语言详情</span>
+                                <span>订单统计</span>
                             </div>
-                            Vue
-                            <el-progress :percentage="57.2" color="#42b983"></el-progress>
-                            JavaScript
-                            <el-progress :percentage="29.8" color="#f1e05a"></el-progress>
-                            CSS
-                            <el-progress :percentage="11.9"></el-progress>
-                            HTML
-                            <el-progress :percentage="1.1" color="#f56c6c"></el-progress>
+                            订单总数(3000)
+                            <el-progress :percentage="100" color="#f56c6c"></el-progress>
+                            订单支付(2800)
+                            <el-progress :percentage="Math.round(2800 / 3000 * 10000) / 100.00" color="#42b983"></el-progress>
+                            取消订单(120)
+                            <el-progress :percentage="Math.round(120 / 3000 * 10000) / 100.00"></el-progress>
+                            无效订单(80)
+                            <el-progress :percentage="Math.round(80 / 3000 * 10000) / 100.00" color="#f56c6c"></el-progress>
                         </el-card>
                     </el-col>
                 </el-row>
@@ -92,7 +92,6 @@
                         </el-table-column>
                     </el-table>
                 </el-card>
-
             </el-col>
         </el-row>
     </div>
@@ -139,9 +138,8 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
-@import '../../assets/base';
+@import "../../assets/base";
 .el-row {
   margin-bottom: 20px;
 }
@@ -244,5 +242,10 @@ export default {
 .todo-item-del {
   text-decoration: line-through;
   color: #999;
+}
+</style>
+<style>
+.el-progress-bar {
+  width: 99%;
 }
 </style>
