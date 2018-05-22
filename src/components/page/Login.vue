@@ -48,7 +48,6 @@ export default {
         this.$store.commit("SHOW_LOADING");
         this.$store.commit("STE_LOADING_TEXT", "正在登陆中...");
         this.axios.post("/user", this.ruleForm).then(res => {
-          console.log(res);
           if (res.status !== 200) {
             this.$message.error("服务器错误");
           }
@@ -61,12 +60,15 @@ export default {
             this.$store.commit("STE_LOADING_TEXT", null);
             this.$store.commit("HIDE_LOADING");
             this.$message.success(res.msg);
-            sessionStorage.setItem("ms_username", JSON.stringify(res.result));
+            //sessionStorage.setItem("ms_username", JSON.stringify(res.result));
             self.$router.push("/");
           }, 3.5e3);
         });
       });
     }
+  },
+  created() {
+    localStorage.clear();
   }
 };
 </script>

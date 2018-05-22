@@ -27,7 +27,7 @@
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{username}} <i class="el-icon-caret-bottom"></i>
+                        {{user.username}} <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <router-link to="/profile">
@@ -55,6 +55,7 @@
 </template>
 <script>
 import bus from "../common/bus";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -66,10 +67,9 @@ export default {
     };
   },
   computed: {
-    username() {
-      let user = JSON.parse(sessionStorage.getItem("ms_username"));
-      return user.username ? user.username : this.name;
-    }
+    ...mapState({
+      user: state => state.mutations.logined
+    })
   },
   methods: {
     // 用户名下拉菜单选择事件
@@ -83,8 +83,9 @@ export default {
       self.detailVisible = false;
       setTimeout(() => {
         this.$store.commit("STE_LOADING_TEXT", null);
+        this.$store.commit("SET_LOGIN", null);
         this.$store.commit("HIDE_LOADING");
-        sessionStorage.removeItem("ms_username");
+        //sessionStorage.removeItem("ms_username");
         self.$router.push("/login");
       }, 2e3);
     },

@@ -9,7 +9,7 @@
                                 <img src="static/images/10104372.gif" class="user-avator" alt="">
                                 <div class="user-info-cont">
                                     <div class="user-info-name">{{user.username}}</div>
-                                    <div>{{role}}</div>
+                                    <div>{{user.gid === -1 ? "超级管理员" : "普通用户"}}</div>
                                 </div>
                             </div>
                             <div class="user-info-list">最后登录时间：<span>{{user.last_date|formart_date}}</span></div>
@@ -98,10 +98,10 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
 export default {
   data() {
     return {
-      user: JSON.parse(sessionStorage.getItem("ms_username")),
       todoList: [
         {
           title: "今天要修复100个bug",
@@ -131,9 +131,9 @@ export default {
     };
   },
   computed: {
-    role() {
-      return this.user.gid === -1 ? "超级管理员" : "普通用户";
-    }
+    ...mapState({
+        user: state => state.mutations.logined
+    })
   }
 };
 </script>

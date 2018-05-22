@@ -12,16 +12,16 @@ const options = {
     failedColor: '#874b4b',
     thickness: '2px',
     transition: {
-      speed: '0.2s',
-      opacity: '0.6s',
-      termination: 300
+        speed: '0.2s',
+        opacity: '0.6s',
+        termination: 300
     },
     autoRevert: true,
     location: 'top',
     inverse: false
-  }
-   
-  Vue.use(VueProgressBar, options)
+}
+
+Vue.use(VueProgressBar, options)
 
 Vue.use(ElementUI, {
     size: 'small'
@@ -65,9 +65,11 @@ Vue.use(Toasted, {
 })
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
-    const role = JSON.parse(sessionStorage.getItem('ms_username'));
-    if (!role && to.path !== '/login') {
-        next({path: '/login'});
+    let login = store.state.mutations.logined;
+    if (!login && to.path !== '/login') {
+        next({
+            path: '/login'
+        });
     } else if (to.meta.permission) {
         // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
         role.gid === -1 ? next() : next('/403');
