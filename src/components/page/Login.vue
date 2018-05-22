@@ -2,7 +2,8 @@
     <div class="login-wrap">
         <div class="ms-title">后台管理系统</div>
         <div class="ms-login">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" 
+            class="demo-ruleForm" autocomplete="off">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
@@ -44,9 +45,10 @@ export default {
           return;
         }
         this.ruleForm.password = md5(this.ruleForm.pass);
-        this.$store.commit('SHOW_LOADING');
-        this.$store.commit('STE_LOADING_TEXT','正在登陆中...');
+        this.$store.commit("SHOW_LOADING");
+        this.$store.commit("STE_LOADING_TEXT", "正在登陆中...");
         this.axios.post("/user", this.ruleForm).then(res => {
+          console.log(res);
           if (res.status !== 200) {
             this.$message.error("服务器错误");
           }
@@ -56,8 +58,8 @@ export default {
           }
           this.$store.commit("SET_LOGIN", res.result);
           setTimeout(() => {
-            this.$store.commit('STE_LOADING_TEXT',null);
-            this.$store.commit('HIDE_LOADING');
+            this.$store.commit("STE_LOADING_TEXT", null);
+            this.$store.commit("HIDE_LOADING");
             this.$message.success(res.msg);
             sessionStorage.setItem("ms_username", JSON.stringify(res.result));
             self.$router.push("/");

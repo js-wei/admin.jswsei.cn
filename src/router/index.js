@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history',
+    //mode: 'history',
     routes: [{
             path: '/',
             redirect: '/dashboard'
@@ -41,6 +41,22 @@ export default new Router({
                     component: resolve => require(['../components/page/columnPage.vue'], resolve),
                     meta: {
                         title: '栏目管理'
+                    }
+                },
+                {
+                    path: '/group',
+                    component: resolve => require(['../components/page/group.vue'], resolve),
+                    meta: {
+                        title: '权限组',
+                        icon: 'icon-qunzu'
+                    }
+                },
+                {
+                    path: '/admin',
+                    component: resolve => require(['../components/page/admin.vue'], resolve),
+                    meta: {
+                        title: '管理员',
+                        icon: 'icon-guanliyuan'
                     }
                 },
                 {

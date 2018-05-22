@@ -1,10 +1,10 @@
 /*
- * File: d:\works\admin.jswei.cn\src\components\page\column.vue
- * Created Date: 2018-05-14 8:33:49
+ * File: d:\works\admin.jswei.cn\src\components\page\group.vue
+ * Created Date: 2018-05-22 11:06:28
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-22 3:24:27
+ * Modified By: 2018-05-22 4:16:05
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,7 +16,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-date"></i>{{metaTitle}}管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i :class="metaIcon"></i>{{metaTitle}}管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -36,9 +36,9 @@
                 </el-table-column>
                 <el-table-column prop="name" :label="metaTitle+'标识'" >
                 </el-table-column>
-                <el-table-column prop="ico" label="图标" width="100">
+                <el-table-column prop="power" :label="metaTitle+'标识'"  width="100">
                   <template slot-scope="scope">
-                    <i :class="'iconfont iconfont_cell '+scope.row.ico"></i>
+                    <a class="pointer" @click.stop="checkPower(scope.$index,scope.row.power)">查看权限</a>
                   </template>
                 </el-table-column>
                 <el-table-column prop="tag" label="状态" width="100">
@@ -51,46 +51,33 @@
                     </a>
                   </template>
                 </el-table-column>
-                <el-table-column prop="sort" label="排序" sortable width="100"></el-table-column>
                 <el-table-column prop="create_time" label="添加时间" sortable>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)" 
+                          class="ml-0 mb-1">编辑</el-button>
+                        <el-button type="primary" @click="setPower(scope.$index, scope.row)"
+                          class="ml-0 mb-1">配置权限</el-button>                        
+                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" 
+                          class="ml-0">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">
-            <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
+            <el-form ref="form" :model="form" label-width="100px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
                 <el-form-item :label="metaTitle+'名称'" prop="title">
                   <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
                 </el-form-item>
                 <el-form-item :label="metaTitle+'标识'" prop="name">
                   <el-input v-model="form.name" :placeholder="metaTitle+'标识'"></el-input>
                 </el-form-item>
-                <el-form-item :label="metaTitle+'图标'">
-                  <el-input v-model="form.ico" :placeholder="metaTitle+'图标(iconfont字体图标)'"></el-input>
-                </el-form-item>
-                <el-form-item :label="'所属'+metaTitle" prop="fid">
-                  <el-select v-model="form.fid" :placeholder="'所属'+metaTitle" class="handle-select mr10">
-                    <el-option key="0" :label="'顶级'+metaTitle" value="0"></el-option>
-                    <el-option :label="item.html+item.title" :value="item.id" 
-                      v-for="item in cate_list" :key="item.id"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item :label="metaTitle+'说明'">
-                    <el-input type="textarea" v-model="form.info" :placeholder="metaTitle+'说明'"></el-input>
-                </el-form-item>
-                <el-form-item :label="metaTitle+'排序'">
-                  <el-input v-model="form.sort" :placeholder="metaTitle+'排序'"></el-input>
-                </el-form-item>
                 <el-form-item label="启用">
                   <el-radio-group v-model="form.status">
-                    <el-radio label="正常" value="0"></el-radio>
-                    <el-radio label="禁用" value="1"></el-radio>
+                    <el-radio label="正常" value="1"></el-radio>
+                    <el-radio label="禁用" value="2"></el-radio>
                   </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -99,11 +86,24 @@
               <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 配置权限 -->
+        <el-dialog :title="metaTitle+'配置'" :visible.sync="powerVisible" width="40%" :show-close="false">
+            <el-form ref="form1" :model="form1" label-width="100px" :rules="rules1" style="margin-left:50px;" autocomplete="off">
+                <el-form-item :label="form1.title+'权限配置'" prop="power">
+                   <el-transfer  :titles="['可选', '已选']"
+                    v-model="selectedList" :data="selectModule"  @change="handleChange"></el-transfer>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="powerVisible=false;selectedList=[];">取 消</el-button>
+              <el-button type="primary" @click="savePower('form1')">确 定</el-button>
+            </span>
+        </el-dialog>
         <!-- 删除提示框 -->
         <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
             <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="delVisible = false">取 消</el-button>
+                <el-button @click="delVisible = false;">取 消</el-button>
                 <el-button type="primary" @click="deleteRow">确 定</el-button>
             </span>
         </el-dialog>
@@ -113,49 +113,57 @@
 <script>
 export default {
   data() {
-    var validateFid = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请选择所属栏目"));
+    var validate = (rule, value, callback) => {
+      if (!this.selectedList.length && this.powerVisible) {
+        callback(new Error("请选择可操作模块"));
         return;
       }
       callback();
     };
     return {
       tableData: [],
-      cate_list: [],
       delList: [],
       editVisible: false,
       delVisible: false,
       isDelAll: false,
-      isRedirect: false,
-      last_url: "",
+      powerVisible: false,
+      selectModule: [],
+      selectedList: [],
       row: [],
       form: {
         id: 0,
         title: "",
         name: "",
-        fid: "",
-        info: "",
-        ico: "",
-        sort: 100,
         status: "正常"
       },
       rules: {
         title: [
           {
             required: true,
-            message: "请输入模块名称",
+            message: "请输入权限组名称",
             trigger: "blur"
           }
         ],
         name: [
           {
             required: true,
-            message: "请输入模块标识",
+            message: "请输入权限组标识",
             trigger: "blur"
           }
-        ],
-        fid: [{ validator: validateFid, trigger: "change" }]
+        ]
+      },
+      form1: {
+        id: 0,
+        title: "",
+        power: ""
+      },
+      rules1: {
+        power: [
+          {
+            validator: validate,
+            trigger: "change"
+          }
+        ]
       }
     };
   },
@@ -165,12 +173,15 @@ export default {
   computed: {
     metaTitle() {
       return this.$route.meta.title;
+    },
+    metaIcon() {
+      return "iconfont " + this.$route.meta.icon;
     }
   },
   methods: {
     getData() {
       this.axios
-        .get("/module", {
+        .get("/group", {
           where: [
             { field: "title", op: "eq", value: this.select_word },
             { field: "status", op: "eq", value: this.select_cate },
@@ -180,23 +191,16 @@ export default {
         .then(res => {
           res = res.data;
           if (res.status) {
-            this.tableData = res.result;
+            res = res.result;
+            this.tableData = res.data;
             this.cur_page = res.current_page;
             this.totals = res.last_page;
           }
         });
-      this.axios.get("/navbar?tree=1&status=1").then(res => {
-        res = res.data;
-        if (!res.status) {
-          return;
-        }
-        let data = res.result;
-        this.$store.commit("SET_NAVBAR", data);
-      });
     },
     changeStatus(scope) {
-      let status = scope.status == "正常" ? 1 : 0;
-      this.axios.put(`/module/${scope.id}?status=${status}`).then(res => {
+      let status = scope.status == "正常" ? 2 : 1;
+      this.axios.put(`/group/${scope.id}?status=${status}`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -209,8 +213,7 @@ export default {
       this.getData();
     },
     handleEdit(index, row) {
-      this.getCateList();
-      this.axios.get(`/module/${row.id}/edit`).then(res => {
+      this.axios.get(`/group/${row.id}/edit`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -222,12 +225,8 @@ export default {
         }
         this.form = {
           id: data.id,
-          fid: data.fid,
           title: data.title,
           name: data.name,
-          info: data.info,
-          ico: data.ico,
-          sort: data.sort,
           status: data.status
         };
       });
@@ -258,9 +257,8 @@ export default {
           return false;
         }
         this.editVisible = false;
-        //this.form.status = this.form.sta == "正常" ? 0 : 1;
         this.$store.commit("SHOW_LOADING");
-        this.axios.post("/module", this.form).then(res => {
+        this.axios.post("/group", this.form).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
@@ -274,27 +272,32 @@ export default {
         });
       });
     },
+    savePower(formName) {
+      this.$refs[formName].validate(valid => {
+        if (!valid) {
+          return false;
+        }
+      });
+    },
     // 确定删除
     deleteRow() {
       this.$store.commit("SHOW_LOADING");
       if (!this.isDelAll) {
-        this.axios.delete(`/module/${this.row.id}`).then(res => {
+        this.axios.delete(`/group/${this.row.id}`).then(res => {
           this.$store.commit("HIDE_LOADING");
           res = res.data;
           if (!res.status) {
             this.$message.error(res.msg);
-            return;
           }
           this.tableData.splice(this.idx, 1);
           this.$message.success(res.msg);
         });
       } else {
-        this.axios.delete(`/module/${this.delList.join("_")}`).then(res => {
+        this.axios.delete(`/group/${this.delList.join("_")}`).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
             this.$message.error(res.msg);
-            return;
           }
           this.delList = [];
           this.getData();
@@ -304,27 +307,33 @@ export default {
       this.delVisible = false;
     },
     add() {
-      this.getCateList();
       this.form.id = 0;
-      this.form.srot = 100;
-      this.form.info = "";
-      this.form.ico = "";
       this.editVisible = true;
     },
     cancel(formName) {
       this.$refs[formName].resetFields();
       this.form.id = 0;
-      this.form.info = "";
-      this.form.ico = "";
       this.editVisible = false;
     },
-    getCateList() {
-      this.axios.get("/module_list").then(res => {
+    checkPower(index, scope) {},
+    setPower(index, scope) {
+      this.getModuleList();
+      this.form1.title = scope.title;
+      this.powerVisible = true;
+    },
+    handleChange(value, direction, movedKeys) {
+      if (!this.selectedList) {
+        this.rules.selectedList;
+      }
+    },
+    getModuleList() {
+      this.axios.get(`/modules`).then(res => {
         res = res.data;
         if (!res.status) {
           return;
         }
-        this.cate_list = res.result;
+        this.selectModule = res.result;
+        console.log(res.data);
       });
     }
   }
@@ -360,5 +369,10 @@ export default {
 }
 .iconfont_cell {
   font-size: 1.5rem;
+}
+</style>
+<style>
+.el-input__suffix {
+  right: 10px;
 }
 </style>

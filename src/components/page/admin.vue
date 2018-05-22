@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-22 4:07:06
+ * Modified By: 2018-05-22 4:09:28
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -22,7 +22,7 @@
             <div class="handle-box">
                <div class="pull-left">
                     <el-button type="primary" class="handle-del" @click="delAll"><i class="iconfont icon-shanchu"></i> 批量删除</el-button>
-                    <!-- <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i> 添加会员</el-button> -->
+                    <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i> 添加会员</el-button>
                </div>
                <div class="pull-right">
                     <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
@@ -50,23 +50,25 @@
                     <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="注册方式" width="100"></el-table-column>
-                <el-table-column prop="last_login_time" label="最后登录" width="200">
-                  <template slot-scope="scope">
-                    <span>{{scope.row.last_login_time|is_default('未登录')}}</span>
-                  </template>
+                <el-table-column prop="pass" label="会员密码" >
+                    <template slot-scope="scope">
+                        <el-button size="small" type="primary" 
+                            @click="resetPassword(scope.$index, scope.row.id)">重置密码</el-button>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="last_login_ip" label="最后登录IP" width="200">
-                  <template slot-scope="scope">
-                    <span>{{scope.row.last_login_ip|is_default('未登录')}}</span>
-                  </template>
+                <el-table-column prop="type" label="群组">
+                    <template slot-scope="scope">
+                         <a class="pointer" @click="checkGroup(scope.row)">
+                           <el-tag
+                            :type="scope.row.gid == -1 ? 'danger' : 'primary'" 
+                            disable-transitions>
+                            <span v-if="scope.row.gid==-1">超级管理员</span>
+                            <span v-else>{{scope.row.gid}}</span>
+                          </el-tag>
+                         </a>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="last_login_ip" label="最后登录地点" width="200">
-                  <template slot-scope="scope">
-                    <span>{{scope.row.last_login_address|is_default('未登录')}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="tag" label="状态" width="80">
+                <el-table-column prop="tag" label="状态" width="100">
                   <template slot-scope="scope">
                     <a @click="changeStatus(scope.row)" class="pointer">
                         <el-tag
@@ -82,6 +84,7 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="small" type="primary" @click="handleAuth(scope.$index, scope.row.id)">配置权限</el-button>
                         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -105,16 +108,8 @@
                     <el-input v-model="form.pass"></el-input>
                     <a class="pointer" @click="createPassword">生成密码</a>
                 </el-form-item>
-                <el-form-item label="常用地址">
-                    <el-cascader
-                      :options="options"
-                      v-model="form.code"
-                      @change="handleAddressChange" 
-                      class="el_cascader_small" placeholder="请选择常用地址">
-                    </el-cascader>
-                </el-form-item>
                 <el-form-item label="状态">
-                  <el-radio-group v-model="form.sta">
+                  <el-radio-group v-model="form.status">
                     <el-radio label="正常" value="0"></el-radio>
                     <el-radio label="禁用" value="1"></el-radio>
                   </el-radio-group>
@@ -156,11 +151,9 @@
 
 <script>
 import md5 from "js-md5";
-import { regionData, CodeToText } from "element-china-area-data";
 export default {
   data() {
     return {
-      options: regionData,
       tableData: [],
       editVisible: false,
       delVisible: false,
@@ -181,10 +174,8 @@ export default {
         pass: "",
         username: "",
         password: "",
-        sta: "正常",
-        type: 2,
-        code: [],
-        region: ""
+        status: "正常",
+        gid: []
       },
       rules: {
         username: [{ required: true, message: "请输入账号", trigger: "blur" }],
@@ -207,12 +198,6 @@ export default {
     }
   },
   methods: {
-    handleAddressChange(value) {
-      this.form.code = value;
-      this.form.region = `${CodeToText[value[0]]},${CodeToText[value[1]]},${
-        CodeToText[value[2]]
-      }`;
-    },
     createPassword() {
       let text = [
         "abcdefghijklmnopqrstuvwxyz",
@@ -231,7 +216,7 @@ export default {
       this.form.pass = pw;
     },
     handleEdit(index, scope) {
-      this.axios.get(`/member/${scope.id}/edit`).then(res => {
+      this.axios.get(`/admin/${scope.id}/edit`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -240,11 +225,10 @@ export default {
         let data = res.result;
         this.form = {
           id: data.id,
-          username: data.username,
           pass: data.pass,
-          type: data.type == "系统生成" ? 2 : 1,
-          sta: data.status,
-          code: data.code
+          username: data.username,
+          status: data.status,
+          gid: data.gid
         };
         this.selectUser = data.mid;
         this.editVisible = true;
@@ -266,7 +250,7 @@ export default {
     deleteRow() {
       this.$store.commit("SHOW_LOADING");
       if (!this.isDelAll) {
-        this.axios.delete(`/member/${this.row.id}`).then(res => {
+        this.axios.delete(`/admin/${this.row.id}`).then(res => {
           this.$store.commit("HIDE_LOADING");
           res = res.data;
           if (!res.status) {
@@ -278,7 +262,7 @@ export default {
         });
       } else {
         let id = this.delList.join("_");
-        this.axios.delete(`/member/${id}`).then(res => {
+        this.axios.delete(`/admin/${id}`).then(res => {
           this.$store.commit("HIDE_LOADING");
           res = res.data;
           if (!res.status) {
@@ -294,8 +278,8 @@ export default {
       this.delVisible = false;
     },
     changeStatus(scope) {
-      let status = scope.status == "正常" ? 2 : 1;
-      this.axios.put(`/member/${scope.id}?status=${status}`).then(res => {
+      let status = scope.status == "正常" ? 1 : 0;
+      this.axios.put(`/admin/${scope.id}?status=${status}`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -331,7 +315,7 @@ export default {
         this.form.status = this.form.sta == "正常" ? 1 : 2;
         this.form.password = md5(this.form.pass);
         this.$store.commit("SHOW_LOADING");
-        this.axios.post("/member", this.form).then(res => {
+        this.axios.post("/admin", this.form).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
@@ -339,12 +323,6 @@ export default {
             return;
           }
           this.$refs[formName].resetFields();
-          this.form.id = 0;
-          this.form.sta = "正常";
-          this.form.code = [];
-          this.form.region = "";
-          this.form.username = "";
-          this.form.pass = "";
           this.$message.success(res.msg);
           this.getData();
         });
@@ -354,14 +332,12 @@ export default {
       this.selectUser = [];
       this.editVisible = true;
       this.form.id = 0;
-      this.form.sta = "正常";
-      this.form.code = [];
+      this.form.gid = [];
       this.form.region = "";
       this.form.username = "";
-      this.form.pass = "";
     },
     see(index, scope) {
-      this.axios.get(`/member/${scope.id}`).then(res => {
+      this.axios.get(`/admin/${scope.id}`).then(res => {
         res = res.data;
         if (!res.status) {
           return;
@@ -373,14 +349,12 @@ export default {
     cancel(formName) {
       this.$refs[formName].resetFields();
       this.form.sta = "正常";
-      this.selectUser = [];
       this.editVisible = false;
       this.form.id = 0;
-      this.form.selectedOptions = [];
     },
     getData() {
       this.axios
-        .get("/member", {
+        .get("/admin", {
           params: {
             p: this.current_page,
             where: [
@@ -399,11 +373,14 @@ export default {
           this.totals = res.total;
           this.per_page = res.per_page;
           this.last_page = res.last_page;
-          console.log(this.tableData)
         });
     },
-    handleAuth(index,scope){
-      console.log(index,scope)
+    handleAuth(index, scope) {
+      console.log(index, scope);
+    },
+    resetPassword(index, scope) {},
+    checkGroup(scope) {
+      console.log(scope);
     }
   }
 };
