@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 11:44:49
+ * Modified By: 2018-05-23 3:11:29
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -50,7 +50,6 @@
                     <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
                   </template>
                 </el-table-column>
-                <el-table-column prop="type" label="注册方式" width="100"></el-table-column>
                 <el-table-column prop="last_login_time" label="最后登录" width="200">
                   <template slot-scope="scope">
                     <span>{{scope.row.last_login_time|is_default('未登录')}}</span>
@@ -58,7 +57,8 @@
                 </el-table-column>
                 <el-table-column prop="last_login_ip" label="最后登录IP" width="200">
                   <template slot-scope="scope">
-                    <span>{{scope.row.last_login_ip|is_default('未登录')}}</span>
+                    <span v-if="scope.row.last_login_time">{{scope.row.last_login_ip}}</span>
+                    <span v-else>未登录</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="last_login_ip" label="最后登录地点" width="200">

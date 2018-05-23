@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 11:44:22
+ * Modified By: 2018-05-23 4:41:47
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -89,14 +89,21 @@
         <!-- 配置权限 -->
         <el-dialog :title="metaTitle+'配置'" :visible.sync="powerVisible" width="40%" :show-close="false">
             <el-form ref="form1" :model="form1" label-width="100px" :rules="rules1" style="margin-left:50px;" autocomplete="off">
-                <el-form-item :label="form1.title+'权限配置'" prop="power">
+                <el-form-item label="权限配置" prop="power">
                    <el-transfer  :titles="['可选', '已选']"
                     v-model="selectedList" :data="selectModule"  @change="handleChange"></el-transfer>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-              <el-button @click="powerVisible=false;selectedList=[];">取 消</el-button>
+              <el-button @click="powerVisible=false;selectedList=[];form1.id=0;">取 消</el-button>
               <el-button type="primary" @click="savePower('form1')">确 定</el-button>
+            </span>
+        </el-dialog>
+        <!-- 查看权限 -->
+        <el-dialog :title="metaTitle+'查看'" :visible.sync="isCheck" width="25%" :show-close="false">
+            <el-tag type="danger" v-for="(item,index) in powerList" :key="index" class="mr-10">{{item.title}}</el-tag>
+            <span slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="isCheck=false;">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 删除提示框 -->
@@ -129,6 +136,8 @@ export default {
       powerVisible: false,
       selectModule: [],
       selectedList: [],
+      powerList: [],
+      isCheck: false,
       row: [],
       form: {
         id: 0,
@@ -277,6 +286,23 @@ export default {
         if (!valid) {
           return false;
         }
+        this.axios
+          .post(`/power`, {
+            id: this.form1.id,
+            power: this.selectedList.join(",")
+          })
+          .then(res => {
+            res = res.data;
+            if (!res.status) {
+              this.$message.error(res.msg);
+              return;
+            }
+            this.powerVisible = false;
+            this.$message.success(res.msg);
+            this.form1.id = 0;
+            this.selectedList = [];
+            this.getData();
+          });
       });
     },
     // 确定删除
@@ -315,10 +341,25 @@ export default {
       this.form.id = 0;
       this.editVisible = false;
     },
-    checkPower(index, scope) {},
+    checkPower(index, scope) {
+      if (!scope) {
+        this.$message.error("没有配置权限");
+        return;
+      }
+      this.axios.get(`/check?id=${scope}`).then(res => {
+        res = res.data;
+        if (!res.status) {
+          return;
+        }
+        this.powerList = res.result;
+        this.isCheck = true;
+      });
+    },
     setPower(index, scope) {
-      this.getModuleList();
+      this.form1.id = scope.id;
       this.form1.title = scope.title;
+      this.getModuleList();
+      this.getGroupPower();
       this.powerVisible = true;
     },
     handleChange(value, direction, movedKeys) {
@@ -333,7 +374,15 @@ export default {
           return;
         }
         this.selectModule = res.result;
-        console.log(res.data);
+      });
+    },
+    getGroupPower() {
+      this.axios.get(`/powers?id=${this.form1.id}`).then(res => {
+        res = res.data;
+        if (!res.status) {
+          return;
+        }
+        this.selectedList = res.result;
       });
     }
   }

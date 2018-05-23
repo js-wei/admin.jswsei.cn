@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 11:43:03
+ * Modified By: 2018-05-23 2:56:37
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -34,7 +34,7 @@
                     <span>{{scope.row.title}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="name" :label="metaTitle+'标识'" >
+                <el-table-column prop="name" :label="metaTitle+'标识'">
                 </el-table-column>
                 <el-table-column prop="ico" label="图标" width="100">
                   <template slot-scope="scope">

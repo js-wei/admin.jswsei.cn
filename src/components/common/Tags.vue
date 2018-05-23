@@ -59,6 +59,7 @@ export default {
     },
     // 设置标签
     setTags(route) {
+      //@todo params
       const isExist = this.tagsList.some(item => {
         return item.path === route.path;
       });
