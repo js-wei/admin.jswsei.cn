@@ -2,14 +2,15 @@
     <div class="login-wrap">
         <div class="ms-title">后台管理系统</div>
         <div class="ms-login">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" 
-            class="demo-ruleForm" autocomplete="off">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
+            class="ruleForm" autocomplete="off">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="请输入用户名"></el-input>
+                    <el-input v-model="ruleForm.username" placeholder="请输入用户名" 
+                      autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item prop="pass">
-                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.pass" 
-                    @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                <el-form-item prop="password">
+                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" 
+                      @keyup.enter.native="submitForm('ruleForm')" autocomplete="off"></el-input>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -27,13 +28,13 @@ export default {
     return {
       ruleForm: {
         username: "524314430@qq.com",
-        pass: "123456"
+        password: "123456"
       },
       rules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" }
         ],
-        pass: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
     };
   },
@@ -44,12 +45,13 @@ export default {
         if (!valid) {
           return;
         }
-        this.ruleForm.password = md5(this.ruleForm.pass);
+        this.ruleForm.pass = md5(this.ruleForm.password);
         this.$store.commit("SHOW_LOADING");
         this.$store.commit("STE_LOADING_TEXT", "正在登陆中...");
         this.axios.post("/user", this.ruleForm).then(res => {
           if (res.status !== 200) {
             this.$message.error("服务器错误");
+            return;
           }
           res = res.data;
           if (!res.status) {
@@ -57,53 +59,57 @@ export default {
           }
           this.$store.commit("SET_LOGIN", res.result);
           setTimeout(() => {
+            this.$message.success(res.msg);
             this.$store.commit("STE_LOADING_TEXT", null);
             this.$store.commit("HIDE_LOADING");
-            this.$message.success(res.msg);
-            //sessionStorage.setItem("ms_username", JSON.stringify(res.result));
             self.$router.push("/");
-          }, 3.5e3);
+          }, 2e3);
         });
       });
     }
-  },
-  created() {
-    localStorage.clear();
   }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .login-wrap {
   position: relative;
   width: 100%;
   height: 100%;
+  background: #324157;
+  .ms-title {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    margin-top: -230px;
+    text-align: center;
+    font-size: 30px;
+    color: #fff;
+  }
+  .ms-login {
+    left: 50%;
+    width: 300px;
+    height: 160px;
+    margin: -150px 0 0 -190px;
+    padding: 40px;
+    border-radius: 5px;
+    background: #fff;
+    position: absolute;
+    top: 50%;
+    .el-form {
+      .login-btn {
+        text-align: center;
+        button {
+          width: 100%;
+          height: 36px;
+        }
+      }
+    }
+  }
 }
-.ms-title {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  margin-top: -230px;
-  text-align: center;
-  font-size: 30px;
-  color: #fff;
-}
-.ms-login {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 300px;
-  height: 160px;
-  margin: -150px 0 0 -190px;
-  padding: 40px;
-  border-radius: 5px;
-  background: #fff;
-}
-.login-btn {
-  text-align: center;
-}
-.login-btn button {
-  width: 100%;
-  height: 36px;
+</style>
+<style>
+.el-input--small .el-input__inner{
+  width:100%;
 }
 </style>

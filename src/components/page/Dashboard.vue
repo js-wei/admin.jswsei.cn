@@ -1,12 +1,12 @@
 <template>
     <div>
         <el-row :gutter="20">
-            <el-col :span="8">
+            <el-col :xs="24" :sm="24" :lg="8">
                 <el-row>
                     <el-col>
                         <el-card shadow="hover" class="mgb20">
                             <div class="user-info">
-                                <img src="static/images/10104372.gif" class="user-avator" alt="">
+                                <img src="static/images/10104372.gif" class="user-avator">
                                 <div class="user-info-cont">
                                     <div class="user-info-name">{{user.username}}</div>
                                     <div>{{user.gid === -1 ? "超级管理员" : "普通用户"}}</div>
@@ -14,8 +14,9 @@
                             </div>
                             <div class="user-info-list">最后登录时间：<span>{{user.last_date|formart_date}}</span></div>
                             <div class="user-info-list">最后登录的IP：<span>{{user.last_ip}}</span></div>
+                            <div class="user-info-list">最后登录地点：<span>{{user.last_address}}</span></div>                            
                         </el-card>
-                        <el-card shadow="hover" style="padding-bottom:5px;">
+                        <el-card shadow="hover" style="padding-bottom:20px;">
                             <div slot="header" class="clearfix">
                                 <span>订单统计</span>
                             </div>
@@ -31,7 +32,7 @@
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :span="16">
+            <el-col :xs="24" :sm="24" :lg="16">
                 <el-row :gutter="20" class="mgb20">
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
@@ -70,10 +71,10 @@
                 <el-card shadow="hover" :body-style="{ height: '304px'}">
                     <div slot="header" class="clearfix">
                         <span class="text-primary">最新消息</span>
-                        <!-- <el-button style="float: right; padding: 3px 0" type="text">更多</el-button> -->
                         <router-link to="/message" class="text-primary pull-right">更多</router-link>
                     </div>
-                    <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
+                    <el-table :data="todoList" :show-header="false" height="304" 
+                        style="width: 100%;font-size:14px;">
                         <el-table-column width="40">
                             <template slot-scope="scope">
                                 <el-checkbox v-model="scope.row.status"></el-checkbox>
@@ -98,42 +99,20 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from "vuex";
 export default {
   data() {
     return {
-      todoList: [
-        {
-          title: "今天要修复100个bug",
-          status: false
-        },
-        {
-          title: "今天要修复100个bug",
-          status: false
-        },
-        {
-          title: "今天要写100行代码加几个bug吧",
-          status: false
-        },
-        {
-          title: "今天要修复100个bug",
-          status: false
-        },
-        {
-          title: "今天要修复100个bug",
-          status: true
-        },
-        {
-          title: "今天要写100行代码加几个bug吧",
-          status: true
-        }
-      ]
+      todoList: []
     };
   },
   computed: {
     ...mapState({
-        user: state => state.mutations.logined
+      user: state => state.mutations.logined
     })
+  },
+  created() {
+    console.log(this.user);
   }
 };
 </script>
@@ -143,25 +122,21 @@ export default {
 .el-row {
   margin-bottom: 20px;
 }
-
 .grid-content {
   display: flex;
   align-items: center;
   height: 100px;
 }
-
 .grid-cont-right {
   flex: 1;
   text-align: center;
   font-size: 12px;
   color: #999;
 }
-
 .grid-num {
   font-size: 30px;
   font-weight: bold;
 }
-
 .grid-con-icon {
   font-size: 50px;
   width: 100px;
@@ -170,31 +145,24 @@ export default {
   line-height: 100px;
   color: #fff;
 }
-
 .grid-con-1 .grid-con-icon {
   background: rgb(45, 140, 240);
 }
-
 .grid-con-1 .grid-num {
   color: rgb(45, 140, 240);
 }
-
 .grid-con-2 .grid-con-icon {
   background: rgb(100, 213, 114);
 }
-
 .grid-con-2 .grid-num {
   color: rgb(45, 140, 240);
 }
-
 .grid-con-3 .grid-con-icon {
   background: rgb(242, 94, 67);
 }
-
 .grid-con-3 .grid-num {
   color: rgb(242, 94, 67);
 }
-
 .user-info {
   display: flex;
   align-items: center;
@@ -202,43 +170,36 @@ export default {
   border-bottom: 2px solid #ccc;
   margin-bottom: 20px;
 }
-
 .user-avator {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
 }
-
 .user-info-cont {
-  padding-left: 50px;
+  padding-left: 15px;
   flex: 1;
   font-size: 14px;
   color: #999;
 }
-
 .user-info-cont div:first-child {
-  font-size: 30px;
+  font-size: 25px;
   color: #222;
+  word-wrap: break-word;
 }
-
 .user-info-list {
   font-size: 14px;
   color: #999;
   line-height: 25px;
 }
-
 .user-info-list span {
   margin-left: 70px;
 }
-
 .mgb20 {
   margin-bottom: 20px;
 }
-
 .todo-item {
   font-size: 14px;
 }
-
 .todo-item-del {
   text-decoration: line-through;
   color: #999;

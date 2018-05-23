@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-21 3:15:42
+ * Modified By: 2018-05-23 11:44:03
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -22,8 +22,8 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" class="handle-del mr10" 
-                @click="delAll"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
-                <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i>添加{{metaTitle}}</el-button>
+                @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
+                <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
             </div>
             <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
               @selection-change="handleSelectionChange">
@@ -38,7 +38,7 @@
                 </el-table-column>
                 <el-table-column prop="ico" label="图标" width="100">
                   <template slot-scope="scope">
-                    <i :class="'iconfont iconfont_cell '+scope.row.ico"></i>
+                    <i :class="'icon iconfont_cell '+scope.row.ico"></i>
                   </template>
                 </el-table-column>
                 <el-table-column prop="tag" label="状态" width="100">

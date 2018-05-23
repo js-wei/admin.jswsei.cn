@@ -6,7 +6,15 @@ import ElementUI from 'element-ui';
 import VueProgressBar from 'vue-progressbar'
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 //import '../static/css/theme-green/index.css'; // 浅绿色主题
-
+import vuescroll from 'vuescroll'
+Vue.use(vuescroll)
+Vue.prototype.$vuescrollConfig = {
+    bar: {
+        vBar: {
+            background: '#122423'
+        }
+    }
+}
 const options = {
     color: '#409EFF',
     failedColor: '#874b4b',

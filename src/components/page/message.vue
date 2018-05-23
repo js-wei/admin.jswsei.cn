@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-18 10:22:50
+ * Modified By: 2018-05-23 11:42:51
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -21,8 +21,8 @@
         <div class="container">
             <div class="handle-box">
                <div class="pull-left">
-                    <el-button type="primary" class="handle-del" @click="delAll"><i class="iconfont icon-shanchu"></i> 批量删除</el-button>
-                    <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i> 发布消息</el-button>
+                    <el-button type="primary" class="handle-del" @click="delAll"><i class="icon icon-shanchu"></i> 批量删除</el-button>
+                    <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i> 发布消息</el-button>
                </div>
                <div class="pull-right">
                     <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>

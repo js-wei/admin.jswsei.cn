@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-22 4:07:06
+ * Modified By: 2018-05-23 11:44:49
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -21,8 +21,8 @@
         <div class="container">
             <div class="handle-box">
                <div class="pull-left">
-                    <el-button type="primary" class="handle-del" @click="delAll"><i class="iconfont icon-shanchu"></i> 批量删除</el-button>
-                    <!-- <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i> 添加会员</el-button> -->
+                    <el-button type="primary" class="handle-del" @click="delAll"><i class="icon icon-shanchu"></i> 批量删除</el-button>
+                    <!-- <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i> 添加会员</el-button> -->
                </div>
                <div class="pull-right">
                     <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
@@ -203,7 +203,7 @@ export default {
       return this.$route.meta.title;
     },
     metaIcon() {
-      return "iconfont " + this.$route.meta.icon;
+      return "icon " + this.$route.meta.icon;
     }
   },
   methods: {

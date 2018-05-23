@@ -44,8 +44,8 @@
        <el-dialog
             title="提示"
             :visible.sync="detailVisible"
-            width="30%">
-            <span>您确定要登出吗?</span>
+            width="20%">
+            <span class="dialog-body ml-20"><i class="el-icon-question mr-4"></i>您确定要登出吗?</span>
             <span slot="footer" class="dialog-footer">
                 <el-button  @click="detailVisible=false">取 消</el-button>
                 <el-button type="primary" @click="logout">确 定</el-button>
@@ -73,8 +73,10 @@ export default {
   },
   methods: {
     // 用户名下拉菜单选择事件
-    handleCommand() {
-      this.detailVisible = true;
+    handleCommand(command) {
+      if (command == "loginout") {
+        this.detailVisible = true;
+      }
     },
     logout() {
       this.$store.commit("SHOW_LOADING");
@@ -124,7 +126,8 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style lang="scss">
+@import "../../assets/base";
 .header {
   position: relative;
   box-sizing: border-box;
@@ -198,5 +201,8 @@ export default {
 }
 .el-dropdown-menu__item {
   text-align: center;
+}
+.dialog-body .el-icon-question {
+  font-size: 25px;
 }
 </style>

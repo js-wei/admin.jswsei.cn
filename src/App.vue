@@ -19,6 +19,9 @@
 .el-input__suffix {
   right: 21px;
 }
+.el-input__inner{
+  width:100%;
+}
 </style>
 <script>
 import { mapState } from "vuex";

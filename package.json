@@ -25,6 +25,7 @@
     "vue-schart": "^0.1.4",
     "vue-toasted": "^1.1.24",
     "vuedraggable": "^2.16.0",
+    "vuescroll": "^4.5.19",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

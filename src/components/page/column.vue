@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-21 3:53:25
+ * Modified By: 2018-05-23 11:42:20
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -23,8 +23,8 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" class="handle-del mr10" 
-                @click="delAll"><i class="iconfont icon-shanchu"></i>批量删除</el-button>
-                <el-button type="danger" @click="add"><i class="iconfont icon-tianjia"></i>添加栏目</el-button>
+                @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
+                <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加栏目</el-button>
             </div>
             <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
               @selection-change="handleSelectionChange">

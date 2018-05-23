@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-11 5:07:49
+ * Modified By: 2018-05-23 9:55:39
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,7 +16,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-date"></i> 账号</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="icon icon-01"></i> 账号</el-breadcrumb-item>
                 <el-breadcrumb-item>基本设置</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -24,10 +24,10 @@
             <div class="form-box">
                 <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" 
                     label-width="220px" class="demo-ruleForm">
-                    <el-form-item label="账号">
-                        <el-input  v-model="ruleForm2.username" auto-complete="off" readonly></el-input>
+                    <el-form-item label="当前账号">
+                       <el-tag>{{ruleForm2.username}}</el-tag>
                     </el-form-item>
-                    <el-form-item label="密码" prop="pass">
+                    <el-form-item label="新的密码" prop="pass">
                         <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="确认密码" prop="checkPass">
@@ -35,7 +35,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
-                        <el-button @click="resetForm('ruleForm2')">重置</el-button>
+                        <el-button @click="back">返回</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -45,6 +45,7 @@
 
 <script>
 import md5 from "js-md5";
+import { mapState } from "vuex";
 export default {
   data: function() {
     var validatePass = (rule, value, callback) => {
@@ -68,7 +69,7 @@ export default {
     };
     return {
       ruleForm2: {
-        username: JSON.parse(sessionStorage.getItem("ms_username")).username,
+        username: "",
         pass: "",
         checkPass: "",
         password: ""
@@ -103,13 +104,20 @@ export default {
         });
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    back() {
+      this.$router.back();
     }
+  },
+  computed: {
+    ...mapState({
+      user: state => state.mutations.logined
+    })
+  },
+  created() {
+    this.ruleForm2.username = this.user.username;
   }
 };
 </script>
 
 <style scoped>
-
 </style>
