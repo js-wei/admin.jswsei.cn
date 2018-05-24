@@ -13,7 +13,10 @@ Vue.use(vuescroll)
 Vue.prototype.$vuescrollConfig = {
     bar: {
         vBar: {
-            background: '#122423'
+            background: "#122423"
+        },
+        hBar: {
+            background: "#122423"
         }
     }
 }

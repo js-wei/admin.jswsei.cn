@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 11:42:20
+ * Modified By: 2018-05-24 4:06:24
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -26,39 +26,41 @@
                 @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
                 <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加栏目</el-button>
             </div>
-            <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-              @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="title" label="栏目名称">
-                  <template slot-scope="scope">
-                    <span v-html="scope.row.html"></span>
-                    <span>{{scope.row.title}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="name" label="栏目标识" >
-                </el-table-column>
-                <el-table-column prop="type" label="栏目类型" >
-                </el-table-column>
-                <el-table-column prop="tag" label="状态" width="100">
-                  <template slot-scope="scope">
-                    <a @click="changeStatus(scope.row)" class="pointer">
-                      <el-tag
-                        :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
-                        {{scope.row.status}}
-                      </el-tag>
-                    </a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="sort" label="排序" sortable width="100"></el-table-column>
-                <el-table-column prop="update_time" label="操作时间" sortable>
-                </el-table-column>
-                <el-table-column label="操作">
+            <vue-scroll>
+              <el-table :data="tableData" border style="width:100%" ref="multipleTable" 
+                @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="55"></el-table-column>
+                  <el-table-column prop="title" label="栏目名称"  width="220">
                     <template slot-scope="scope">
-                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                      <span v-html="scope.row.html"></span>
+                      <span>{{scope.row.title}}</span>
                     </template>
-                </el-table-column>
-            </el-table>
+                  </el-table-column>
+                  <el-table-column prop="name" label="栏目标识" width="220">
+                  </el-table-column>
+                  <el-table-column prop="type" label="栏目类型" width="220">
+                  </el-table-column>
+                  <el-table-column prop="tag" label="状态" width="120">
+                    <template slot-scope="scope">
+                      <a @click="changeStatus(scope.row)" class="pointer">
+                        <el-tag
+                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                          {{scope.row.status}}
+                        </el-tag>
+                      </a>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="sort" label="排序" sortable width="120"></el-table-column>
+                  <el-table-column prop="update_time" label="操作时间" sortable width="220">
+                  </el-table-column>
+                  <el-table-column label="操作" width="320">
+                      <template slot-scope="scope">
+                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+            </vue-scroll>
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog title="栏目管理" :visible.sync="editVisible" width="30%" :show-close="false">

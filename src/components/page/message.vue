@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 11:42:51
+ * Modified By: 2018-05-24 4:08:36
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -42,36 +42,38 @@
                     <el-button type="primary" icon="search" @click="search">搜索</el-button>
                </div>
             </div>
-            <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-              @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="title" label="标题"></el-table-column>
-                <el-table-column prop="content" label="内容" >
+            <vue-scroll>
+              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+                @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="55"></el-table-column>
+                  <el-table-column prop="title" label="标题" width="250"></el-table-column>
+                  <el-table-column prop="content" label="内容" width="320">
+                      <template slot-scope="scope">
+                          <a class="pointer" @click="see(scope.$index,scope.row)">{{scope.row.content|sub_string(20,true)}}</a>
+                      </template>
+                  </el-table-column>
+                  <el-table-column prop="tag" label="标签" width="250">
                     <template slot-scope="scope">
-                        <a class="pointer" @click="see(scope.$index,scope.row)">{{scope.row.content|sub_string(20,true)}}</a>
+                      <a @click="changeStatus(scope.row)" class="pointer">
+                          <el-tag
+                            :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
+                            disable-transitions
+                          >
+                          {{scope.row.status}}
+                        </el-tag>
+                      </a>
                     </template>
-                </el-table-column>
-                <el-table-column prop="tag" label="标签" width="100">
-                  <template slot-scope="scope">
-                    <a @click="changeStatus(scope.row)" class="pointer">
-                        <el-tag
-                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
-                          disable-transitions
-                        >
-                        {{scope.row.status}}
-                      </el-tag>
-                    </a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="update_time" label="操作时间" sortable>
-                </el-table-column>
-                <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+                  </el-table-column>
+                  <el-table-column prop="update_time" label="操作时间" sortable width="250">
+                  </el-table-column>
+                  <el-table-column label="操作" width="380">
+                      <template slot-scope="scope">
+                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+            </vue-scroll>
             <el-pagination v-if="tableData.length"
                 background
                 layout="prev, pager, next"

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 3:11:29
+ * Modified By: 2018-05-24 4:01:44
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -42,31 +42,32 @@
                     <el-button type="primary" icon="search" @click="search">搜索</el-button>
                </div>
             </div>
-            <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+            <vue-scroll>
+              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
               @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="username" label="会员账号">
+                <el-table-column prop="username" label="会员账号" width="220">
                   <template slot-scope="scope">
                     <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
                   </template>
                 </el-table-column>
-                <el-table-column prop="last_login_time" label="最后登录" width="200">
+                <el-table-column prop="last_login_time" label="最后登录"  width="250">
                   <template slot-scope="scope">
                     <span>{{scope.row.last_login_time|is_default('未登录')}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="last_login_ip" label="最后登录IP" width="200">
+                <el-table-column prop="last_login_ip" label="最后登录IP"  width="250">
                   <template slot-scope="scope">
                     <span v-if="scope.row.last_login_time">{{scope.row.last_login_ip}}</span>
                     <span v-else>未登录</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="last_login_ip" label="最后登录地点" width="200">
+                <el-table-column prop="last_login_ip" label="最后登录地点" width="250">
                   <template slot-scope="scope">
                     <span>{{scope.row.last_login_address|is_default('未登录')}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="tag" label="状态" width="80">
+                <el-table-column prop="tag" label="状态" width="120">
                   <template slot-scope="scope">
                     <a @click="changeStatus(scope.row)" class="pointer">
                         <el-tag
@@ -77,15 +78,16 @@
                     </a>
                   </template>
                 </el-table-column>
-                <el-table-column prop="create_time" label="添加时间" sortable>
+                <el-table-column prop="create_time" label="添加时间" sortable  width="220">
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="150">
                     <template slot-scope="scope">
                         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
+            </vue-scroll>
             <el-pagination v-if="tableData.length"
                 background
                 layout="prev, pager, next"
@@ -399,12 +401,9 @@ export default {
           this.totals = res.total;
           this.per_page = res.per_page;
           this.last_page = res.last_page;
-          console.log(this.tableData)
         });
     },
-    handleAuth(index,scope){
-      console.log(index,scope)
-    }
+    handleAuth(index, scope) {}
   }
 };
 </script>
@@ -434,15 +433,7 @@ export default {
 }
 </style>
 <style>
-textarea.el-textarea__inner {
-  height: 88px;
-  resize: none;
-}
-.el-input--small .el-input__inner {
-  width: 90%;
-}
-.el-cascader--small .el-input__suffix {
-  right: 20px;
+.el-input__suffix {
+  right: 5px;
 }
 </style>
-

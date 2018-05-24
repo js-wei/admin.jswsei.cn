@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 11:41:40
+ * Modified By: 2018-05-24 4:11:19
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -42,53 +42,55 @@
                     <el-button type="primary" icon="search" @click="search">搜索</el-button>
                </div>
             </div>
-            <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-              @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="username" label="会员账号">
-                  <template slot-scope="scope">
-                    <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="pass" label="会员密码" >
+            <vue-scroll>
+              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+                @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="55"></el-table-column>
+                  <el-table-column prop="username" label="会员账号" width="220">
                     <template slot-scope="scope">
-                        <el-button size="small" type="primary" 
-                            @click="resetPassword(scope.$index, scope.row.id)">重置密码</el-button>
+                      <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
                     </template>
-                </el-table-column>
-                <el-table-column prop="type" label="群组">
+                  </el-table-column>
+                  <el-table-column prop="pass" label="会员密码" width="220">
+                      <template slot-scope="scope">
+                          <el-button size="small" type="primary" 
+                              @click="resetPassword(scope.$index, scope.row.id)">重置密码</el-button>
+                      </template>
+                  </el-table-column>
+                  <el-table-column prop="type" label="群组"  width="220">
+                      <template slot-scope="scope">
+                          <a class="pointer" @click="checkGroup(scope.row)">
+                            <el-tag
+                              :type="scope.row.gid == -1 ? 'danger' : 'primary'" 
+                              disable-transitions>
+                              <span v-if="scope.row.gid==-1">超级管理员</span>
+                              <span v-else>{{scope.row.gid}}</span>
+                            </el-tag>
+                          </a>
+                      </template>
+                  </el-table-column>
+                  <el-table-column prop="tag" label="状态" width="220">
                     <template slot-scope="scope">
-                         <a class="pointer" @click="checkGroup(scope.row)">
-                           <el-tag
-                            :type="scope.row.gid == -1 ? 'danger' : 'primary'" 
+                      <a @click="changeStatus(scope.row)" class="pointer">
+                          <el-tag
+                            :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
                             disable-transitions>
-                            <span v-if="scope.row.gid==-1">超级管理员</span>
-                            <span v-else>{{scope.row.gid}}</span>
-                          </el-tag>
-                         </a>
+                          {{scope.row.status}}
+                        </el-tag>
+                      </a>
                     </template>
-                </el-table-column>
-                <el-table-column prop="tag" label="状态" width="100">
-                  <template slot-scope="scope">
-                    <a @click="changeStatus(scope.row)" class="pointer">
-                        <el-tag
-                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
-                          disable-transitions>
-                        {{scope.row.status}}
-                      </el-tag>
-                    </a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="create_time" label="添加时间" sortable>
-                </el-table-column>
-                <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="small" type="primary" @click="handleAuth(scope.$index, scope.row.id)">配置权限</el-button>
-                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+                  </el-table-column>
+                  <el-table-column prop="create_time" label="添加时间" sortable width="220">
+                  </el-table-column>
+                  <el-table-column label="操作" width="350">
+                      <template slot-scope="scope">
+                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                          <el-button size="small" type="primary" @click="handleAuth(scope.$index, scope.row.id)">配置权限</el-button>
+                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+            </vue-scroll>
             <el-pagination v-if="tableData.length"
                 background
                 layout="prev, pager, next"

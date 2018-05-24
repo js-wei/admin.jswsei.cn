@@ -2,10 +2,10 @@
     <div class="sidebar">
       <vue-scroll>
         <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-            text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router ref="menu">
+            text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened :router="true" @select="selectMenu">
                 <template v-for="item in items">
-                    <template v-if="item.subs">
-                        <el-submenu :index="'/'+item.index" :key="item.index">
+                    <template v-if="item.subs"> 
+                        <el-submenu :index="item.index" :key="item.index">
                             <template slot="title">
                                 <i class="icon" :class="item.icon"></i>
                                 <span slot="title">{{ item.title }}</span>
@@ -18,14 +18,14 @@
                         </el-submenu>
                     </template>
                     <template v-else>
-                        <el-menu-item :index="'/'+item.index" :key="item.index">
-                            <i class="icon" :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+                        <el-menu-item :index="`/${item.index}`" :key="item.index">
+                            <i class="icon" :class="item.icon"></i>
+                            <span slot="title">{{ item.title }}</span>
                         </el-menu-item>
                     </template>
                 </template>
         </el-menu>
       </vue-scroll>
-        
     </div>
 </template>
 
@@ -59,6 +59,11 @@ export default {
       let data = res.result;
       this.$store.commit("SET_NAVBAR", data);
     });
+  },
+  methods: {
+    selectMenu(index, path) {
+     
+    }
   }
 };
 </script>
@@ -76,14 +81,13 @@ export default {
 }
 .sidebar > ul {
   height: 100%;
-  overflow:auto;
+  overflow: auto;
 }
 .icon {
-  padding-right: 5px;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
-.icon.icon-mokuai {
-  font-size: 1.6rem;
+.icon-mokuai,.icon-yibiaopan{
+  font-size: 2.2rem;
   margin-left: -4px;
 }
 </style>

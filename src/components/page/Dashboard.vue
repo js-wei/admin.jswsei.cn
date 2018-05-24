@@ -1,14 +1,14 @@
 <template>
     <div>
         <el-row :gutter="20">
-            <el-col :xs="24" :sm="24" :lg="8">
+            <el-col :xs="24" :sm="24" :lg="8" class="user">
                 <el-row>
                     <el-col>
-                        <el-card shadow="hover" class="mgb20">
-                            <div class="user-info">
+                        <el-card shadow="hover" class="user-info">
+                            <div class="head">
                                 <img src="static/images/10104372.gif" class="user-avator">
                                 <div class="user-info-cont">
-                                    <div class="user-info-name">{{user.username}}</div>
+                                    <p>{{user.username}}</p>
                                     <div>{{user.gid === -1 ? "超级管理员" : "普通用户"}}</div>
                                 </div>
                             </div>
@@ -16,24 +16,28 @@
                             <div class="user-info-list">最后登录的IP：<span>{{user.last_ip}}</span></div>
                             <div class="user-info-list">最后登录地点：<span>{{user.last_address}}</span></div>                            
                         </el-card>
-                        <el-card shadow="hover" style="padding-bottom:20px;">
+                        <el-card shadow="hover" class="statistics">
                             <div slot="header" class="clearfix">
                                 <span>订单统计</span>
                             </div>
-                            订单总数(3000)
-                            <el-progress :percentage="100" color="#f56c6c"></el-progress>
+                           <div class="progress">
+                                订单总数(3000)
+                            <el-progress :percentage="100" color="#f56c6c" ></el-progress>
                             订单支付(2800)
-                            <el-progress :percentage="Math.round(2800 / 3000 * 10000) / 100.00" color="#42b983"></el-progress>
+                            <el-progress :percentage="Math.round(2800 / 3000 * 10000) / 100.00" 
+                                color="#42b983"></el-progress>
                             取消订单(120)
                             <el-progress :percentage="Math.round(120 / 3000 * 10000) / 100.00"></el-progress>
                             无效订单(80)
-                            <el-progress :percentage="Math.round(80 / 3000 * 10000) / 100.00" color="#f56c6c"></el-progress>
+                            <el-progress :percentage="Math.round(80 / 3000 * 10000) / 100.00" 
+                            color="#f56c6c"></el-progress>
+                           </div>
                         </el-card>
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :xs="24" :sm="24" :lg="16">
-                <el-row :gutter="20" class="mgb20">
+            <el-col :xs="24" :sm="24" :lg="16" class="grid">
+                <el-row :gutter="20">
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-1">
@@ -68,13 +72,13 @@
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-card shadow="hover" :body-style="{ height: '304px'}">
+                <el-row class="todo">
+                    <el-card shadow="hover" :body-style="{ height: '304px'}">
                     <div slot="header" class="clearfix">
                         <span class="text-primary">最新消息</span>
                         <router-link to="/message" class="text-primary pull-right">更多</router-link>
                     </div>
-                    <el-table :data="todoList" :show-header="false" height="304" 
-                        style="width: 100%;font-size:14px;">
+                    <el-table :data="todoList" :show-header="false" height="304">
                         <el-table-column width="40">
                             <template slot-scope="scope">
                                 <el-checkbox v-model="scope.row.status"></el-checkbox>
@@ -82,7 +86,9 @@
                         </el-table-column>
                         <el-table-column>
                             <template slot-scope="scope">
-                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">{{scope.row.title}}</div>
+                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">
+                                    {{scope.row.title}}
+                                </div>
                             </template>
                         </el-table-column>
                         <el-table-column width="60">
@@ -93,6 +99,7 @@
                         </el-table-column>
                     </el-table>
                 </el-card>
+                </el-row>
             </el-col>
         </el-row>
     </div>
@@ -103,110 +110,134 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      todoList: []
+      todoList: [
+        { title: "测试", status: false },
+        { title: "测试2", status: true },
+        { title: "测试3", status: false }
+      ]
     };
   },
   computed: {
     ...mapState({
       user: state => state.mutations.logined
     })
-  },
-  created() {
-    console.log(this.user);
   }
 };
 </script>
 
 <style lang="scss" scoped>
 @import "../../assets/base";
-.el-row {
-  margin-bottom: 20px;
+.user {
+  height: 550px;
+  margin-bottom: 22px;
+  .user-info {
+    height: 250px;
+    margin-bottom: 20px;
+    .head {
+      display: flex;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #ccc;
+      margin-bottom: 20px;
+      .user-avator {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+      }
+      .user-info-cont {
+        padding-left: 15px;
+        flex: 1;
+        font-size: 14px;
+        color: #999;
+        p {
+          font-size: 1.5rem;
+          color: #000;
+        }
+      }
+    }
+    .user-info-list {
+      font-size: 1.2rem;
+      color: #999;
+      line-height: 1.8rem;
+      margin-left: 20px;
+      span {
+        margin-left: 40px;
+      }
+    }
+  }
+  .statistics {
+    height: 247px;
+    .progress {
+      margin-left: 5px;
+    }
+  }
 }
-.grid-content {
-  display: flex;
-  align-items: center;
-  height: 100px;
+.grid {
+  height: 550px;
+  .grid-content {
+    display: flex;
+    align-items: center;
+    height: 100px;
+  }
+  .grid-cont-right {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+  }
+  .grid-num {
+    font-size: 30px;
+    font-weight: bold;
+  }
+  .grid-con-icon {
+    font-size: 50px;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    color: #fff;
+  }
+  .grid-con-1 {
+    .grid-con-icon {
+      background: rgb(45, 140, 240);
+    }
+    .grid-num {
+      color: rgb(45, 140, 240);
+    }
+  }
+  .grid-con-2 {
+    .grid-con-icon {
+      background: rgb(100, 213, 114);
+    }
+    .grid-num {
+      color: rgb(45, 140, 240);
+    }
+  }
+  .grid-con-3 {
+    .grid-con-icon {
+      background: rgb(242, 94, 67);
+    }
+    .grid-num {
+      color: rgb(242, 94, 67);
+    }
+  }
 }
-.grid-cont-right {
-  flex: 1;
-  text-align: center;
-  font-size: 12px;
-  color: #999;
-}
-.grid-num {
-  font-size: 30px;
-  font-weight: bold;
-}
-.grid-con-icon {
-  font-size: 50px;
-  width: 100px;
-  height: 100px;
-  text-align: center;
-  line-height: 100px;
-  color: #fff;
-}
-.grid-con-1 .grid-con-icon {
-  background: rgb(45, 140, 240);
-}
-.grid-con-1 .grid-num {
-  color: rgb(45, 140, 240);
-}
-.grid-con-2 .grid-con-icon {
-  background: rgb(100, 213, 114);
-}
-.grid-con-2 .grid-num {
-  color: rgb(45, 140, 240);
-}
-.grid-con-3 .grid-con-icon {
-  background: rgb(242, 94, 67);
-}
-.grid-con-3 .grid-num {
-  color: rgb(242, 94, 67);
-}
-.user-info {
-  display: flex;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #ccc;
-  margin-bottom: 20px;
-}
-.user-avator {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-}
-.user-info-cont {
-  padding-left: 15px;
-  flex: 1;
-  font-size: 14px;
-  color: #999;
-}
-.user-info-cont div:first-child {
-  font-size: 25px;
-  color: #222;
-  word-wrap: break-word;
-}
-.user-info-list {
-  font-size: 14px;
-  color: #999;
-  line-height: 25px;
-}
-.user-info-list span {
-  margin-left: 70px;
-}
-.mgb20 {
-  margin-bottom: 20px;
-}
-.todo-item {
-  font-size: 14px;
-}
-.todo-item-del {
-  text-decoration: line-through;
-  color: #999;
+.todo {
+  font-size: 1.5rem;
+  height: 400px;
+  width: 100%;
+  margin-top: 15px;
+  .todo-item {
+    font-size: 14px;
+    &.todo-item-del {
+      text-decoration: line-through;
+      color: #999;
+    }
+  }
 }
 </style>
 <style>
 .el-progress-bar {
-  width: 99%;
+  width: 98%;
 }
 </style>

@@ -71,6 +71,20 @@ export default {
     },
     handleTags(command) {
       command === "other" ? this.closeOther() : this.closeAll();
+    },
+    getOne(name, route) {
+      name = name || "buy";
+      this.axios.get("column_one", { params: { name: name } }).then(res => {
+        res = res.data;
+        if (res.status) {
+          let current = res.result;
+          if (current.index == route.params.id) {
+            route.meta.title=current.title;
+            route.meta.icon=current.icon;
+            this.setTags(route);
+          }
+        }
+      });
     }
   },
   computed: {
@@ -83,7 +97,12 @@ export default {
   },
   watch: {
     $route(newValue, oldValue) {
-      this.setTags(newValue);
+      let id = newValue.params.id;
+      if (!id) {
+        this.setTags(newValue);
+      } else {
+        this.getOne(id, newValue);
+      }
     }
   },
   created() {

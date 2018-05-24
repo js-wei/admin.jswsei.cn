@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-21 2:36:45
+ * Modified By: 2018-05-24 1:40:17
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -22,15 +22,21 @@
 export default {
   data() {
     return {
-      id: this.$route.params.id
+      id: this.$route.params.id,
+      route: null
     };
   },
   created() {
-    console.log(this.id);
+  },
+  methods: {
+    
   },
   watch: {
     $route(newValue, oldValue) {
       this.id = newValue.params.id;
+    },
+    id(newValue, oldValue) {
+      //this.getOne(newValue);
     }
   }
 };

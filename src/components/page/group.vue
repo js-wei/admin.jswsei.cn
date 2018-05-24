@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 4:41:47
+ * Modified By: 2018-05-24 4:35:18
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -25,45 +25,47 @@
                 @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
                 <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
             </div>
-            <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-              @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="title" :label="metaTitle+'名称'">
-                  <template slot-scope="scope">
-                    <span v-html="scope.row.html"></span>
-                    <span>{{scope.row.title}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="name" :label="metaTitle+'标识'" >
-                </el-table-column>
-                <el-table-column prop="power" :label="metaTitle+'标识'"  width="100">
-                  <template slot-scope="scope">
-                    <a class="pointer" @click.stop="checkPower(scope.$index,scope.row.power)">查看权限</a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="tag" label="状态" width="100">
-                  <template slot-scope="scope">
-                    <a @click="changeStatus(scope.row)" class="pointer">
-                      <el-tag
-                        :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
-                        {{scope.row.status}}
-                      </el-tag>
-                    </a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="create_time" label="添加时间" sortable>
-                </el-table-column>
-                <el-table-column label="操作">
+            <vue-scroll>
+              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+                @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="50"></el-table-column>
+                  <el-table-column prop="title" :label="metaTitle+'名称'" width="220">
                     <template slot-scope="scope">
-                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)" 
-                          class="ml-0 mb-1">编辑</el-button>
-                        <el-button type="primary" @click="setPower(scope.$index, scope.row)"
-                          class="ml-0 mb-1">配置权限</el-button>                        
-                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" 
-                          class="ml-0">删除</el-button>
+                      <span v-html="scope.row.html"></span>
+                      <span>{{scope.row.title}}</span>
                     </template>
-                </el-table-column>
-            </el-table>
+                  </el-table-column>
+                  <el-table-column prop="name" :label="metaTitle+'标识'" width="220">
+                  </el-table-column>
+                  <el-table-column prop="power" :label="metaTitle+'标识'"  width="220">
+                    <template slot-scope="scope">
+                      <a class="pointer" @click.stop="checkPower(scope.$index,scope.row.power)">查看权限</a>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="tag" label="状态" width="200">
+                    <template slot-scope="scope">
+                      <a @click="changeStatus(scope.row)" class="pointer">
+                        <el-tag
+                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                          {{scope.row.status}}
+                        </el-tag>
+                      </a>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="create_time" label="添加时间" sortable width="250">
+                  </el-table-column>
+                  <el-table-column label="操作" width="350">
+                      <template slot-scope="scope">
+                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)" 
+                            class="ml-0 mb-1">编辑</el-button>
+                          <el-button type="primary" @click="setPower(scope.$index, scope.row)"
+                            class="ml-0 mb-1">配置权限</el-button>                        
+                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" 
+                            class="ml-0">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+            </vue-scroll>
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">

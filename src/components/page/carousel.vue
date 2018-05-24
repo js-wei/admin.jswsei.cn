@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-24 4:04:27
+ * Modified By: 2018-05-24 4:36:54
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,7 +16,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-date"></i>{{metaTitle}}管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i :class="metaIcon"></i>{{metaTitle}}管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -25,44 +25,42 @@
                 @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
                 <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
             </div>
-            <vue-scroll>
-              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-                @selection-change="handleSelectionChange">
-                  <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="title" :label="metaTitle+'名称'" width="250"> 
+            <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+              @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="50"></el-table-column>
+                <el-table-column prop="title" :label="metaTitle+'名称'" width="200">
+                  <template slot-scope="scope">
+                    <span v-html="scope.row.html"></span>
+                    <span>{{scope.row.title}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="name" :label="metaTitle+'标识'" width="200">
+                </el-table-column>
+                <el-table-column prop="ico" label="图标" width="200">
+                  <template slot-scope="scope">
+                    <i :class="'icon iconfont_cell '+scope.row.ico"></i>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="tag" label="状态" width="200">
+                  <template slot-scope="scope">
+                    <a @click="changeStatus(scope.row)" class="pointer">
+                      <el-tag
+                        :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                        {{scope.row.status}}
+                      </el-tag>
+                    </a>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="sort" label="排序" sortable width="100"></el-table-column>
+                <el-table-column prop="create_time" label="添加时间" sortable>
+                </el-table-column>
+                <el-table-column label="操作">
                     <template slot-scope="scope">
-                      <span v-html="scope.row.html"></span>
-                      <span>{{scope.row.title}}</span>
+                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
-                  </el-table-column>
-                  <el-table-column prop="name" :label="metaTitle+'标识'" width="250">
-                  </el-table-column>
-                  <el-table-column prop="ico" label="图标" width="150">
-                    <template slot-scope="scope">
-                      <i :class="'icon icon_cell '+scope.row.ico"></i>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="tag" label="状态" width="150">
-                    <template slot-scope="scope">
-                      <a @click="changeStatus(scope.row)" class="pointer">
-                        <el-tag
-                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
-                          {{scope.row.status}}
-                        </el-tag>
-                      </a>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="sort" label="排序" sortable width="150"></el-table-column>
-                  <el-table-column prop="create_time" label="添加时间" sortable width="200">
-                  </el-table-column>
-                  <el-table-column label="操作" width="300">
-                      <template slot-scope="scope">
-                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                      </template>
-                  </el-table-column>
-              </el-table>
-            </vue-scroll>
+                </el-table-column>
+            </el-table>
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">
@@ -74,7 +72,7 @@
                   <el-input v-model="form.name" :placeholder="metaTitle+'标识'"></el-input>
                 </el-form-item>
                 <el-form-item :label="metaTitle+'图标'">
-                  <el-input v-model="form.ico" :placeholder="metaTitle+'图标(icon字体图标)'"></el-input>
+                  <el-input v-model="form.ico" :placeholder="metaTitle+'图标(iconfont字体图标)'"></el-input>
                 </el-form-item>
                 <el-form-item :label="'所属'+metaTitle" prop="fid">
                   <el-select v-model="form.fid" :placeholder="'所属'+metaTitle" class="handle-select mr10">
@@ -167,6 +165,9 @@ export default {
   computed: {
     metaTitle() {
       return this.$route.meta.title;
+    },
+    metaIcon() {
+      return `icon ${this.$route.meta.icon}`;
     }
   },
   methods: {
@@ -187,14 +188,6 @@ export default {
             this.totals = res.last_page;
           }
         });
-      this.axios.get("/navbar?tree=1&status=1").then(res => {
-        res = res.data;
-        if (!res.status) {
-          return;
-        }
-        let data = res.result;
-        this.$store.commit("SET_NAVBAR", data);
-      });
     },
     changeStatus(scope) {
       let status = scope.status == "正常" ? 1 : 0;
@@ -280,23 +273,21 @@ export default {
     deleteRow() {
       this.$store.commit("SHOW_LOADING");
       if (!this.isDelAll) {
-        this.axios.delete(`/module/${this.row.id}`).then(res => {
+        this.axios.delete(`/column/${this.row.id}`).then(res => {
           this.$store.commit("HIDE_LOADING");
           res = res.data;
           if (!res.status) {
             this.$message.error(res.msg);
-            return;
           }
           this.tableData.splice(this.idx, 1);
           this.$message.success(res.msg);
         });
       } else {
-        this.axios.delete(`/module/${this.delList.join("_")}`).then(res => {
+        this.axios.delete(`/column/${this.delList.join("_")}`).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
             this.$message.error(res.msg);
-            return;
           }
           this.delList = [];
           this.getData();
@@ -360,7 +351,7 @@ export default {
     }
   }
 }
-.icon_cell {
+.iconfont_cell {
   font-size: 1.5rem;
 }
 </style>

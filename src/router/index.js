@@ -76,6 +76,14 @@ export default new Router({
                     }
                 },
                 {
+                    path: '/carousel',
+                    component: resolve => require(['../components/page/carousel.vue'], resolve),
+                    meta: {
+                        title: '轮播',
+                        icon: 'el-icon-picture'
+                    }
+                },
+                {
                     path: '/profile',
                     component: resolve => require(['../components/page/Profile.vue'], resolve),
                     meta: {
