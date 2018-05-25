@@ -384,6 +384,7 @@ export default {
       this.delVisible = false;
     },
     add() {
+      this.fileList = [];
       this.form.id = 0;
       this.form.srot = 100;
       this.form.description = "";
@@ -391,6 +392,7 @@ export default {
       this.editVisible = true;
     },
     cancel(formName) {
+      this.fileList = [];
       this.$refs[formName].resetFields();
       this.form.id = 0;
       this.form.description = "";
