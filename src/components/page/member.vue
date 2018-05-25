@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-24 4:01:44
+ * Modified By: 2018-05-25 1:10:06
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -43,10 +43,10 @@
                </div>
             </div>
             <vue-scroll>
-              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-              @selection-change="handleSelectionChange">
+              <el-table :data="tableData" border style="width: 100%;" ref="multipleTable" 
+              @selection-change="handleSelectionChange" class="pb-20">
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="username" label="会员账号" width="220">
+                <el-table-column prop="username" label="会员账号" width="210">
                   <template slot-scope="scope">
                     <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
                   </template>

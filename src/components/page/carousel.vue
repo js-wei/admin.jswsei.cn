@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-24 4:36:54
+ * Modified By: 2018-05-25 4:52:27
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -21,68 +21,108 @@
         </div>
         <div class="container">
             <div class="handle-box">
+              <div class="pull-left">
                 <el-button type="primary" class="handle-del mr10" 
-                @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
+                  @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
                 <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
+              </div>
+              <div class="pull-right">
+                  <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
+                  <el-date-picker
+                      v-model="select_date"
+                      type="daterange"
+                      range-separator="至"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      :value-format="'yyyy-MM-dd HH:mm:ss'">
+                  </el-date-picker>
+                  <el-select v-model="select_type" placeholder="状态" class="handle-select">
+                      <el-option  label="全部" value=""></el-option>
+                      <el-option  label="正常" value="1"></el-option>
+                      <el-option  label="禁用" value="2"></el-option>
+                  </el-select>
+                  <el-button type="primary" icon="el-icon-search" @click="search" class="pull-right ml-5">搜索</el-button>
+              </div>
             </div>
-            <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-              @selection-change="handleSelectionChange">
-                <el-table-column type="selection" width="50"></el-table-column>
-                <el-table-column prop="title" :label="metaTitle+'名称'" width="200">
-                  <template slot-scope="scope">
-                    <span v-html="scope.row.html"></span>
-                    <span>{{scope.row.title}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="name" :label="metaTitle+'标识'" width="200">
-                </el-table-column>
-                <el-table-column prop="ico" label="图标" width="200">
-                  <template slot-scope="scope">
-                    <i :class="'icon iconfont_cell '+scope.row.ico"></i>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="tag" label="状态" width="200">
-                  <template slot-scope="scope">
-                    <a @click="changeStatus(scope.row)" class="pointer">
-                      <el-tag
-                        :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
-                        {{scope.row.status}}
-                      </el-tag>
-                    </a>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="sort" label="排序" sortable width="100"></el-table-column>
-                <el-table-column prop="create_time" label="添加时间" sortable>
-                </el-table-column>
-                <el-table-column label="操作">
+            <vue-scroll>
+              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+                @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="50"></el-table-column>
+                  <el-table-column prop="title" :label="metaTitle+'名称'" width="200">
                     <template slot-scope="scope">
-                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                      <span v-html="scope.row.html"></span>
+                      <span>{{scope.row.title}}</span>
                     </template>
-                </el-table-column>
-            </el-table>
+                  </el-table-column>
+                  <el-table-column prop="image" :label="metaTitle+'图片'" width="200">
+                     <template slot-scope="scope">
+                      <img :src="scope.row.image" :alt="scope.row.title" height="32">
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="url" :label="metaTitle+'链接'" width="200">
+                    <template slot-scope="scope">
+                     <span>{{scope.row.url|is_default('未填写')}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="tag" label="状态" width="200">
+                    <template slot-scope="scope">
+                      <a @click="changeStatus(scope.row)" class="pointer">
+                        <el-tag
+                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                          {{scope.row.status}}
+                        </el-tag>
+                      </a>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="sort" label="排序" sortable width="150"></el-table-column>
+                  <el-table-column prop="create_time" label="添加时间" sortable width="200">
+                  </el-table-column>
+                  <el-table-column label="操作" width="300">
+                      <template slot-scope="scope">
+                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+            </vue-scroll>
+            <el-pagination v-if="tableData.length"
+                background
+                layout="prev, pager, next"
+                :total="totals"
+                :page-size="per_page"
+                class="mt-10"
+                @current-change="currentChange">
+            </el-pagination>
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">
-            <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
+            <el-form ref="form" :model="form" label-width="90px" :rules="rules" 
+              style="width:85%;margin:0 auto;" autocomplete="off">
                 <el-form-item :label="metaTitle+'名称'" prop="title">
                   <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
                 </el-form-item>
-                <el-form-item :label="metaTitle+'标识'" prop="name">
-                  <el-input v-model="form.name" :placeholder="metaTitle+'标识'"></el-input>
+                <el-form-item :label="metaTitle+'名称'" prop="url">
+                  <el-input v-model="form.url" :placeholder="metaTitle+'链接地址(eg:http://baidu.com)'"></el-input>
                 </el-form-item>
-                <el-form-item :label="metaTitle+'图标'">
-                  <el-input v-model="form.ico" :placeholder="metaTitle+'图标(iconfont字体图标)'"></el-input>
-                </el-form-item>
-                <el-form-item :label="'所属'+metaTitle" prop="fid">
-                  <el-select v-model="form.fid" :placeholder="'所属'+metaTitle" class="handle-select mr10">
-                    <el-option key="0" :label="'顶级'+metaTitle" value="0"></el-option>
-                    <el-option :label="item.html+item.title" :value="item.id" 
-                      v-for="item in cate_list" :key="item.id"></el-option>
-                  </el-select>
+                <el-form-item :label="metaTitle+'图片'">
+                  <el-upload
+                    class="upload-demo"
+                    action="http://api.jswei.cn/posts/"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    :before-upload="beforeAvatarUpload"
+                    :file-list="fileList"
+                    list-type="picture"
+                   
+                    :multiple="false"
+                    name="image">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过500kb</div>
+                  </el-upload>
                 </el-form-item>
                 <el-form-item :label="metaTitle+'说明'">
-                    <el-input type="textarea" v-model="form.info" :placeholder="metaTitle+'说明'"></el-input>
+                    <el-input type="textarea" v-model="form.description" :placeholder="metaTitle+'说明'"></el-input>
                 </el-form-item>
                 <el-form-item :label="metaTitle+'排序'">
                   <el-input v-model="form.sort" :placeholder="metaTitle+'排序'"></el-input>
@@ -113,30 +153,37 @@
 <script>
 export default {
   data() {
-    var validateFid = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请选择所属栏目"));
+    let validateUrl = (rule, value, callback) => {
+      let strRegex =
+        "^((https|http|ftp|rtsp|mms)://)?[a-z0-9A-Z]{3}.[a-z0-9A-Z][a-z0-9A-Z]{0,61}?[a-z0-9A-Z].com|net|cn|cc (:s[0-9]{1-4})?/$";
+      let re = new RegExp(strRegex);
+      if (value != "" && !re.test(value)) {
+        callback(new Error("请填写正确的地址"));
         return;
       }
       callback();
     };
     return {
+      fileList: [],
       tableData: [],
       cate_list: [],
       delList: [],
       editVisible: false,
       delVisible: false,
       isDelAll: false,
-      isRedirect: false,
-      last_url: "",
+      current_page: 1,
+      per_page: 5,
+      totals: 0,
+      select_word: "",
+      select_type: "",
+      select_date: "",
       row: [],
       form: {
         id: 0,
         title: "",
-        name: "",
-        fid: "",
-        info: "",
-        ico: "",
+        url: "",
+        description: "",
+        image: "",
         sort: 100,
         status: "正常"
       },
@@ -148,14 +195,7 @@ export default {
             trigger: "blur"
           }
         ],
-        name: [
-          {
-            required: true,
-            message: "请输入模块标识",
-            trigger: "blur"
-          }
-        ],
-        fid: [{ validator: validateFid, trigger: "change" }]
+        url: [{ validator: validateUrl, trigger: "blur" }]
       }
     };
   },
@@ -171,27 +211,68 @@ export default {
     }
   },
   methods: {
+    beforeAvatarUpload(file) {
+      const isJPG =
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png";
+
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 jpeg/jpg/png 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    handleRemove(file) {
+      if (!file.response) return;
+      let path = file.response.path;
+      this.deleteImage(path);
+    },
+    handlePreview(file) {},
+    handleSuccess(file) {
+      if (!file) return;
+      this.form.image = file.path;
+    },
+    deleteImage(path) {
+      this.axios.delete("../posts", { params: { path: path } }).then(res => {
+        res = res.data;
+        if (!res.status) {
+          this.$message.error(res.msg);
+          return;
+        }
+        this.$message.success(res.msg);
+        this.form.image = "";
+      });
+    },
     getData() {
       this.axios
-        .get("/module", {
-          where: [
-            { field: "title", op: "eq", value: this.select_word },
-            { field: "status", op: "eq", value: this.select_cate },
-            { field: "create_time", op: "between", value: this.select_date }
-          ]
+        .get("/carousel", {
+          params: {
+            p: this.current_page,
+            where: [
+              { field: "title", op: "like", value: this.select_word },
+              { field: "status", op: "eq", value: this.select_type },
+              { field: "create_time", op: "between", value: this.select_date }
+            ]
+          }
         })
         .then(res => {
           res = res.data;
           if (res.status) {
-            this.tableData = res.result;
+            res = res.result;
+            this.tableData = res.data;
             this.cur_page = res.current_page;
-            this.totals = res.last_page;
+            this.totals = res.total;
           }
         });
     },
     changeStatus(scope) {
-      let status = scope.status == "正常" ? 1 : 0;
-      this.axios.put(`/module/${scope.id}?status=${status}`).then(res => {
+      let status = scope.status == "正常" ? "禁用" : "正常";
+      this.axios.put(`/carousel/${scope.id}?status=${status}`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -200,12 +281,16 @@ export default {
         this.getData();
       });
     },
+    currentChange(value) {
+      this.current_page = value;
+      this.getData(value);
+    },
     search() {
       this.getData();
     },
     handleEdit(index, row) {
-      this.getCateList();
-      this.axios.get(`/module/${row.id}/edit`).then(res => {
+      this.fileList = [];
+      this.axios.get(`/carousel/${row.id}/edit`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -215,13 +300,16 @@ export default {
           this.isRedirect = true;
           this.last_url = data.url;
         }
+        this.fileList.push({
+          name: data.title,
+          url: data.image
+        });
         this.form = {
           id: data.id,
-          fid: data.fid,
           title: data.title,
-          name: data.name,
-          info: data.info,
-          ico: data.ico,
+          description: data.description,
+          image: data.image,
+          url: data.url,
           sort: data.sort,
           status: data.status
         };
@@ -253,9 +341,8 @@ export default {
           return false;
         }
         this.editVisible = false;
-        //this.form.status = this.form.sta == "正常" ? 0 : 1;
         this.$store.commit("SHOW_LOADING");
-        this.axios.post("/module", this.form).then(res => {
+        this.axios.post("/carousel", this.form).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
@@ -273,7 +360,7 @@ export default {
     deleteRow() {
       this.$store.commit("SHOW_LOADING");
       if (!this.isDelAll) {
-        this.axios.delete(`/column/${this.row.id}`).then(res => {
+        this.axios.delete(`/carousel/${this.row.id}`).then(res => {
           this.$store.commit("HIDE_LOADING");
           res = res.data;
           if (!res.status) {
@@ -283,7 +370,7 @@ export default {
           this.$message.success(res.msg);
         });
       } else {
-        this.axios.delete(`/column/${this.delList.join("_")}`).then(res => {
+        this.axios.delete(`/carousel/${this.delList.join("_")}`).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
@@ -297,33 +384,27 @@ export default {
       this.delVisible = false;
     },
     add() {
-      this.getCateList();
       this.form.id = 0;
       this.form.srot = 100;
-      this.form.info = "";
-      this.form.ico = "";
+      this.form.description = "";
+      this.form.image = "";
       this.editVisible = true;
     },
     cancel(formName) {
       this.$refs[formName].resetFields();
       this.form.id = 0;
-      this.form.info = "";
-      this.form.ico = "";
+      this.form.description = "";
+      this.form.image = "";
       this.editVisible = false;
-    },
-    getCateList() {
-      this.axios.get("/module_list").then(res => {
-        res = res.data;
-        if (!res.status) {
-          return;
-        }
-        this.cate_list = res.result;
-      });
     }
   }
 };
 </script>
-
+<style>
+.el-input__suffix {
+  right: 4px;
+}
+</style>
 <style lang="scss" scoped>
 @import "../../assets/base";
 .el-icon-date {

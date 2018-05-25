@@ -13,13 +13,20 @@ Vue.use(vuescroll)
 Vue.prototype.$vuescrollConfig = {
     bar: {
         vBar: {
-            background: "#122423"
+            background: "#777"
         },
         hBar: {
-            background: "#122423"
+            background: "#777",
+            keepShow: true,
+        }
+    },
+    rail: {
+        hRail: {
+            height:'15.5px'
         }
     }
 }
+
 const options = {
     color: '#409EFF',
     failedColor: '#874b4b',

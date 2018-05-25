@@ -72,19 +72,32 @@ export default {
     handleTags(command) {
       command === "other" ? this.closeOther() : this.closeAll();
     },
-    getOne(name, route) {
-      name = name || "buy";
-      this.axios.get("column_one", { params: { name: name } }).then(res => {
-        res = res.data;
-        if (res.status) {
-          let current = res.result;
-          if (current.index == route.params.id) {
-            route.meta.title=current.title;
-            route.meta.icon=current.icon;
-            this.setTags(route);
+    getOne(name, route, column = false) {
+      if (column) {
+        this.axios.get("column_one", { params: { name: name } }).then(res => {
+          res = res.data;
+          if (res.status) {
+            let current = res.result;
+            if (current.index == route.params.id) {
+              route.meta.title = current.title;
+              route.meta.icon = current.icon;
+              this.setTags(route);
+            }
           }
-        }
-      });
+        });
+      } else {
+        this.axios.get("module_one", { params: { name: name } }).then(res => {
+          res = res.data;
+          if (res.status) {
+            let current = res.result;
+            if (current.index == route.params.id) {
+              route.meta.title = current.title;
+              route.meta.icon = current.icon;
+              this.setTags(route);
+            }
+          }
+        });
+      }
     }
   },
   computed: {
@@ -99,9 +112,11 @@ export default {
     $route(newValue, oldValue) {
       let id = newValue.params.id;
       if (!id) {
-        this.setTags(newValue);
+        let module = newValue.path.substring(1);
+        //this.setTags(newValue);
+        //this.getOne(module, newValue);
       } else {
-        this.getOne(id, newValue);
+        this.getOne(id, newValue, true);
       }
     }
   },

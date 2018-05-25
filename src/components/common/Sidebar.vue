@@ -2,7 +2,7 @@
     <div class="sidebar">
       <vue-scroll>
         <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-            text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened :router="true" @select="selectMenu">
+            text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened :router="true">
                 <template v-for="item in items">
                     <template v-if="item.subs"> 
                         <el-submenu :index="item.index" :key="item.index">
@@ -59,11 +59,6 @@ export default {
       let data = res.result;
       this.$store.commit("SET_NAVBAR", data);
     });
-  },
-  methods: {
-    selectMenu(index, path) {
-     
-    }
   }
 };
 </script>
