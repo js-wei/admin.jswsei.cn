@@ -114,7 +114,7 @@ export default {
       if (!id) {
         let module = newValue.path.substring(1);
         //this.setTags(newValue);
-        //this.getOne(module, newValue);
+        this.getOne(module, newValue);
       } else {
         this.getOne(id, newValue, true);
       }

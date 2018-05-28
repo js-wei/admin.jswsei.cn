@@ -105,6 +105,14 @@ export default new Router({
                     }
                 },
                 {
+                    path:'/blogroll',
+                    component: resolve => require(['../components/page/blogroll.vue'], resolve),
+                    meta: {
+                        title: '友情链接',
+                        icon:'icon-icon'
+                    }
+                },
+                {
                     path: '/form',
                     component: resolve => require(['../components/page/BaseForm.vue'], resolve),
                     meta: {

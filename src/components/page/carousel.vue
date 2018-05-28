@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-25 4:52:27
+ * Modified By: 2018-05-28 3:29:56
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -25,6 +25,8 @@
                 <el-button type="primary" class="handle-del mr10" 
                   @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
                 <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
+                <el-button type="success" class="handle-del mr10" v-if="tableData.length?'disabled':''"
+                  @click="checkPic"><i :class="metaIcon"></i>轮播演示</el-button>
               </div>
               <div class="pull-right">
                   <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
@@ -104,7 +106,7 @@
                 <el-form-item :label="metaTitle+'名称'" prop="url">
                   <el-input v-model="form.url" :placeholder="metaTitle+'链接地址(eg:http://baidu.com)'"></el-input>
                 </el-form-item>
-                <el-form-item :label="metaTitle+'图片'">
+                <el-form-item :label="metaTitle+'图片'" prop="image">
                   <el-upload
                     class="upload-demo"
                     action="http://api.jswei.cn/posts/"
@@ -114,11 +116,10 @@
                     :before-upload="beforeAvatarUpload"
                     :file-list="fileList"
                     list-type="picture"
-                   
                     :multiple="false"
                     name="image">
                     <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过500kb</div>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过2MB</div>
                   </el-upload>
                 </el-form-item>
                 <el-form-item :label="metaTitle+'说明'">
@@ -138,6 +139,16 @@
               <el-button @click="cancel('form')">取 消</el-button>
               <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </span>
+        </el-dialog>
+        <!-- 轮播演示 -->
+        <el-dialog :title="metaTitle+'演示'" :visible.sync="isCarousel" width="30%" :show-close="false">
+            <div class="block">
+              <el-carousel trigger="click">
+                <el-carousel-item v-for="(item,index) in tableData" :key="index">
+                  <img :src="item.image" :alt="item.title" width="100%">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
         </el-dialog>
         <!-- 删除提示框 -->
         <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
@@ -163,6 +174,14 @@ export default {
       }
       callback();
     };
+    let validateImage = (rule, value, callback) => {
+      if (!this.form.image) {
+        callback(new Error("请上传图片"));
+        return;
+      }
+      callback();
+    };
+
     return {
       fileList: [],
       tableData: [],
@@ -171,6 +190,7 @@ export default {
       editVisible: false,
       delVisible: false,
       isDelAll: false,
+      isCarousel: false,
       current_page: 1,
       per_page: 5,
       totals: 0,
@@ -195,7 +215,14 @@ export default {
             trigger: "blur"
           }
         ],
-        url: [{ validator: validateUrl, trigger: "blur" }]
+        url: [{ validator: validateUrl, trigger: "blur" }],
+        image: [
+          {
+            validator: validateImage,
+            message: "请上传图片",
+            trigger: "change"
+          }
+        ]
       }
     };
   },
@@ -211,6 +238,9 @@ export default {
     }
   },
   methods: {
+    checkPic() {
+      this.isCarousel=true;
+    },
     beforeAvatarUpload(file) {
       const isJPG =
         file.type === "image/jpeg" ||
@@ -231,11 +261,13 @@ export default {
       if (!file.response) return;
       let path = file.response.path;
       this.deleteImage(path);
+      this.rules.image;
     },
     handlePreview(file) {},
     handleSuccess(file) {
       if (!file) return;
       this.form.image = file.path;
+      this.rules.image;
     },
     deleteImage(path) {
       this.axios.delete("../posts", { params: { path: path } }).then(res => {
@@ -335,7 +367,7 @@ export default {
       });
     },
     // 保存编辑
-    saveEdit(formName) {
+    saveEdit(formName = "form") {
       this.$refs[formName].validate(valid => {
         if (!valid) {
           return false;
@@ -418,7 +450,7 @@ export default {
     width: 120px;
   }
   .handle-input {
-    width: 300px;
+    width: 263px;
     display: inline-block;
   }
   .del-dialog-cnt {

@@ -1,10 +1,10 @@
 /*
- * File: d:\works\admin.jswei.cn\src\components\page\columnPage.vue
- * Created Date: 2018-05-21 11:53:30
+ * File: d:\works\admin.jswei.cn\src\components\page\column.vue
+ * Created Date: 2018-05-14 8:33:49
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-28 4:49:32
+ * Modified By: 2018-05-28 11:13:12
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -14,60 +14,98 @@
 
 <template>
     <div>
-        <!-- 列表 -->
-        <div v-if="type==1 || type==2">
-          <div class="crumbs">
-              <el-breadcrumb separator="/">
-                  <el-breadcrumb-item><i :class="metaIcon"></i>{{metaTitle}}</el-breadcrumb-item>
-              </el-breadcrumb>
-              <div class="container">
-                <div class="handle-box">
-                  <div class="pull-left">
-                    <el-button type="primary" class="handle-del mr10" 
-                      @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
-                    <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
-                    <el-button type="success" class="handle-del mr10" v-if="tableData.length?'disabled':''"
-                      @click="checkPic"><i :class="metaIcon"></i>轮播演示</el-button>
-                  </div>
-                  <div class="pull-right">
-                      <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
-                      <el-date-picker
-                          v-model="select_date"
-                          type="daterange"
-                          range-separator="至"
-                          start-placeholder="开始日期"
-                          end-placeholder="结束日期"
-                          :value-format="'yyyy-MM-dd HH:mm:ss'">
-                      </el-date-picker>
-                      <el-select v-model="select_type" placeholder="状态" class="handle-select">
-                          <el-option  label="全部" value=""></el-option>
-                          <el-option  label="正常" value="1"></el-option>
-                          <el-option  label="禁用" value="2"></el-option>
-                      </el-select>
-                      <el-button type="primary" icon="el-icon-search" @click="search" class="pull-right ml-5">搜索</el-button>
-                  </div>
-                </div>
-                <el-pagination v-if="tableData.length"
-                    background
-                    layout="prev, pager, next"
-                    :total="totals"
-                    :page-size="per_page"
-                    class="mt-10"
-                    @current-change="currentChange">
-                </el-pagination>
+        <div class="crumbs">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item><i :class="metaIcon"></i>{{metaTitle}}管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="container">
+            <div class="handle-box">
+              <div class="pull-left">
+                <el-button type="primary" class="handle-del mr10" 
+                  @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
+                <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
+              </div>
+              <div class="pull-right">
+                  <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
+                  <el-date-picker
+                      v-model="select_date"
+                      type="daterange"
+                      range-separator="至"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      :value-format="'yyyy-MM-dd HH:mm:ss'">
+                  </el-date-picker>
+                  <el-select v-model="select_type" placeholder="状态" class="handle-select">
+                      <el-option  label="全部" value=""></el-option>
+                      <el-option  label="正常" value="1"></el-option>
+                      <el-option  label="禁用" value="2"></el-option>
+                  </el-select>
+                  <el-button type="primary" icon="el-icon-search" @click="search" class="pull-right ml-5">搜索</el-button>
+              </div>
             </div>
-          </div>
-          <!-- 编辑弹出框 -->
-          <el-dialog title="新的文档" :visible.sync="editVisible" width="50%" 
-            :close-on-click-modal="false">
-            <el-form ref="form" :model="form" label-width="140px" :rules="rules" 
+            <vue-scroll>
+              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+                @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="50"></el-table-column>
+                  <el-table-column prop="title" :label="metaTitle+'名称'" width="200">
+                    <template slot-scope="scope">
+                      <span v-html="scope.row.html"></span>
+                      <span>{{scope.row.title}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="logo" :label="metaTitle+'图片'" width="200">
+                     <template slot-scope="scope">
+                      <img :src="scope.row.logo" :alt="scope.row.title" height="32">
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="url" :label="metaTitle+'链接'" width="200">
+                    <template slot-scope="scope">
+                     <span>{{scope.row.url|is_default('未填写')}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="tag" label="状态" width="200">
+                    <template slot-scope="scope">
+                      <a @click="changeStatus(scope.row)" class="pointer">
+                        <el-tag
+                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                          {{scope.row.status}}
+                        </el-tag>
+                      </a>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="sort" label="排序" sortable width="150"></el-table-column>
+                  <el-table-column prop="create_time" label="添加时间" sortable width="200">
+                  </el-table-column>
+                  <el-table-column label="操作" width="300">
+                      <template slot-scope="scope">
+                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+            </vue-scroll>
+            <el-pagination v-if="tableData.length"
+                background
+                layout="prev, pager, next"
+                :total="totals"
+                :page-size="per_page"
+                class="mt-10"
+                @current-change="currentChange">
+            </el-pagination>
+        </div>
+        <!-- 编辑弹出框 -->
+        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">
+            <el-form ref="form" :model="form" label-width="120px" :rules="rules" 
               style="width:85%;margin:0 auto;" autocomplete="off">
-                <el-form-item label="名称" prop="title" class="w-50">
-                  <el-input v-model="form.title" placeholder="名称"></el-input>
+                <el-form-item :label="metaTitle+'名称'" prop="title">
+                  <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
                 </el-form-item>
-                <el-form-item label="图片" prop="image">
+                <el-form-item :label="metaTitle+'名称'" prop="url">
+                  <el-input v-model="form.url" :placeholder="metaTitle+'链接地址(eg:http://baidu.com)'"></el-input>
+                </el-form-item>
+                <el-form-item :label="metaTitle+'图片'" prop="logo">
                   <el-upload
-                    class="upload-demo"
                     action="http://api.jswei.cn/posts/"
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
@@ -76,24 +114,17 @@
                     :file-list="fileList"
                     list-type="picture"
                     :multiple="false"
-                    name="image">
+                    name="image"
+                    :data="{w:220,h:80}">
                     <el-button size="small" type="primary">点击上传</el-button>
                     <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过2MB</div>
                   </el-upload>
                 </el-form-item>
-                <el-form-item label="说明" class="w-70 h-80-px">
-                  <el-input type="textarea" v-model="form.description" :placeholder="metaTitle+'说明'"></el-input>
+                <el-form-item :label="metaTitle+'说明'">
+                    <el-input type="textarea" v-model="form.description" :placeholder="metaTitle+'说明'"></el-input>
                 </el-form-item>
-                <el-form-item label="内容" class="w-100">
-                  <quill-editor ref="myTextEditor" v-model="form.content" :options="editorOption"></quill-editor>
-                </el-form-item>
-                <el-form-item label="排序" class="w-40">
-                  <el-checkbox-group v-model="checkedAttr">
-                    <el-checkbox v-for="item in Attrs" :label="item" :key="item" >{{item}}</el-checkbox>
-                  </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="排序" class="w-40">
-                  <el-input v-model="form.sort" placeholder="排序"></el-input>
+                <el-form-item :label="metaTitle+'排序'">
+                  <el-input v-model="form.sort" :placeholder="metaTitle+'排序'"></el-input>
                 </el-form-item>
                 <el-form-item label="启用">
                   <el-radio-group v-model="form.status">
@@ -106,36 +137,19 @@
               <el-button @click="cancel('form')">取 消</el-button>
               <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </span>
-          </el-dialog>
-          <!-- 删除提示框 -->
-          <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+        </el-dialog>
+        <!-- 删除提示框 -->
+        <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
             <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="delVisible = false">取 消</el-button>
                 <el-button type="primary" @click="deleteRow">确 定</el-button>
             </span>
-          </el-dialog>
-        </div>
-        <!-- 单页面 -->
-        <div v-if="type==3">
-         
-        </div>
-        <!-- 封面页 -->
-        <div v-if="type==4">
-
-        </div>
-        <!-- 表单页 -->
-        <div v-if="type==5">
-          <h1>form</h1>
-        </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-import { quillEditor } from "vue-quill-editor";
 export default {
   data() {
     let validateUrl = (rule, value, callback) => {
@@ -149,43 +163,58 @@ export default {
       callback();
     };
     let validateImage = (rule, value, callback) => {
-      if (!this.form.image) {
+      if (!this.form.logo) {
         callback(new Error("请上传图片"));
         return;
       }
       callback();
     };
+
     return {
-      id: this.$route.params.id,
-      type: 1,
-      columnId: 0,
-      isDelAll: false,
-      tableData: [],
       fileList: [],
-      select_word: "",
-      select_date: "",
-      select_type: "全部",
-      delVisible: false,
+      tableData: [],
+      cate_list: [],
+      delList: [],
       editVisible: false,
-      checked3: true,
-      editorOption: {
-        placeholder: "请填写内容"
-      },
-      checkedAttr: [],
-      Attrs: ['推荐','最热','最新','头条','置顶','图文'],
+      delVisible: false,
+      isDelAll: false,
+      current_page: 1,
+      per_page: 5,
+      totals: 0,
+      select_word: "",
+      select_type: "",
+      select_date: "",
+      row: [],
       form: {
-        content: "",
-        status: "正常",
-        sort: 100
+        id: 0,
+        title: "",
+        url: "",
+        description: "",
+        logo: "",
+        sort: 100,
+        status: "正常"
       },
-      rules: {}
+      rules: {
+        title: [
+          {
+            required: true,
+            message: "请输入模块名称",
+            trigger: "blur"
+          }
+        ],
+        url: [{ validator: validateUrl, trigger: "blur" }],
+        logo: [
+          {
+            validator: validateImage,
+            message: "请上传图片",
+            trigger: "change"
+          }
+        ]
+      }
     };
   },
-  components: {
-    quillEditor
-  },
   created() {
-    this._initPage();
+    this.getData();
   },
   computed: {
     metaTitle() {
@@ -196,31 +225,6 @@ export default {
     }
   },
   methods: {
-    _initPage() {
-      this.getColumnByName();
-    },
-    getColumnByName(id) {
-      id = id ? id : this.id;
-      this.axios.get("/column_one", { params: { name: id } }).then(res => {
-        res = res.data;
-        if (!res.status) return;
-        this.columnId = res.result.id;
-        if (res.result.type == "列表页") {
-          this.type = 1;
-        } else if (res.result.type == "下载页") {
-          this.type = 2;
-        } else if (res.result.type == "单页面") {
-          this.type = 3;
-        } else if (res.result.type == "封面页") {
-          this.type = 4;
-        } else if (res.result.type == "表单页") {
-          this.type = 5;
-        } else {
-          this.type = 0;
-        }
-      });
-    },
-    search() {},
     beforeAvatarUpload(file) {
       const isJPG =
         file.type === "image/jpeg" ||
@@ -241,28 +245,28 @@ export default {
       if (!file.response) return;
       let path = file.response.path;
       this.deleteImage(path);
-      this.rules.image;
+      this.rules.logo;
     },
     handlePreview(file) {},
     handleSuccess(file) {
       if (!file) return;
-      this.form.image = file.path;
+      this.form.logo = file.path;
       this.rules.image;
     },
     deleteImage(path) {
-      this.axios.delete("../posts", { params: { path: path } }).then(res => {
+      this.axios.delete(`../posts`, { params: { path: path } }).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
           return;
         }
         this.$message.success(res.msg);
-        this.form.image = "";
+        this.form.logo = "";
       });
     },
     getData() {
       this.axios
-        .get("/carousel", {
+        .get("/blogroll", {
           params: {
             p: this.current_page,
             where: [
@@ -284,7 +288,7 @@ export default {
     },
     changeStatus(scope) {
       let status = scope.status == "正常" ? "禁用" : "正常";
-      this.axios.put(`/carousel/${scope.id}?status=${status}`).then(res => {
+      this.axios.put(`/blogroll/${scope.id}?status=${status}`).then(res => {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -302,7 +306,9 @@ export default {
     },
     handleEdit(index, row) {
       this.fileList = [];
-      this.axios.get(`/carousel/${row.id}/edit`).then(res => {
+      this.$store.commit("SHOW_LOADING");
+      this.axios.get(`/blogroll/${row.id}/edit`).then(res => {
+        this.$store.commit("HIDE_LOADING");
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
@@ -314,13 +320,13 @@ export default {
         }
         this.fileList.push({
           name: data.title,
-          url: data.image
+          url: data.logo
         });
         this.form = {
           id: data.id,
           title: data.title,
           description: data.description,
-          image: data.image,
+          logo: data.logo,
           url: data.url,
           sort: data.sort,
           status: data.status
@@ -354,14 +360,13 @@ export default {
         }
         this.editVisible = false;
         this.$store.commit("SHOW_LOADING");
-        this.axios.post("/carousel", this.form).then(res => {
+        this.axios.post("/blogroll", this.form).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
             this.$message.error(res.msg);
           }
           this.$refs[formName].resetFields();
-          this.form.keywords = "";
           this.form.description = "";
           this.getData();
           this.$message.success(res.msg);
@@ -372,7 +377,7 @@ export default {
     deleteRow() {
       this.$store.commit("SHOW_LOADING");
       if (!this.isDelAll) {
-        this.axios.delete(`/carousel/${this.row.id}`).then(res => {
+        this.axios.delete(`/blogroll/${this.row.id}`).then(res => {
           this.$store.commit("HIDE_LOADING");
           res = res.data;
           if (!res.status) {
@@ -382,7 +387,7 @@ export default {
           this.$message.success(res.msg);
         });
       } else {
-        this.axios.delete(`/carousel/${this.delList.join("_")}`).then(res => {
+        this.axios.delete(`/blogroll/${this.delList.join("_")}`).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
@@ -397,27 +402,19 @@ export default {
     },
     add() {
       this.fileList = [];
-      this.checkedAttr=[];
       this.form.id = 0;
       this.form.srot = 100;
       this.form.description = "";
-      this.form.image = "";
+      this.form.logo = "";
       this.editVisible = true;
     },
     cancel(formName) {
       this.fileList = [];
-      this.checkedAttr=[];
       this.$refs[formName].resetFields();
       this.form.id = 0;
       this.form.description = "";
-      this.form.image = "";
+      this.form.logo = "";
       this.editVisible = false;
-    }
-  },
-  watch: {
-    $route(newValue, oldValue) {
-      this.id = newValue.params.id;
-      this.getColumnByName();
     }
   }
 };
@@ -425,15 +422,6 @@ export default {
 <style>
 .el-input__suffix {
   right: 4px;
-}
-.el-textarea__inner {
-  height: 80px;
-}
-.el-checkbox+.el-checkbox{
-  margin-left:10px;
-}
-.el-checkbox-group{
-  width:400px;
 }
 </style>
 <style lang="scss" scoped>
