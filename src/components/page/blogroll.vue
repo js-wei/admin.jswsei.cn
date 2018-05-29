@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-28 11:13:12
+ * Modified By: 2018-05-29 10:43:55
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -56,7 +56,7 @@
                   </el-table-column>
                   <el-table-column prop="logo" :label="metaTitle+'图片'" width="200">
                      <template slot-scope="scope">
-                      <img :src="scope.row.logo" :alt="scope.row.title" height="32">
+                      <img :src="scope.row.logo" :alt="scope.row.title" width="80">
                     </template>
                   </el-table-column>
                   <el-table-column prop="url" :label="metaTitle+'链接'" width="200">
@@ -95,7 +95,7 @@
             </el-pagination>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">
+        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :close-on-click-modal="false">
             <el-form ref="form" :model="form" label-width="120px" :rules="rules" 
               style="width:85%;margin:0 auto;" autocomplete="off">
                 <el-form-item :label="metaTitle+'名称'" prop="title">

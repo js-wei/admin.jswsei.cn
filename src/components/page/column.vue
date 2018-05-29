@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-28 11:58:29
+ * Modified By: 2018-05-29 10:17:14
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -63,7 +63,8 @@
             </vue-scroll>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog title="栏目管理" :visible.sync="editVisible" width="30%" :show-close="false">
+        <el-dialog title="栏目管理" :visible.sync="editVisible" width="30%" 
+          :close-on-click-modal="false">
             <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
                 <el-form-item label="栏目名称" prop="title">
                   <el-input v-model="form.title" placeholder="栏目名称"></el-input>

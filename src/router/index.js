@@ -113,6 +113,10 @@ export default new Router({
                     }
                 },
                 {
+                    path:'/setting',
+                    component: resolve => require(['../components/page/setting.vue'], resolve)
+                },
+                {
                     path: '/form',
                     component: resolve => require(['../components/page/BaseForm.vue'], resolve),
                     meta: {

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-28 3:29:56
+ * Modified By: 2018-05-29 4:34:01
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -25,7 +25,9 @@
                 <el-button type="primary" class="handle-del mr10" 
                   @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
                 <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
-                <el-button type="success" class="handle-del mr10" v-if="tableData.length?'disabled':''"
+                <el-button type="success" class="handle-del mr10"  disabled v-if="!tableData.length"
+                  @click="checkPic"><i :class="metaIcon"></i>轮播演示</el-button>
+                <el-button type="success" class="handle-del mr10"  v-else
                   @click="checkPic"><i :class="metaIcon"></i>轮播演示</el-button>
               </div>
               <div class="pull-right">
@@ -97,7 +99,7 @@
             </el-pagination>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">
+        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :close-on-click-modal="false">
             <el-form ref="form" :model="form" label-width="90px" :rules="rules" 
               style="width:85%;margin:0 auto;" autocomplete="off">
                 <el-form-item :label="metaTitle+'名称'" prop="title">
@@ -110,7 +112,6 @@
                   <el-upload
                     class="upload-demo"
                     action="http://api.jswei.cn/posts/"
-                    :on-preview="handlePreview"
                     :on-remove="handleRemove"
                     :on-success="handleSuccess"
                     :before-upload="beforeAvatarUpload"
@@ -141,7 +142,7 @@
             </span>
         </el-dialog>
         <!-- 轮播演示 -->
-        <el-dialog :title="metaTitle+'演示'" :visible.sync="isCarousel" width="30%" :show-close="false">
+        <el-dialog :title="metaTitle+'演示'" :visible.sync="isCarousel" width="30%" :close-on-click-modal="false">
             <div class="block">
               <el-carousel trigger="click">
                 <el-carousel-item v-for="(item,index) in tableData" :key="index">
@@ -239,7 +240,7 @@ export default {
   },
   methods: {
     checkPic() {
-      this.isCarousel=true;
+      this.isCarousel = true;
     },
     beforeAvatarUpload(file) {
       const isJPG =
@@ -258,12 +259,14 @@ export default {
       return isJPG && isLt2M;
     },
     handleRemove(file) {
-      if (!file.response) return;
-      let path = file.response.path;
-      this.deleteImage(path);
-      this.rules.image;
+      if (file.response) {
+        let path = file.response.path;
+        this.deleteImage(path);
+        this.rules.image;
+      } else {
+        this.deleteImage(file.url);
+      }
     },
-    handlePreview(file) {},
     handleSuccess(file) {
       if (!file) return;
       this.form.image = file.path;

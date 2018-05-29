@@ -81,7 +81,9 @@ export default {
 .icon {
   font-size: 1.5rem;
 }
-.icon-mokuai,.icon-yibiaopan{
+.icon-mokuai,
+.icon-yibiaopan,
+.icon-shezhi {
   font-size: 2.2rem;
   margin-left: -4px;
 }

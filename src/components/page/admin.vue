@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-24 4:11:19
+ * Modified By: 2018-05-29 10:24:36
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -101,7 +101,7 @@
             </el-pagination>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog :title="metaTitle" :visible.sync="editVisible" width="25%" :show-close="false">
+        <el-dialog :title="metaTitle" :visible.sync="editVisible" width="25%" :close-on-click-modal="false">
             <el-form :model="form" :rules="rules" ref="form" label-width="80px" class="form" auto-complete="off">
                 <el-form-item label="会员账号" prop="username">
                     <el-input v-model="form.username" height="120"></el-input>

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-24 4:35:18
+ * Modified By: 2018-05-29 10:23:54
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -68,7 +68,7 @@
             </vue-scroll>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :show-close="false">
+        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :close-on-click-modal="false">
             <el-form ref="form" :model="form" label-width="100px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
                 <el-form-item :label="metaTitle+'名称'" prop="title">
                   <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
@@ -89,7 +89,7 @@
             </span>
         </el-dialog>
         <!-- 配置权限 -->
-        <el-dialog :title="metaTitle+'配置'" :visible.sync="powerVisible" width="40%" :show-close="false">
+        <el-dialog :title="metaTitle+'配置'" :visible.sync="powerVisible" width="40%" :close-on-click-modal="false">
             <el-form ref="form1" :model="form1" label-width="100px" :rules="rules1" style="margin-left:50px;" autocomplete="off">
                 <el-form-item label="权限配置" prop="power">
                    <el-transfer  :titles="['可选', '已选']"
@@ -102,7 +102,7 @@
             </span>
         </el-dialog>
         <!-- 查看权限 -->
-        <el-dialog :title="metaTitle+'查看'" :visible.sync="isCheck" width="25%" :show-close="false">
+        <el-dialog :title="metaTitle+'查看'" :visible.sync="isCheck" width="25%" >
             <el-tag type="danger" v-for="(item,index) in powerList" :key="index" class="mr-10">{{item.title}}</el-tag>
             <span slot="footer" class="dialog-footer">
               <el-button type="primary" @click="isCheck=false;">确 定</el-button>

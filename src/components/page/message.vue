@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-24 4:08:36
+ * Modified By: 2018-05-29 10:18:16
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -84,9 +84,9 @@
             </el-pagination>
         </div>
         <!-- 编辑弹出框 -->
-        <el-dialog title="消息管理" :visible.sync="editVisible" width="40%" :show-close="false">
+        <el-dialog title="消息管理" :visible.sync="editVisible" width="40%" :close-on-click-modal="false">
             <el-form :model="form" :rules="rules" ref="form" label-width="50px" class="form" auto-complete="off">
-                <el-form-item label="标题" prop="title">
+                <el-form-item label="标题" prop="title" class="w-50">
                     <el-input  v-model="form.title" height="120"></el-input>
                 </el-form-item>
                 <el-form-item label="内容" prop="content">

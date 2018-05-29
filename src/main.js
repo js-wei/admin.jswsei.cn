@@ -22,7 +22,7 @@ Vue.prototype.$vuescrollConfig = {
     },
     rail: {
         hRail: {
-            height:'15.5px'
+            //height:'6px'
         }
     }
 }
@@ -44,7 +44,8 @@ const options = {
 Vue.use(VueProgressBar, options)
 
 Vue.use(ElementUI, {
-    size: 'small'
+    size: 'small',
+    debug: false
 });
 
 import axios from 'axios'
@@ -88,7 +89,10 @@ router.beforeEach((to, from, next) => {
     let login = store.state.mutations.logined;
     if (!login && to.path !== '/login') {
         next({
-            path: '/login'
+            path: '/login',
+            query: {
+                redirect: to.fullPath
+            }
         });
     } else if (to.meta.permission) {
         // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已

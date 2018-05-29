@@ -3,7 +3,7 @@
         <ul>
             <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
                 <router-link :to="item.path" class="tags-li-title">
-                    {{item.title}}<span v-if="item.title.length<4">管理</span>
+                    {{item.title}}<span v-if="!item.title">管理</span>
                 </router-link>
                 <span class="tags-li-icon" @click="closeTags(index)"><i class="el-icon-close"></i></span>
             </li>
@@ -26,7 +26,8 @@
 export default {
   data() {
     return {
-      tagsList: []
+      tagsList: [],
+      act: {}
     };
   },
   methods: {
@@ -72,7 +73,7 @@ export default {
     handleTags(command) {
       command === "other" ? this.closeOther() : this.closeAll();
     },
-    getOne(name, route, column = false) {
+    getOne(name, route, column = true) {
       if (column) {
         this.axios.get("column_one", { params: { name: name } }).then(res => {
           res = res.data;
@@ -81,6 +82,11 @@ export default {
             if (current.index == route.params.id) {
               route.meta.title = current.title;
               route.meta.icon = current.icon;
+              this.act = {
+                title: current.title,
+                icon: `icon ${current.icon}`
+              };
+              this.$store.commit("SET_ACTIVE_NAVBAR", this.act);
               this.setTags(route);
             }
           }
@@ -92,7 +98,12 @@ export default {
             let current = res.result;
             if (current.index == route.params.id) {
               route.meta.title = current.title;
-              route.meta.icon = current.icon;
+              route.meta.icon = current.ico;
+              this.act = {
+                title: current.title,
+                icon: `icon ${current.ico}`
+              };
+              this.$store.commit("SET_ACTIVE_NAVBAR", this.act);
               this.setTags(route);
             }
           }
@@ -102,7 +113,7 @@ export default {
   },
   computed: {
     showTags() {
-      return this.tagsList.length > 0;
+      return this.tagsList.length;
     },
     fullPath() {
       return this.$route.fullPath;
@@ -113,10 +124,9 @@ export default {
       let id = newValue.params.id;
       if (!id) {
         let module = newValue.path.substring(1);
-        //this.setTags(newValue);
-        this.getOne(module, newValue);
+        this.getOne(module, newValue, false);
       } else {
-        this.getOne(id, newValue, true);
+        this.getOne(id, newValue);
       }
     }
   },

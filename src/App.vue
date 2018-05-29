@@ -13,8 +13,8 @@
 @import "../static/css/main.css";
 @import "../static/css/color-dark.css"; /*深色主题*/
 /*@import "../static/css/theme-green/color-green.css";   浅绿色主题*/
-html{
-  font-size:65.5%;
+html {
+  font-size: 65.5%;
 }
 .el-dialog__header {
   border-bottom: 1px solid #e2e2e2;
@@ -28,8 +28,13 @@ html{
 .el-radio + .el-radio {
   padding-left: 0;
 }
-.icon{
-  margin-right:4px;
+.icon {
+  margin-right: 4px;
+}
+@media screen and (min-width: 1200) {
+  .el-table {
+    padding-bottom: 10px;
+  }
 }
 </style>
 <script>

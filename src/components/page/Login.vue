@@ -38,6 +38,7 @@ export default {
       }
     };
   },
+  created() {},
   methods: {
     submitForm(formName) {
       const self = this;
@@ -62,7 +63,8 @@ export default {
             this.$message.success(res.msg);
             this.$store.commit("STE_LOADING_TEXT", null);
             this.$store.commit("HIDE_LOADING");
-            self.$router.push("/");
+            let redirect = this.$route.query.redirect || "/";
+            self.$router.push(redirect);
           }, 2e3);
         });
       });
@@ -109,7 +111,7 @@ export default {
 }
 </style>
 <style>
-.el-input--small .el-input__inner{
-  width:100%;
+.el-input--small .el-input__inner {
+  width: 100%;
 }
 </style>
