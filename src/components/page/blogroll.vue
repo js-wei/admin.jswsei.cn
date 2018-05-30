@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-29 10:43:55
+ * Modified By: 2018-05-30 1:27:58
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -242,10 +242,12 @@ export default {
       return isJPG && isLt2M;
     },
     handleRemove(file) {
-      if (!file.response) return;
-      let path = file.response.path;
-      this.deleteImage(path);
-      this.rules.logo;
+      if (file.response) {
+        let path = file.response.path;
+        this.deleteImage(path);
+      } else {
+        this.deleteImage(file.path);
+      }
     },
     handlePreview(file) {},
     handleSuccess(file) {
@@ -312,6 +314,7 @@ export default {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
+          return;
         }
         let data = res.result;
         if (data.type == 6) {
@@ -365,6 +368,7 @@ export default {
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
             this.$message.error(res.msg);
+            return;
           }
           this.$refs[formName].resetFields();
           this.form.description = "";
@@ -382,6 +386,7 @@ export default {
           res = res.data;
           if (!res.status) {
             this.$message.error(res.msg);
+            return;
           }
           this.tableData.splice(this.idx, 1);
           this.$message.success(res.msg);
@@ -392,6 +397,7 @@ export default {
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
             this.$message.error(res.msg);
+            return;
           }
           this.delList = [];
           this.getData();

@@ -26,8 +26,9 @@
                 <div class="user-avator"><img src="/static/images/10104372.gif"></div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
-                    <span class="el-dropdown-link" v-if="user.username">
-                        {{user.username}} <i class="el-icon-caret-bottom"></i>
+                    <span class="el-dropdown-link" v-if="user">
+                      {{user.username}} 
+                      <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <router-link to="/profile">
@@ -87,7 +88,6 @@ export default {
         this.$store.commit("STE_LOADING_TEXT", null);
         this.$store.commit("SET_LOGIN", null);
         this.$store.commit("HIDE_LOADING");
-        //sessionStorage.removeItem("ms_username");
         self.$router.push("/login");
       }, 2e3);
     },

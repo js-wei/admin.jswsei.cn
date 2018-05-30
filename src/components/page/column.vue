@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-29 10:17:14
+ * Modified By: 2018-05-30 10:17:18
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -291,6 +291,7 @@ export default {
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
             this.$message.error(res.msg);
+            return;
           }
           this.$refs[formName].resetFields();
           this.form.keywords = "";

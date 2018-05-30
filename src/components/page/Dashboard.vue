@@ -114,13 +114,25 @@ export default {
         { title: "测试", status: false },
         { title: "测试2", status: true },
         { title: "测试3", status: false }
-      ]
+      ],
+      msgCount:15,
     };
   },
   computed: {
     ...mapState({
       user: state => state.mutations.logined
     })
+  },
+  created() {
+    this.$notify({
+      title: "消息通知",
+      duration: 10e3,
+      dangerouslyUseHTMLString: true,
+      message: `您有
+        <a href="/message" style="font-size:16px;" class="text-danger pointer">${this.msgCount}</a>
+        条,新的消息等待处理!!<video src="../../../static/11.wav" autoplay class="hide"></video>`,
+      position: "top-right"
+    });
   }
 };
 </script>

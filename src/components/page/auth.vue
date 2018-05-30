@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 11:44:03
+ * Modified By: 2018-05-30 1:29:20
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -206,6 +206,7 @@ export default {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
+          return;
         }
         let data = res.result;
         if (data.type == 6) {
@@ -275,6 +276,7 @@ export default {
           res = res.data;
           if (!res.status) {
             this.$message.error(res.msg);
+            return;
           }
           this.tableData.splice(this.idx, 1);
           this.$message.success(res.msg);
@@ -285,6 +287,7 @@ export default {
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
             this.$message.error(res.msg);
+            return;
           }
           this.delList = [];
           this.getData();

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-29 3:35:48
+ * Modified By: 2018-05-30 11:11:49
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -30,7 +30,6 @@
                 <el-form-item label="网站LOGO" prop="logo">
                   <el-upload
                     action="http://api.jswei.cn/posts/"
-                    :on-preview="handlePreview"
                     :on-remove="handleRemove"
                     :on-success="handleSuccess"
                     :before-upload="beforeAvatarUpload"
@@ -72,8 +71,8 @@
                 <el-form-item label="联系人" class="w-60">
                     <el-input v-model="ruleForm.conact" placeholder="联系人"></el-input>
                 </el-form-item>
-                <el-form-item label="联系电话" class="w-60">
-                    <el-input v-model="ruleForm.tel" placeholder="联系电话"></el-input>
+                <el-form-item label="联系方式" class="w-60">
+                    <el-input v-model="ruleForm.tel" placeholder="联系方式(手机或固话)"></el-input>
                 </el-form-item>
                 <el-form-item label="公司名称" class="w-60">
                     <el-input v-model="ruleForm.company" placeholder="公司名称"></el-input>
@@ -82,8 +81,8 @@
                     <el-input v-model="ruleForm.address" placeholder="公司地址"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-                    <el-button @click="goback">返回上一页</el-button>
+                    <el-button type="primary" @click="submitForm('ruleForm')">提价</el-button>
+                    <el-button @click="goback">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -109,7 +108,7 @@ export default {
       callback();
     };
     let validateImage = (rule, value, callback) => {
-      if (!this.form.logo) {
+      if (!this.ruleForm.logo) {
         callback(new Error("请上传图片"));
         return;
       }
@@ -121,7 +120,7 @@ export default {
         id: 0,
         title: "",
         url: "",
-        logo:"",
+        logo: "",
         delivery: false,
         keywords: "",
         description: "",
@@ -132,7 +131,7 @@ export default {
         copyright: "",
         shard: "",
         code: "",
-        status:false
+        status: false
       },
       rules: {
         title: [{ required: true, message: "请输入网站名称", trigger: "blur" }],
@@ -145,26 +144,52 @@ export default {
         checklogo: [
           {
             validator: validateImage,
-            message: "请上传图片",
             trigger: "change"
           }
         ]
       }
     };
   },
-  created() {},
+  created() {
+    this.getData();
+  },
   computed: {
     ...mapState({
       current: state => state.mutations.activeBar
     })
   },
   methods: {
+    getData() {
+      this.axios.get("/setting").then(res => {
+        res = res.data;
+        if (res.status) {
+          this.ruleForm = res.result;
+          if (res.result.logo) {
+            this.fileList.push({
+              title: "logo",
+              url: res.result.logo
+            });
+          }
+        }
+      });
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) {
           return false;
         }
-        console.log(this.ruleForm);
+        this.$store.commit("SHOW_LOADING");
+        this.axios.post("/setting", this.ruleForm).then(res => {
+          res = res.data;
+          this.$store.commit("HIDE_LOADING");
+          if (!res.status) {
+            this.$message.error(res.msg);
+            return;
+          }
+          this.$refs[formName].resetFields();
+          this.getData();
+          this.$message.success(res.msg);
+        });
       });
     },
     goback(formName) {
@@ -186,14 +211,16 @@ export default {
       return isJPG && isLt2M;
     },
     handleRemove(file) {
-      if (!file.response) return;
-      let path = file.response.path;
-      this.deleteImage(path);
+      if (file.response) {
+        let path = file.response.path;
+        this.deleteImage(path);
+      } else {
+        this.deleteImage(file.path);
+      }
     },
-    handlePreview(file) {},
     handleSuccess(file) {
-      if (!file) return;
-      this.form.logo = file.path;
+      if (!file.status) return;
+      this.ruleForm.logo = file.path;
     },
     deleteImage(path) {
       this.axios.delete(`../posts`, { params: { path: path } }).then(res => {
@@ -203,7 +230,7 @@ export default {
           return;
         }
         this.$message.success(res.msg);
-        this.form.logo = "";
+        this.ruleForm.logo = "";
       });
     }
   }

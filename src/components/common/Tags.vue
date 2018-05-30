@@ -84,7 +84,8 @@ export default {
               route.meta.icon = current.icon;
               this.act = {
                 title: current.title,
-                icon: `icon ${current.icon}`
+                icon: `icon ${current.icon}`,
+                fid: current.fid
               };
               this.$store.commit("SET_ACTIVE_NAVBAR", this.act);
               this.setTags(route);
@@ -101,7 +102,8 @@ export default {
               route.meta.icon = current.ico;
               this.act = {
                 title: current.title,
-                icon: `icon ${current.ico}`
+                icon: `icon ${current.ico}`,
+                fid: current.fid == "顶级栏目" ? 0 : current.fid
               };
               this.$store.commit("SET_ACTIVE_NAVBAR", this.act);
               this.setTags(route);

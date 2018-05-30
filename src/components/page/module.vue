@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-29 10:16:04
+ * Modified By: 2018-05-30 1:33:52
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -217,6 +217,7 @@ export default {
         res = res.data;
         if (!res.status) {
           this.$message.error(res.msg);
+          return;
         }
         let data = res.result;
         if (data.type == 6) {
@@ -261,13 +262,13 @@ export default {
           return false;
         }
         this.editVisible = false;
-        //this.form.status = this.form.sta == "正常" ? 0 : 1;
         this.$store.commit("SHOW_LOADING");
         this.axios.post("/module", this.form).then(res => {
           res = res.data;
           this.$store.commit("HIDE_LOADING");
           if (!res.status) {
             this.$message.error(res.msg);
+            return;
           }
           this.$refs[formName].resetFields();
           this.form.keywords = "";

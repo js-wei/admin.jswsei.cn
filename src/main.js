@@ -48,9 +48,13 @@ Vue.use(ElementUI, {
     debug: false
 });
 
+import MetaInfo from 'vue-meta-info'
+Vue.use(MetaInfo)
+
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
+
 
 axios.defaults.baseURL = 'http://api.jswei.cn/admin';
 //过滤OPTINS
