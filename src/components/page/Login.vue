@@ -2,14 +2,14 @@
     <div class="login-wrap">
         <div class="ms-title">后台管理系统</div>
         <div class="ms-login">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm"
             class="ruleForm" autocomplete="off">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="请输入用户名" 
+                    <el-input v-model="ruleForm.username" placeholder="请输入用户名"
                       autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" 
+                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password"
                       @keyup.enter.native="submitForm('ruleForm')" autocomplete="off"></el-input>
                 </el-form-item>
                 <div class="login-btn">
@@ -25,6 +25,12 @@
 import md5 from "js-md5";
 export default {
   data: function() {
+    var validPassword = (rule, value, callback) => {
+        if (!value && !this.pass) {
+          return callback(new Error('请输入密码'));
+        }
+        callback();
+      };
     return {
       ruleForm: {
         username: "524314430@qq.com",
@@ -34,7 +40,7 @@ export default {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" }
         ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        password: [{ validator: validPassword, trigger: ["blur,change"] }]
       }
     };
   },
@@ -47,6 +53,7 @@ export default {
           return;
         }
         this.ruleForm.pass = md5(this.ruleForm.password);
+        delete this.ruleForm.password;
         this.$store.commit("SHOW_LOADING");
         this.$store.commit("STE_LOADING_TEXT", "正在登陆中...");
         this.axios.post("/user", this.ruleForm).then(res => {
@@ -62,7 +69,7 @@ export default {
           setTimeout(() => {
             this.$message.success(res.msg);
             this.$store.commit("STE_LOADING_TEXT", null);
-            this.$store.commit("HIDE_LOADING");
+	    this.$store.commit("HIDE_LOADING");
             let redirect = this.$route.query.redirect || "/";
             self.$router.push(redirect);
           }, 2e3);
