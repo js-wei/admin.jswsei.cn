@@ -31,6 +31,10 @@ html {
 .icon {
   margin-right: 4px;
 }
+.handle-box{
+  height: auto;
+  overflow: hidden;
+}
 @media screen and (min-width: 1200) {
   .el-table {
     padding-bottom: 10px;

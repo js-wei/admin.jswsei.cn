@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-30 1:33:52
+ * Modified By: 2018-07-10 9:55:39
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -25,7 +25,7 @@
                 @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
                 <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
             </div>
-            <vue-scroll>
+            <el-scrollbar>
               <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
                 @selection-change="handleSelectionChange">
                   <el-table-column type="selection" width="55"></el-table-column>
@@ -62,7 +62,7 @@
                       </template>
                   </el-table-column>
               </el-table>
-            </vue-scroll>
+            </el-scrollbar>
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" 
