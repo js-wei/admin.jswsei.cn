@@ -13,82 +13,81 @@
  */
  
 <template>
-    <div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i :class="current.icon"></i>{{current.title}}</el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
-        <div class="container">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
-                label-width="100px" class="ruleForm">
-                <h2 class="conact-title">网站基本信息</h2>
-                <hr class="mb-10">
-                <el-form-item label="网站名称" prop="title" class="w-60">
-                    <el-input v-model="ruleForm.title" placeholder="网站名称"></el-input>
-                </el-form-item>
-                <el-form-item label="网站LOGO" prop="logo">
-                  <el-upload
-                    action="http://api.jswei.cn/posts/"
-                    :on-remove="handleRemove"
-                    :on-success="handleSuccess"
-                    :before-upload="beforeAvatarUpload"
-                    :file-list="fileList"
-                    list-type="picture"
-                    :multiple="false"
-                    name="image">
-                    <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过2MB</div>
-                  </el-upload>
-                </el-form-item>
-                <el-form-item label="网站域名" prop="url" class="w-80">
-                    <el-input v-model="ruleForm.url" placeholder="网站域名(eg:https://baidu.com)"></el-input>
-                </el-form-item>
-                <el-form-item label="网站关键词" class="textarea">
-                    <el-input type="textarea" v-model="ruleForm.keywords" placeholder="网站关键词"></el-input>
-                </el-form-item>
-                <el-form-item label="网站说明" class="textarea">
-                    <el-input type="textarea" v-model="ruleForm.description" 
-                        placeholder="网站说明"></el-input>
-                </el-form-item>
-                <el-form-item label="关闭网站">
-                    <el-switch v-model="ruleForm.status"></el-switch>
-                </el-form-item>
-                <el-form-item label="备案号" class="w-60">
-                    <el-input v-model="ruleForm.icp" placeholder="备案号"></el-input>
-                </el-form-item>
-                <el-form-item label="版权信息" class="w-60">
-                    <el-input v-model="ruleForm.copyright" placeholder="版权信息"></el-input>
-                </el-form-item>
-                <el-form-item label="分享代码" class="textarea">
-                    <el-input type="textarea" v-model="ruleForm.shard" placeholder="分享代码"></el-input>
-                </el-form-item>
-                <el-form-item label="统计代码" class="textarea">
-                    <el-input type="textarea" v-model="ruleForm.code" placeholder="统计代码"></el-input>
-                </el-form-item>
-                <h2 class="conact-title">网站联系人信息</h2>
-                <hr class="mb-10">
-                <el-form-item label="联系人" class="w-60">
-                    <el-input v-model="ruleForm.conact" placeholder="联系人"></el-input>
-                </el-form-item>
-                <el-form-item label="联系方式" class="w-60">
-                    <el-input v-model="ruleForm.tel" placeholder="联系方式(手机或固话)"></el-input>
-                </el-form-item>
-                <el-form-item label="公司名称" class="w-60">
-                    <el-input v-model="ruleForm.company" placeholder="公司名称"></el-input>
-                </el-form-item>
-                <el-form-item label="公司地址" class="w-60">
-                    <el-input v-model="ruleForm.address" placeholder="公司地址"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">提价</el-button>
-                    <el-button @click="goback">返回</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
+  <div>
+    <div class="crumbs">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item><i :class="current.icon"></i>{{current.title}}</el-breadcrumb-item>
+      </el-breadcrumb>
     </div>
+    <div class="container">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
+        label-width="100px" class="ruleForm">
+        <h2 class="conact-title">网站基本信息</h2>
+        <hr class="mb-10">
+        <el-form-item label="网站名称" prop="title" class="w-60">
+          <el-input v-model="ruleForm.title" placeholder="网站名称"></el-input>
+        </el-form-item>
+        <el-form-item label="网站LOGO" prop="logo">
+          <el-upload
+            action="http://api.jswei.cn/posts/"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+            :before-upload="beforeAvatarUpload"
+            :file-list="fileList"
+            list-type="picture"
+            :multiple="false"
+            name="image">
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过2MB</div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="网站域名" prop="url" class="w-80">
+          <el-input v-model="ruleForm.url" placeholder="网站域名(eg:https://baidu.com)"></el-input>
+        </el-form-item>
+        <el-form-item label="网站关键词" class="textarea">
+          <el-input type="textarea" v-model="ruleForm.keywords" placeholder="网站关键词"></el-input>
+        </el-form-item>
+        <el-form-item label="网站说明" class="textarea">
+          <el-input type="textarea" v-model="ruleForm.description" 
+            placeholder="网站说明"></el-input>
+        </el-form-item>
+        <el-form-item label="关闭网站">
+          <el-switch v-model="ruleForm.status"></el-switch>
+        </el-form-item>
+        <el-form-item label="备案号" class="w-60">
+          <el-input v-model="ruleForm.icp" placeholder="备案号"></el-input>
+        </el-form-item>
+        <el-form-item label="版权信息" class="w-60">
+          <el-input v-model="ruleForm.copyright" placeholder="版权信息"></el-input>
+        </el-form-item>
+        <el-form-item label="分享代码" class="textarea">
+          <el-input type="textarea" v-model="ruleForm.shard" placeholder="分享代码"></el-input>
+        </el-form-item>
+        <el-form-item label="统计代码" class="textarea">
+          <el-input type="textarea" v-model="ruleForm.code" placeholder="统计代码"></el-input>
+        </el-form-item>
+        <h2 class="conact-title">网站联系人信息</h2>
+        <hr class="mb-10">
+        <el-form-item label="联系人" class="w-60">
+          <el-input v-model="ruleForm.conact" placeholder="联系人"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式" class="w-60">
+          <el-input v-model="ruleForm.tel" placeholder="联系方式(手机或固话)"></el-input>
+        </el-form-item>
+        <el-form-item label="公司名称" class="w-60">
+          <el-input v-model="ruleForm.company" placeholder="公司名称"></el-input>
+        </el-form-item>
+        <el-form-item label="公司地址" class="w-60">
+          <el-input v-model="ruleForm.address" placeholder="公司地址"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+          <el-button @click="goback">返回</el-button>
+      </el-form-item>
+      </el-form>
+    </div>
+  </div>
 </template>
-
 <script>
 import { mapState } from 'vuex'
 export default {
@@ -161,6 +160,7 @@ export default {
   methods: {
     getData () {
       this.axios.get('/setting').then(res => {
+        this.fileList = []
         res = res.data
         if (res.status) {
           this.ruleForm = res.result
@@ -179,7 +179,8 @@ export default {
           return false
         }
         this.$store.commit('SHOW_LOADING')
-        this.axios.post('/setting', this.ruleForm).then(res => {
+        this.ruleForm.status = (this.ruleForm.status === true) ? 1 : 0
+        this.axios.post('/settings', this.ruleForm).then(res => {
           res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {

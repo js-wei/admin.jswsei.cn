@@ -12,9 +12,26 @@
                                     <div>{{user.gid === -1 ? "超级管理员" : "普通用户"}}</div>
                                 </div>
                             </div>
-                            <div class="user-info-list">最后登录时间：<span>{{user.last_date|formartDate}}</span></div>
-                            <div class="user-info-list">最后登录的IP：<span>{{user.last_address|filterAddress}}</span></div>
-                            <div class="user-info-list">最后登录地点：<span>{{user.last_address|filterAddress(1)}}</span></div>                            
+                            <div class="user-info-list">
+                              <div class="tip">
+                                最后登录时间：
+                              </div>
+                              <div class="ttp">{{user.last_date|formartDate}}</div>
+                            </div>
+                            <div class="user-info-list">
+                              <div class="tip">
+                                最后登录的IP：
+                              </div>
+                              <div class="pull-right ttp">{{user.last_ip}}</div>
+                            </div>
+                            <div class="user-info-list">
+                              <div class="tip">
+                                最后登录地点：
+                              </div>
+                              <div class="ttp">
+                                {{user.last_address}}
+                              </div>
+                            </div>                            
                         </el-card>
                         <el-card shadow="hover" class="statistics">
                             <div slot="header" class="clearfix">
@@ -178,9 +195,17 @@ export default {
       font-size: 1.2rem;
       color: #999;
       line-height: 1.8rem;
-      margin-left: 20px;
-      span {
-        margin-left: 40px;
+      margin-left: .8px;
+      display: flex;
+      div{
+        flex-direction: row;
+        &:nth-of-type(1){
+          width: 35%;
+        }
+        &:nth-of-type(2){
+          width:65%;
+          text-align: right;
+        }
       }
     }
   }

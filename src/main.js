@@ -52,6 +52,7 @@ axios.defaults.baseURL = process.env.baseUrl
 
 // 过滤OPTINS
 axios.interceptors.request.use(function (config) {
+  store.commit('SHOW_LOADING')
   config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
   if (config.method === 'post') {
     config.data = qs.stringify({
@@ -60,8 +61,20 @@ axios.interceptors.request.use(function (config) {
   }
   return config
 }, function (error) {
+  store.commit('HIDE_LOADING')
   return Promise.reject(error)
 })
+
+axios.interceptors.response.use(
+  response => {
+    store.commit('HIDE_LOADING')
+    return response
+  },
+  error => {
+    store.commit('HIDE_LOADING')
+    return Promise.reject(error.response.data)
+  }
+)
 
 Object.keys(Filters).forEach(key => Vue.filter(key, Filters[key]))
 

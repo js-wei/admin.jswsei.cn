@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-17 10:36:48
+ * Modified By: 2018-08-18 1:57:12
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -20,101 +20,99 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="handle-box">
-                <el-button type="primary" class="handle-del mr10" 
-                @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
-                <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
-            </div>
-            <vue-scroll>
-              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-                @selection-change="handleSelectionChange">
-                  <el-table-column type="selection" width="50"></el-table-column>
-                  <el-table-column prop="title" :label="metaTitle+'名称'" width="220">
-                    <template slot-scope="scope">
-                      <span v-html="scope.row.html"></span>
-                      <span>{{scope.row.title}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="name" :label="metaTitle+'标识'" width="220">
-                  </el-table-column>
-                  <el-table-column prop="power" :label="metaTitle+'标识'"  width="220">
-                    <template slot-scope="scope">
-                      <a class="pointer" @click.stop="checkPower(scope.$index,scope.row.power)">查看权限</a>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="tag" label="状态" width="200">
-                    <template slot-scope="scope">
-                      <a @click="changeStatus(scope.row)" class="pointer">
-                        <el-tag
-                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
-                          {{scope.row.status}}
-                        </el-tag>
-                      </a>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="create_time" label="添加时间" sortable width="250">
-                  </el-table-column>
-                  <el-table-column label="操作" width="350">
-                      <template slot-scope="scope">
-                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)" 
-                            class="ml-0 mb-1">编辑</el-button>
-                          <el-button type="primary" @click="setPower(scope.$index, scope.row)"
-                            class="ml-0 mb-1">配置权限</el-button>                        
-                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" 
-                            class="ml-0">删除</el-button>
-                      </template>
-                  </el-table-column>
-              </el-table>
-            </vue-scroll>
+          <div class="handle-box">
+              <el-button type="primary" class="handle-del mr10" 
+              @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
+              <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
+          </div>
+          <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+            @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="50"></el-table-column>
+            <el-table-column prop="title" :label="metaTitle+'名称'">
+              <template slot-scope="scope">
+                <span v-html="scope.row.html"></span>
+                <span>{{scope.row.title}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" :label="metaTitle+'标识'">
+            </el-table-column>
+            <el-table-column prop="power" :label="metaTitle+'标识'">
+              <template slot-scope="scope">
+                <a class="pointer link" @click.stop="checkPower(scope.$index,scope.row.power)">查看权限</a>
+              </template>
+            </el-table-column>
+            <el-table-column prop="tag" label="状态" width="80">
+              <template slot-scope="scope">
+                <a @click="changeStatus(scope.row)" class="pointer">
+                  <el-tag
+                    :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                    {{scope.row.status}}
+                  </el-tag>
+                </a>
+              </template>
+            </el-table-column>
+            <el-table-column prop="create_time" label="添加时间" sortable width="150">
+            </el-table-column>
+            <el-table-column label="操作" width="250">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" 
+                  class="ml-0 mb-1">编辑</el-button>
+                <el-button size="mini" type="primary" @click="setPower(scope.$index, scope.row)"
+                  class="ml-0 mb-1">配置权限</el-button>                        
+                <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" 
+                  class="ml-0">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :close-on-click-modal="false">
-            <el-form ref="form" :model="form" label-width="100px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
-                <el-form-item :label="metaTitle+'名称'" prop="title">
-                  <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
-                </el-form-item>
-                <el-form-item :label="metaTitle+'标识'" prop="name">
-                  <el-input v-model="form.name" :placeholder="metaTitle+'标识'"></el-input>
-                </el-form-item>
-                <el-form-item label="启用">
-                  <el-radio-group v-model="form.status">
-                    <el-radio label="正常" value="1"></el-radio>
-                    <el-radio label="禁用" value="2"></el-radio>
-                  </el-radio-group>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="cancel('form')">取 消</el-button>
-              <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
-            </span>
+          <el-form ref="form" :model="form" label-width="100px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
+              <el-form-item :label="metaTitle+'名称'" prop="title">
+                <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
+              </el-form-item>
+              <el-form-item :label="metaTitle+'标识'" prop="name">
+                <el-input v-model="form.name" :placeholder="metaTitle+'标识'"></el-input>
+              </el-form-item>
+              <el-form-item label="启用">
+                <el-radio-group v-model="form.status">
+                  <el-radio label="正常" value="1"></el-radio>
+                  <el-radio label="禁用" value="2"></el-radio>
+                </el-radio-group>
+              </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="cancel('form')">取 消</el-button>
+            <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
+          </span>
         </el-dialog>
         <!-- 配置权限 -->
         <el-dialog :title="metaTitle+'配置'" :visible.sync="powerVisible" width="40%" :close-on-click-modal="false">
-            <el-form ref="form1" :model="form1" label-width="100px" :rules="rules1" style="margin-left:50px;" autocomplete="off">
-                <el-form-item label="权限配置" prop="power">
-                   <el-transfer  :titles="['可选', '已选']"
-                    v-model="selectedList" :data="selectModule"  @change="handleChange"></el-transfer>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="powerVisible=false;selectedList=[];form1.id=0;">取 消</el-button>
-              <el-button type="primary" @click="savePower('form1')">确 定</el-button>
-            </span>
+          <el-form ref="form1" :model="form1" label-width="100px" :rules="rules1" style="margin-left:50px;" autocomplete="off">
+              <el-form-item label="权限配置" prop="power">
+                  <el-transfer  :titles="['可选', '已选']"
+                  v-model="selectedList" :data="selectModule"  @change="handleChange"></el-transfer>
+              </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="powerVisible=false;selectedList=[];form1.id=0;">取 消</el-button>
+            <el-button type="primary" @click="savePower('form1')">确 定</el-button>
+          </span>
         </el-dialog>
         <!-- 查看权限 -->
-        <el-dialog :title="metaTitle+'查看'" :visible.sync="isCheck" width="25%" >
-            <el-tag type="danger" v-for="(item,index) in powerList" :key="index" class="mr-10">{{item.title}}</el-tag>
-            <span slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="isCheck=false;">确 定</el-button>
-            </span>
+        <el-dialog :title="metaTitle+'查看'" :visible.sync="isCheck" width="30%" >
+          <el-tag type="danger" v-for="(item,index) in powerList" :key="index" class="mr-10">{{item.title}}</el-tag>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="isCheck=false;">确 定</el-button>
+          </span>
         </el-dialog>
         <!-- 删除提示框 -->
         <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="delVisible = false;">取 消</el-button>
-                <el-button type="primary" @click="deleteRow">确 定</el-button>
-            </span>
+          <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+          <span slot="footer" class="dialog-footer">
+              <el-button @click="delVisible = false;">取 消</el-button>
+              <el-button type="primary" @click="deleteRow">确 定</el-button>
+          </span>
         </el-dialog>
     </div>
 </template>

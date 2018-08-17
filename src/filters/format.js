@@ -76,7 +76,7 @@ export const subString = (content, lng, flag = false) => {
   return flag ? content.substring(0, lng) + '...' : content.substring(0, lng)
 }
 /**
- * [is_default 默认值]
+ * [isDefault 默认值]
  * @param  {[type]} content            [内容]
  * @param  {String} [str='似乎没有内容'] [替换内容]
  * @return {[type]}                    [description]

@@ -13,141 +13,139 @@
  */
 <template>
     <div class="message">
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i :class="metaIcon"></i> {{metaTitle}}</el-breadcrumb-item>
-            </el-breadcrumb>
+      <div class="crumbs">
+          <el-breadcrumb separator="/">
+              <el-breadcrumb-item><i :class="metaIcon"></i> {{metaTitle}}</el-breadcrumb-item>
+          </el-breadcrumb>
+      </div>
+      <div class="container">
+        <div class="handle-box">
+          <div class="pull-left">
+            <el-button type="primary" class="handle-del" @click="delAll"><i class="icon icon-shanchu"></i> 批量删除</el-button>
+            <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i> 添加会员</el-button>
+          </div>
+          <div class="pull-right">
+            <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
+            <el-date-picker
+              v-model="select_date"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :value-format="'yyyy-MM-dd HH:mm:ss'">
+            </el-date-picker>
+            <el-select v-model="select_type" placeholder="状态" class="handle-select">
+              <el-option  label="全部" value=""></el-option>
+              <el-option  label="正常" value="1"></el-option>
+              <el-option  label="禁用" value="2"></el-option>
+            </el-select>
+            <el-button type="primary" icon="search" @click="search">搜索</el-button>
+          </div>
         </div>
-        <div class="container">
-            <div class="handle-box">
-               <div class="pull-left">
-                    <el-button type="primary" class="handle-del" @click="delAll"><i class="icon icon-shanchu"></i> 批量删除</el-button>
-                    <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i> 添加会员</el-button>
-               </div>
-               <div class="pull-right">
-                    <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
-                    <el-date-picker
-                        v-model="select_date"
-                        type="daterange"
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        :value-format="'yyyy-MM-dd HH:mm:ss'">
-                    </el-date-picker>
-                    <el-select v-model="select_type" placeholder="状态" class="handle-select">
-                        <el-option  label="全部" value=""></el-option>
-                        <el-option  label="正常" value="1"></el-option>
-                        <el-option  label="禁用" value="2"></el-option>
-                    </el-select>
-                    <el-button type="primary" icon="search" @click="search">搜索</el-button>
-               </div>
-            </div>
-            <vue-scroll>
-              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-                @selection-change="handleSelectionChange">
-                  <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="username" label="会员账号" width="220">
-                    <template slot-scope="scope">
-                      <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="pass" label="会员密码" width="220">
-                      <template slot-scope="scope">
-                          <el-button size="small" type="primary" 
-                              @click="resetPassword(scope.$index, scope.row.id)">重置密码</el-button>
-                      </template>
-                  </el-table-column>
-                  <el-table-column prop="type" label="群组"  width="220">
-                      <template slot-scope="scope">
-                          <a class="pointer" @click="checkGroup(scope.row)">
-                            <el-tag
-                              :type="scope.row.gid == -1 ? 'danger' : 'primary'" 
-                              disable-transitions>
-                              <span v-if="scope.row.gid==-1">超级管理员</span>
-                              <span v-else>{{scope.row.gid}}</span>
-                            </el-tag>
-                          </a>
-                      </template>
-                  </el-table-column>
-                  <el-table-column prop="tag" label="状态" width="220">
-                    <template slot-scope="scope">
-                      <a @click="changeStatus(scope.row)" class="pointer">
-                          <el-tag
-                            :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
-                            disable-transitions>
-                          {{scope.row.status}}
-                        </el-tag>
-                      </a>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="create_time" label="添加时间" sortable width="220">
-                  </el-table-column>
-                  <el-table-column label="操作" width="350">
-                      <template slot-scope="scope">
-                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                          <el-button size="small" type="primary" @click="handleAuth(scope.$index, scope.row.id)">配置权限</el-button>
-                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                      </template>
-                  </el-table-column>
-              </el-table>
-            </vue-scroll>
-            <el-pagination v-if="tableData.length"
-                background
-                layout="prev, pager, next"
-                :total="totals"
-                :page-size="per_page"
-                class="mt-10"
-                @current-change="currentChange">
-            </el-pagination>
+        <el-table :data="tableData" border ref="multipleTable" 
+          @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="username" label="会员账号" width="200">
+            <template slot-scope="scope">
+              <a href="javascript:;" @click.stop="see(scope.$index, scope.row)">{{scope.row.username}}</a>
+            </template>
+          </el-table-column>
+          <el-table-column prop="pass" label="会员密码">
+            <template slot-scope="scope">
+              <el-button size="small" type="primary" 
+                @click="resetPassword(scope.$index, scope.row.id)">重置密码</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="type" label="群组">
+            <template slot-scope="scope">
+              <a class="pointer" @click="checkGroup(scope.row)">
+                <el-tag
+                  :type="scope.row.gid == -1 ? 'danger' : 'primary'" 
+                  disable-transitions>
+                  <span v-if="scope.row.gid==-1">超级管理员</span>
+                  <span v-else>{{scope.row.gid}}</span>
+                </el-tag>
+              </a>
+            </template>
+          </el-table-column>
+          <el-table-column prop="tag" label="状态" width="120">
+            <template slot-scope="scope">
+              <a @click="changeStatus(scope.row)" class="pointer">
+                  <el-tag
+                    :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
+                    disable-transitions>
+                  {{scope.row.status}}
+                </el-tag>
+              </a>
+            </template>
+          </el-table-column>
+          <el-table-column prop="create_time" label="添加时间" sortable width="150">
+          </el-table-column>
+          <el-table-column label="操作" width="250">
+            <template slot-scope="scope">
+              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" type="primary" @click="handleAuth(scope.$index, scope.row.id)">配置权限</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination v-if="tableData.length"
+          background
+          layout="prev, pager, next"
+          :total="totals"
+          :page-size="per_page"
+          class="mt-10"
+          @current-change="currentChange">
+        </el-pagination>
+      </div>
+      <!-- 编辑弹出框 -->
+      <el-dialog :title="metaTitle" :visible.sync="editVisible" width="30%" :close-on-click-modal="false">
+          <el-form :model="form" :rules="rules" ref="form" label-width="80px" class="form" auto-complete="off">
+              <el-form-item label="会员账号" prop="username">
+                  <el-input v-model="form.username" height="120"></el-input>
+              </el-form-item>
+              <el-form-item label="会员密码" prop="pass">
+                  <el-input v-model="form.pass"></el-input>
+                  <a class="pointer" @click="createPassword">生成密码</a>
+              </el-form-item>
+              <el-form-item label="状态">
+                <el-radio-group v-model="form.status">
+                  <el-radio label="正常" value="0"></el-radio>
+                  <el-radio label="禁用" value="1"></el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item class="mt-20">
+                  <el-button type="primary" @click="saveEdit('form')">提交</el-button>
+                  <el-button @click="cancel('form')">取消</el-button>
+              </el-form-item>
+          </el-form>
+      </el-dialog>
+      <!-- 删除提示框 -->
+      <el-dialog title="提示" :visible.sync="delVisible" width="20%" center>
+          <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+          <span slot="footer" class="dialog-footer">
+              <el-button @click="delVisible = false">取 消</el-button>
+              <el-button type="primary" @click="deleteRow">确 定</el-button>
+          </span>
+      </el-dialog>
+      <!-- 查看内容 -->
+      <el-dialog
+        title="查看账号"
+        :visible.sync="detailVisible"
+        width="30%">
+        <div>
+          <p>账号:{{detail.username}}</p>
+          <p>密码:{{detail.pass}}</p>
+          <p>生成方式:{{detail.type}}</p>
+          <p>常用地址:{{detail.region}}</p>
+          <p>添加时间:{{detail.create_time}}</p>
+          <p>最后登录IP:{{detail.last_login_ip}}</p>
+          <p>最后登录时间:{{detail.last_login_time|isDefault('未登录')}}</p>
         </div>
-        <!-- 编辑弹出框 -->
-        <el-dialog :title="metaTitle" :visible.sync="editVisible" width="25%" :close-on-click-modal="false">
-            <el-form :model="form" :rules="rules" ref="form" label-width="80px" class="form" auto-complete="off">
-                <el-form-item label="会员账号" prop="username">
-                    <el-input v-model="form.username" height="120"></el-input>
-                </el-form-item>
-                <el-form-item label="会员密码" prop="pass">
-                    <el-input v-model="form.pass"></el-input>
-                    <a class="pointer" @click="createPassword">生成密码</a>
-                </el-form-item>
-                <el-form-item label="状态">
-                  <el-radio-group v-model="form.status">
-                    <el-radio label="正常" value="0"></el-radio>
-                    <el-radio label="禁用" value="1"></el-radio>
-                  </el-radio-group>
-                </el-form-item>
-                <el-form-item class="mt-20">
-                    <el-button type="primary" @click="saveEdit('form')">提交</el-button>
-                    <el-button @click="cancel('form')">取消</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-        <!-- 删除提示框 -->
-        <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="delVisible = false">取 消</el-button>
-                <el-button type="primary" @click="deleteRow">确 定</el-button>
-            </span>
-        </el-dialog>
-        <!-- 查看内容 -->
-        <el-dialog
-            title="查看账号"
-            :visible.sync="detailVisible"
-            width="20%">
-            <div>
-              <p>账号:{{detail.username}}</p>
-              <p>密码:{{detail.pass}}</p>
-              <p>生成方式:{{detail.type}}</p>
-              <p>常用地址:{{detail.region}}</p>
-              <p>添加时间:{{detail.create_time}}</p>
-              <p>最后登录IP:{{detail.last_login_ip}}</p>
-              <p>最后登录时间:{{detail.last_login_time|is_default('未登录')}}</p>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="detailVisible=false">确 定</el-button>
-            </span>
-        </el-dialog>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="detailVisible=false">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
 </template>
 

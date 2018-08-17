@@ -14,151 +14,149 @@
 
 <template>
     <div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i :class="metaIcon"></i>{{metaTitle}}管理</el-breadcrumb-item>
-            </el-breadcrumb>
+      <div class="crumbs">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item><i :class="metaIcon"></i>{{metaTitle}}管理</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <div class="container">
+        <div class="handle-box">
+          <div class="pull-left">
+            <el-button type="primary" class="handle-del mr10" 
+              @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
+            <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
+            <el-button type="success" class="handle-del mr10"  disabled v-if="!tableData.length"
+              @click="checkPic"><i :class="metaIcon"></i>轮播演示</el-button>
+            <el-button type="success" class="handle-del mr10"  v-else
+              @click="checkPic"><i :class="metaIcon"></i>轮播演示</el-button>
+          </div>
+          <div class="pull-right">
+              <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
+              <el-date-picker
+                  v-model="select_date"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :value-format="'yyyy-MM-dd HH:mm:ss'">
+              </el-date-picker>
+              <el-select v-model="select_type" placeholder="状态" class="handle-select">
+                  <el-option  label="全部" value=""></el-option>
+                  <el-option  label="正常" value="1"></el-option>
+                  <el-option  label="禁用" value="2"></el-option>
+              </el-select>
+              <el-button type="primary" icon="el-icon-search" @click="search" class="pull-right ml-5">搜索</el-button>
+          </div>
         </div>
-        <div class="container">
-            <div class="handle-box">
-              <div class="pull-left">
-                <el-button type="primary" class="handle-del mr10" 
-                  @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
-                <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
-                <el-button type="success" class="handle-del mr10"  disabled v-if="!tableData.length"
-                  @click="checkPic"><i :class="metaIcon"></i>轮播演示</el-button>
-                <el-button type="success" class="handle-del mr10"  v-else
-                  @click="checkPic"><i :class="metaIcon"></i>轮播演示</el-button>
-              </div>
-              <div class="pull-right">
-                  <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
-                  <el-date-picker
-                      v-model="select_date"
-                      type="daterange"
-                      range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
-                      :value-format="'yyyy-MM-dd HH:mm:ss'">
-                  </el-date-picker>
-                  <el-select v-model="select_type" placeholder="状态" class="handle-select">
-                      <el-option  label="全部" value=""></el-option>
-                      <el-option  label="正常" value="1"></el-option>
-                      <el-option  label="禁用" value="2"></el-option>
-                  </el-select>
-                  <el-button type="primary" icon="el-icon-search" @click="search" class="pull-right ml-5">搜索</el-button>
-              </div>
-            </div>
-            <vue-scroll>
-              <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
-                @selection-change="handleSelectionChange">
-                  <el-table-column type="selection" width="50"></el-table-column>
-                  <el-table-column prop="title" :label="metaTitle+'名称'" width="200">
-                    <template slot-scope="scope">
-                      <span v-html="scope.row.html"></span>
-                      <span>{{scope.row.title}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="image" :label="metaTitle+'图片'" width="200">
-                     <template slot-scope="scope">
-                      <img :src="scope.row.image" :alt="scope.row.title" height="32">
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="url" :label="metaTitle+'链接'" width="200">
-                    <template slot-scope="scope">
-                     <span>{{scope.row.url|is_default('未填写')}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="tag" label="状态" width="200">
-                    <template slot-scope="scope">
-                      <a @click="changeStatus(scope.row)" class="pointer">
-                        <el-tag
-                          :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
-                          {{scope.row.status}}
-                        </el-tag>
-                      </a>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="sort" label="排序" sortable width="150"></el-table-column>
-                  <el-table-column prop="create_time" label="添加时间" sortable width="200">
-                  </el-table-column>
-                  <el-table-column label="操作" width="300">
-                      <template slot-scope="scope">
-                          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                      </template>
-                  </el-table-column>
-              </el-table>
-            </vue-scroll>
-            <el-pagination v-if="tableData.length"
-                background
-                layout="prev, pager, next"
-                :total="totals"
-                :page-size="per_page"
-                class="mt-10"
-                @current-change="currentChange">
-            </el-pagination>
+        <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+          @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="50"></el-table-column>
+          <el-table-column prop="title" :label="metaTitle+'名称'">
+            <template slot-scope="scope">
+              <span v-html="scope.row.html"></span>
+              <span>{{scope.row.title}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="image" :label="metaTitle+'图片'">
+              <template slot-scope="scope">
+              <img :src="scope.row.image" :alt="scope.row.title" height="32">
+            </template>
+          </el-table-column>
+          <el-table-column prop="url" :label="metaTitle+'链接'">
+            <template slot-scope="scope">
+              <span>{{scope.row.url|isDefault('未填写')}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="tag" label="状态" width="100">
+            <template slot-scope="scope">
+              <a @click="changeStatus(scope.row)" class="pointer">
+                <el-tag
+                  :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                  {{scope.row.status}}
+                </el-tag>
+              </a>
+            </template>
+          </el-table-column>
+          <el-table-column prop="sort" label="排序" sortable width="150"></el-table-column>
+          <el-table-column prop="create_time" label="添加时间" sortable width="150">
+          </el-table-column>
+          <el-table-column label="操作" width="150">
+            <template slot-scope="scope">
+              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination v-if="tableData.length"
+          background
+          layout="prev, pager, next"
+          :total="totals"
+          :page-size="per_page"
+          class="mt-10"
+          @current-change="currentChange">
+        </el-pagination>
+      </div>
+      <!-- 编辑弹出框 -->
+      <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="40%" :close-on-click-modal="false">
+        <el-form ref="form" :model="form" label-width="90px" :rules="rules" 
+          style="width:85%;margin:0 auto;" autocomplete="off">
+          <el-form-item :label="metaTitle+'名称'" prop="title">
+            <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
+          </el-form-item>
+          <el-form-item :label="metaTitle+'名称'" prop="url">
+            <el-input v-model="form.url" :placeholder="metaTitle+'链接地址(eg:http://baidu.com)'"></el-input>
+          </el-form-item>
+          <el-form-item :label="metaTitle+'图片'" prop="image">
+            <el-upload
+              class="upload-demo"
+              action="http://api.jswei.cn/posts/"
+              :on-remove="handleRemove"
+              :on-success="handleSuccess"
+              :before-upload="beforeAvatarUpload"
+              :file-list="fileList"
+              list-type="picture"
+              :multiple="false"
+              name="image">
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过2MB</div>
+            </el-upload>
+          </el-form-item>
+          <el-form-item :label="metaTitle+'说明'">
+              <el-input type="textarea" v-model="form.description" :placeholder="metaTitle+'说明'"></el-input>
+          </el-form-item>
+          <el-form-item :label="metaTitle+'排序'">
+            <el-input v-model="form.sort" :placeholder="metaTitle+'排序'"></el-input>
+          </el-form-item>
+          <el-form-item label="启用">
+            <el-radio-group v-model="form.status">
+              <el-radio label="正常" value="0"></el-radio>
+              <el-radio label="禁用" value="1"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancel('form')">取 消</el-button>
+          <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 轮播演示 -->
+      <el-dialog :title="metaTitle+'演示'" :visible.sync="isCarousel" width="40%" :close-on-click-modal="false">
+        <div class="block">
+          <el-carousel trigger="click">
+            <el-carousel-item v-for="(item,index) in tableData" :key="index">
+              <img :src="item.image" :alt="item.title" width="100%">
+            </el-carousel-item>
+          </el-carousel>
         </div>
-        <!-- 编辑弹出框 -->
-        <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="30%" :close-on-click-modal="false">
-            <el-form ref="form" :model="form" label-width="90px" :rules="rules" 
-              style="width:85%;margin:0 auto;" autocomplete="off">
-                <el-form-item :label="metaTitle+'名称'" prop="title">
-                  <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
-                </el-form-item>
-                <el-form-item :label="metaTitle+'名称'" prop="url">
-                  <el-input v-model="form.url" :placeholder="metaTitle+'链接地址(eg:http://baidu.com)'"></el-input>
-                </el-form-item>
-                <el-form-item :label="metaTitle+'图片'" prop="image">
-                  <el-upload
-                    class="upload-demo"
-                    action="http://api.jswei.cn/posts/"
-                    :on-remove="handleRemove"
-                    :on-success="handleSuccess"
-                    :before-upload="beforeAvatarUpload"
-                    :file-list="fileList"
-                    list-type="picture"
-                    :multiple="false"
-                    name="image">
-                    <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/jpeg/png文件，且不超过2MB</div>
-                  </el-upload>
-                </el-form-item>
-                <el-form-item :label="metaTitle+'说明'">
-                    <el-input type="textarea" v-model="form.description" :placeholder="metaTitle+'说明'"></el-input>
-                </el-form-item>
-                <el-form-item :label="metaTitle+'排序'">
-                  <el-input v-model="form.sort" :placeholder="metaTitle+'排序'"></el-input>
-                </el-form-item>
-                <el-form-item label="启用">
-                  <el-radio-group v-model="form.status">
-                    <el-radio label="正常" value="0"></el-radio>
-                    <el-radio label="禁用" value="1"></el-radio>
-                  </el-radio-group>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="cancel('form')">取 消</el-button>
-              <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
-            </span>
-        </el-dialog>
-        <!-- 轮播演示 -->
-        <el-dialog :title="metaTitle+'演示'" :visible.sync="isCarousel" width="30%" :close-on-click-modal="false">
-            <div class="block">
-              <el-carousel trigger="click">
-                <el-carousel-item v-for="(item,index) in tableData" :key="index">
-                  <img :src="item.image" :alt="item.title" width="100%">
-                </el-carousel-item>
-              </el-carousel>
-            </div>
-        </el-dialog>
-        <!-- 删除提示框 -->
-        <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="delVisible = false">取 消</el-button>
-                <el-button type="primary" @click="deleteRow">确 定</el-button>
-            </span>
-        </el-dialog>
+      </el-dialog>
+      <!-- 删除提示框 -->
+      <el-dialog title="提示" :visible.sync="delVisible" width="20%" center>
+        <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button type="primary" @click="deleteRow">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
 </template>
 
@@ -182,7 +180,6 @@ export default {
       }
       callback()
     }
-
     return {
       fileList: [],
       tableData: [],

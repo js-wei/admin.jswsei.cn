@@ -3,7 +3,7 @@
         <div class="ms-title">后台管理系统</div>
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm"
-            class="ruleForm" autocomplete="off">
+              class="ruleForm" autocomplete="off">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="请输入用户名"
                       autocomplete="off"></el-input>
@@ -15,7 +15,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>
+                <!-- <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p> -->
             </el-form>
         </div>
     </div>
@@ -26,7 +26,7 @@ import md5 from 'js-md5'
 export default {
   data: function () {
     var validPassword = (rule, value, callback) => {
-      if (!value && !this.pass) {
+      if (!value) {
         return callback(new Error('请输入密码'))
       }
       callback()
@@ -40,7 +40,7 @@ export default {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        password: [{ validator: validPassword, trigger: ['blur,change'] }]
+        password: [{ validator: validPassword, trigger: ['blur', 'change'] }]
       }
     }
   },
@@ -119,6 +119,6 @@ export default {
 </style>
 <style>
 .el-input--small .el-input__inner {
-  width: 100%;
+  width: 100% !important;
 }
 </style>

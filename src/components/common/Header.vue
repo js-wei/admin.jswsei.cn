@@ -2,55 +2,55 @@
     <div class="header">
         <!-- 折叠按钮 -->
         <div class="collapse-btn" @click="collapseChage">
-            <i class="el-icon-menu"></i>
+          <i class="el-icon-menu"></i>
         </div>
         <div class="logo">后台管理系统</div>
         <div class="header-right">
-            <div class="header-user-con">
-                <!-- 全屏显示 -->
-                <div class="btn-fullscreen" @click="handleFullScreen">
-                    <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
-                        <i class="el-icon-rank"></i>
-                    </el-tooltip>
-                </div>
-                <!-- 消息中心 -->
-                <div class="btn-bell">
-                    <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
-                        <router-link to="/tabs">
-                            <i class="el-icon-bell"></i>
-                        </router-link>
-                    </el-tooltip>
-                    <span class="btn-bell-badge" v-if="message"></span>
-                </div>
-                <!-- 用户头像 -->
-                <div class="user-avator"><img src="/static/images/10104372.gif"></div>
-                <!-- 用户名下拉菜单 -->
-                <el-dropdown class="user-name" trigger="click" @command="handleCommand">
-                    <span class="el-dropdown-link" v-if="user">
-                      {{user.username}} 
-                      <i class="el-icon-caret-bottom"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <router-link to="/profile">
-                            <el-dropdown-item>修改密码</el-dropdown-item>
-                        </router-link>
-                        <!-- <router-link to="/setting">
-                            <el-dropdown-item>账号设置</el-dropdown-item>
-                        </router-link> -->
-                        <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+          <div class="header-user-con">
+            <!-- 全屏显示 -->
+            <div class="btn-fullscreen" @click="handleFullScreen">
+              <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
+                <i class="el-icon-rank"></i>
+              </el-tooltip>
             </div>
+            <!-- 消息中心 -->
+            <div class="btn-bell">
+              <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
+                <router-link to="/tabs">
+                  <i class="el-icon-bell"></i>
+                </router-link>
+              </el-tooltip>
+              <span class="btn-bell-badge" v-if="message"></span>
+            </div>
+            <!-- 用户头像 -->
+            <div class="user-avator"><img src="/static/images/10104372.gif"></div>
+            <!-- 用户名下拉菜单 -->
+            <el-dropdown class="user-name" trigger="click" @command="handleCommand">
+              <span class="el-dropdown-link" v-if="user">
+                {{user.username}} 
+                <i class="el-icon-caret-bottom"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <router-link to="/profile">
+                  <el-dropdown-item>修改密码</el-dropdown-item>
+                </router-link>
+                <!-- <router-link to="/setting">
+                    <el-dropdown-item>账号设置</el-dropdown-item>
+                </router-link> -->
+                <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
         </div>
        <el-dialog
-            title="提示"
-            :visible.sync="detailVisible"
-            width="20%">
-            <span class="dialog-body ml-20"><i class="el-icon-question mr-4"></i>您确定要登出吗?</span>
-            <span slot="footer" class="dialog-footer">
-                <el-button  @click="detailVisible=false">取 消</el-button>
-                <el-button type="primary" @click="logout">确 定</el-button>
-            </span>
+          title="提示"
+          :visible.sync="detailVisible"
+          width="20%">
+          <span class="dialog-body ml-20"><i class="el-icon-question mr-4"></i>您确定要登出吗?</span>
+          <span slot="footer" class="dialog-footer">
+              <el-button  @click="detailVisible=false">取 消</el-button>
+              <el-button type="primary" @click="logout">确 定</el-button>
+          </span>
         </el-dialog>
     </div>
 </template>
@@ -191,8 +191,8 @@ export default {
 }
 .user-avator img {
   display: block;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
 }
 .el-dropdown-link {
