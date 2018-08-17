@@ -55,17 +55,17 @@
     </div>
 </template>
 <script>
-import bus from "../common/bus";
-import { mapState } from "vuex";
+import bus from '../common/bus'
+import { mapState } from 'vuex'
 export default {
-  data() {
+  data () {
     return {
       collapse: false,
       fullscreen: false,
-      name: "未知用户",
+      name: '未知用户',
       message: 2,
       detailVisible: false
-    };
+    }
   },
   computed: {
     ...mapState({
@@ -74,57 +74,57 @@ export default {
   },
   methods: {
     // 用户名下拉菜单选择事件
-    handleCommand(command) {
-      if (command == "loginout") {
-        this.detailVisible = true;
+    handleCommand (command) {
+      if (String(command) === 'loginout') {
+        this.detailVisible = true
       }
     },
-    logout() {
-      this.$store.commit("SHOW_LOADING");
-      this.$store.commit("STE_LOADING_TEXT", "正在登出中...");
-      let self = this;
-      self.detailVisible = false;
+    logout () {
+      this.$store.commit('SHOW_LOADING')
+      this.$store.commit('STE_LOADING_TEXT', '正在登出中...')
+      let self = this
+      self.detailVisible = false
       setTimeout(() => {
-        this.$store.commit("STE_LOADING_TEXT", null);
-        this.$store.commit("SET_LOGIN", null);
-        this.$store.commit("HIDE_LOADING");
-        self.$router.push("/login");
-      }, 2e3);
+        this.$store.commit('STE_LOADING_TEXT', null)
+        this.$store.commit('SET_LOGIN', null)
+        this.$store.commit('HIDE_LOADING')
+        self.$router.push('/login')
+      }, 2e3)
     },
     // 侧边栏折叠
-    collapseChage() {
-      this.collapse = !this.collapse;
-      bus.$emit("collapse", this.collapse);
+    collapseChage () {
+      this.collapse = !this.collapse
+      bus.$emit('collapse', this.collapse)
     },
     // 全屏事件
-    handleFullScreen() {
-      let element = document.documentElement;
+    handleFullScreen () {
+      let element = document.documentElement
       if (this.fullscreen) {
         if (document.exitFullscreen) {
-          document.exitFullscreen();
+          document.exitFullscreen()
         } else if (document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen();
+          document.webkitCancelFullScreen()
         } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
+          document.mozCancelFullScreen()
         } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
+          document.msExitFullscreen()
         }
       } else {
         if (element.requestFullscreen) {
-          element.requestFullscreen();
+          element.requestFullscreen()
         } else if (element.webkitRequestFullScreen) {
-          element.webkitRequestFullScreen();
+          element.webkitRequestFullScreen()
         } else if (element.mozRequestFullScreen) {
-          element.mozRequestFullScreen();
+          element.mozRequestFullScreen()
         } else if (element.msRequestFullscreen) {
           // IE11
-          element.msRequestFullscreen();
+          element.msRequestFullscreen()
         }
       }
-      this.fullscreen = !this.fullscreen;
+      this.fullscreen = !this.fullscreen
     }
   }
-};
+}
 </script>
 <style lang="scss">
 @import "../../assets/base";

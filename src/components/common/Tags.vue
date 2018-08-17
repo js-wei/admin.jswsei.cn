@@ -24,118 +24,118 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       tagsList: [],
       act: {}
-    };
+    }
   },
   methods: {
-    isActive(path) {
-      return path === this.$route.path;
+    isActive (path) {
+      return path === this.$route.path
     },
     // 关闭单个标签
-    closeTags(index) {
-      const delItem = this.tagsList.splice(index, 1)[0];
+    closeTags (index) {
+      const delItem = this.tagsList.splice(index, 1)[0]
       const item = this.tagsList[index]
         ? this.tagsList[index]
-        : this.tagsList[index - 1];
+        : this.tagsList[index - 1]
       if (item) {
-        delItem.path === this.$route.path && this.$router.push(item.path);
+        delItem.path === this.$route.path && this.$router.push(item.path)
       } else {
-        this.$router.push("/");
+        this.$router.push('/')
       }
     },
     // 关闭全部标签
-    closeAll() {
-      this.tagsList = [];
-      this.$router.push("/");
+    closeAll () {
+      this.tagsList = []
+      this.$router.push('/')
     },
     // 关闭其他标签
-    closeOther() {
+    closeOther () {
       const curItem = this.tagsList.filter(item => {
-        return item.path === this.$route.path;
-      });
-      this.tagsList = curItem;
+        return item.path === this.$route.path
+      })
+      this.tagsList = curItem
     },
     // 设置标签
-    setTags(route) {
-      //@todo params
+    setTags (route) {
+      // @todo params
       const isExist = this.tagsList.some(item => {
-        return item.path === route.path;
-      });
+        return item.path === route.path
+      })
       !isExist &&
         this.tagsList.push({
           title: route.meta.title,
           path: route.path
-        });
+        })
     },
-    handleTags(command) {
-      command === "other" ? this.closeOther() : this.closeAll();
+    handleTags (command) {
+      command === 'other' ? this.closeOther() : this.closeAll()
     },
-    getOne(name, route, column = true) {
+    getOne (name, route, column = true) {
       if (column) {
-        this.axios.get("column_one", { params: { name: name } }).then(res => {
-          res = res.data;
+        this.axios.get('column_one', { params: { name: name } }).then(res => {
+          res = res.data
           if (res.status) {
-            let current = res.result;
-            if (current.index == route.params.id) {
-              route.meta.title = current.title;
-              route.meta.icon = current.icon;
+            let current = res.result
+            if (current.index === route.params.id) {
+              route.meta.title = current.title
+              route.meta.icon = current.icon
               this.act = {
                 title: current.title,
                 icon: `icon ${current.icon}`,
                 fid: current.fid
-              };
-              this.$store.commit("SET_ACTIVE_NAVBAR", this.act);
-              this.setTags(route);
+              }
+              this.$store.commit('SET_ACTIVE_NAVBAR', this.act)
+              this.setTags(route)
             }
           }
-        });
+        })
       } else {
-        this.axios.get("module_one", { params: { name: name } }).then(res => {
-          res = res.data;
+        this.axios.get('module_one', { params: { name: name } }).then(res => {
+          res = res.data
           if (res.status) {
-            let current = res.result;
-            if (current.index == route.params.id) {
-              route.meta.title = current.title;
-              route.meta.icon = current.ico;
+            let current = res.result
+            if (current.index === route.params.id) {
+              route.meta.title = current.title
+              route.meta.icon = current.ico
               this.act = {
                 title: current.title,
                 icon: `icon ${current.ico}`,
-                fid: current.fid == "顶级栏目" ? 0 : current.fid
-              };
-              this.$store.commit("SET_ACTIVE_NAVBAR", this.act);
-              this.setTags(route);
+                fid: current.fid === '顶级栏目' ? 0 : current.fid
+              }
+              this.$store.commit('SET_ACTIVE_NAVBAR', this.act)
+              this.setTags(route)
             }
           }
-        });
+        })
       }
     }
   },
   computed: {
-    showTags() {
-      return this.tagsList.length;
+    showTags () {
+      return this.tagsList.length
     },
-    fullPath() {
-      return this.$route.fullPath;
+    fullPath () {
+      return this.$route.fullPath
     }
   },
   watch: {
-    $route(newValue, oldValue) {
-      let id = newValue.params.id;
+    $route (newValue, oldValue) {
+      let id = newValue.params.id
       if (!id) {
-        let module = newValue.path.substring(1);
-        this.getOne(module, newValue, false);
+        let module = newValue.path.substring(1)
+        this.getOne(module, newValue, false)
       } else {
-        this.getOne(id, newValue);
+        this.getOne(id, newValue)
       }
     }
   },
-  created() {
-    this.setTags(this.$route);
+  created () {
+    this.setTags(this.$route)
   }
-};
+}
 </script>
 
 

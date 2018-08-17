@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-30 1:30:32
+ * Modified By: 2018-08-17 10:36:48
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -121,14 +121,14 @@
 
 <script>
 export default {
-  data() {
+  data () {
     var validate = (rule, value, callback) => {
       if (!this.selectedList.length && this.powerVisible) {
-        callback(new Error("请选择可操作模块"));
-        return;
+        callback(new Error('请选择可操作模块'))
+        return
       }
-      callback();
-    };
+      callback()
+    }
     return {
       tableData: [],
       delList: [],
@@ -143,256 +143,256 @@ export default {
       row: [],
       form: {
         id: 0,
-        title: "",
-        name: "",
-        status: "正常"
+        title: '',
+        name: '',
+        status: '正常'
       },
       rules: {
         title: [
           {
             required: true,
-            message: "请输入权限组名称",
-            trigger: "blur"
+            message: '请输入权限组名称',
+            trigger: 'blur'
           }
         ],
         name: [
           {
             required: true,
-            message: "请输入权限组标识",
-            trigger: "blur"
+            message: '请输入权限组标识',
+            trigger: 'blur'
           }
         ]
       },
       form1: {
         id: 0,
-        title: "",
-        power: ""
+        title: '',
+        power: ''
       },
       rules1: {
         power: [
           {
             validator: validate,
-            trigger: "change"
+            trigger: 'change'
           }
         ]
       }
-    };
+    }
   },
-  created() {
-    this.getData();
+  created () {
+    this.getData()
   },
   computed: {
-    metaTitle() {
-      return this.$route.meta.title;
+    metaTitle () {
+      return this.$route.meta.title
     },
-    metaIcon() {
-      return "icon " + this.$route.meta.icon;
+    metaIcon () {
+      return 'icon ' + this.$route.meta.icon
     }
   },
   methods: {
-    getData() {
+    getData () {
       this.axios
-        .get("/group", {
+        .get('/group', {
           where: [
-            { field: "title", op: "eq", value: this.select_word },
-            { field: "status", op: "eq", value: this.select_cate },
-            { field: "create_time", op: "between", value: this.select_date }
+            { field: 'title', op: 'eq', value: this.select_word },
+            { field: 'status', op: 'eq', value: this.select_cate },
+            { field: 'create_time', op: 'between', value: this.select_date }
           ]
         })
         .then(res => {
-          res = res.data;
+          res = res.data
           if (res.status) {
-            res = res.result;
-            this.tableData = res.data;
-            this.cur_page = res.current_page;
-            this.totals = res.last_page;
+            res = res.result
+            this.tableData = res.data
+            this.cur_page = res.current_page
+            this.totals = res.last_page
           }
-        });
+        })
     },
-    changeStatus(scope) {
-      let status = scope.status == "正常" ? 2 : 1;
+    changeStatus (scope) {
+      let status = scope.status === '正常' ? 2 : 1
       this.axios.put(`/group/${scope.id}?status=${status}`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
-          return;
+          this.$message.error(res.msg)
+          return
         }
-        this.getData();
-      });
+        this.getData()
+      })
     },
-    search() {
-      this.getData();
+    search () {
+      this.getData()
     },
-    handleEdit(index, row) {
+    handleEdit (index, row) {
       this.axios.get(`/group/${row.id}/edit`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
-          return;
+          this.$message.error(res.msg)
+          return
         }
-        let data = res.result;
-        if (data.type == 6) {
-          this.isRedirect = true;
-          this.last_url = data.url;
+        let data = res.result
+        if (data.type === 6) {
+          this.isRedirect = true
+          this.last_url = data.url
         }
         this.form = {
           id: data.id,
           title: data.title,
           name: data.name,
           status: data.status
-        };
-      });
-      this.editVisible = true;
+        }
+      })
+      this.editVisible = true
     },
-    handleDelete(index, row) {
-      this.idx = index;
-      this.row = row;
-      this.delVisible = true;
+    handleDelete (index, row) {
+      this.idx = index
+      this.row = row
+      this.delVisible = true
     },
-    delAll() {
+    delAll () {
       if (!this.delList.length) {
-        this.$message.error("至少选择一条数据");
-        return;
+        this.$message.error('至少选择一条数据')
+        return
       }
-      this.isDelAll = true;
-      this.delVisible = true;
+      this.isDelAll = true
+      this.delVisible = true
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       val.forEach(item => {
-        this.delList.push(item.id);
-      });
+        this.delList.push(item.id)
+      })
     },
     // 保存编辑
-    saveEdit(formName) {
+    saveEdit (formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          return false;
+          return false
         }
-        this.editVisible = false;
-        this.$store.commit("SHOW_LOADING");
-        this.axios.post("/group", this.form).then(res => {
-          res = res.data;
-          this.$store.commit("HIDE_LOADING");
+        this.editVisible = false
+        this.$store.commit('SHOW_LOADING')
+        this.axios.post('/group', this.form).then(res => {
+          res = res.data
+          this.$store.commit('HIDE_LOADING')
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.$refs[formName].resetFields();
-          this.form.keywords = "";
-          this.form.description = "";
-          this.getData();
-          this.$message.success(res.msg);
-        });
-      });
+          this.$refs[formName].resetFields()
+          this.form.keywords = ''
+          this.form.description = ''
+          this.getData()
+          this.$message.success(res.msg)
+        })
+      })
     },
-    savePower(formName) {
+    savePower (formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          return false;
+          return false
         }
         this.axios
           .post(`/power`, {
             id: this.form1.id,
-            power: this.selectedList.join(",")
+            power: this.selectedList.join(',')
           })
           .then(res => {
-            res = res.data;
+            res = res.data
             if (!res.status) {
-              this.$message.error(res.msg);
-              return;
+              this.$message.error(res.msg)
+              return
             }
-            this.powerVisible = false;
-            this.$message.success(res.msg);
-            this.form1.id = 0;
-            this.selectedList = [];
-            this.getData();
-          });
-      });
+            this.powerVisible = false
+            this.$message.success(res.msg)
+            this.form1.id = 0
+            this.selectedList = []
+            this.getData()
+          })
+      })
     },
     // 确定删除
-    deleteRow() {
-      this.$store.commit("SHOW_LOADING");
+    deleteRow () {
+      this.$store.commit('SHOW_LOADING')
       if (!this.isDelAll) {
         this.axios.delete(`/group/${this.row.id}`).then(res => {
-          this.$store.commit("HIDE_LOADING");
-          res = res.data;
+          this.$store.commit('HIDE_LOADING')
+          res = res.data
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.tableData.splice(this.idx, 1);
-          this.$message.success(res.msg);
-        });
+          this.tableData.splice(this.idx, 1)
+          this.$message.success(res.msg)
+        })
       } else {
-        this.axios.delete(`/group/${this.delList.join("_")}`).then(res => {
-          res = res.data;
-          this.$store.commit("HIDE_LOADING");
+        this.axios.delete(`/group/${this.delList.join('_')}`).then(res => {
+          res = res.data
+          this.$store.commit('HIDE_LOADING')
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.delList = [];
-          this.getData();
-          this.$message.success(res.msg);
-        });
+          this.delList = []
+          this.getData()
+          this.$message.success(res.msg)
+        })
       }
-      this.delVisible = false;
+      this.delVisible = false
     },
-    add() {
-      this.form.id = 0;
-      this.editVisible = true;
+    add () {
+      this.form.id = 0
+      this.editVisible = true
     },
-    cancel(formName) {
-      this.$refs[formName].resetFields();
-      this.form.id = 0;
-      this.editVisible = false;
+    cancel (formName) {
+      this.$refs[formName].resetFields()
+      this.form.id = 0
+      this.editVisible = false
     },
-    checkPower(index, scope) {
+    checkPower (index, scope) {
       if (!scope) {
-        this.$message.error("没有配置权限");
-        return;
+        this.$message.error('没有配置权限')
+        return
       }
       this.axios.get(`/check?id=${scope}`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          return;
+          return
         }
-        this.powerList = res.result;
-        this.isCheck = true;
-      });
+        this.powerList = res.result
+        this.isCheck = true
+      })
     },
-    setPower(index, scope) {
-      this.form1.id = scope.id;
-      this.form1.title = scope.title;
-      this.getModuleList();
-      this.getGroupPower();
-      this.powerVisible = true;
+    setPower (index, scope) {
+      this.form1.id = scope.id
+      this.form1.title = scope.title
+      this.getModuleList()
+      this.getGroupPower()
+      this.powerVisible = true
     },
-    handleChange(value, direction, movedKeys) {
+    handleChange (value, direction, movedKeys) {
       if (!this.selectedList) {
-        this.rules.selectedList;
+        // this.rules.selectedList
       }
     },
-    getModuleList() {
+    getModuleList () {
       this.axios.get(`/modules`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          return;
+          return
         }
-        this.selectModule = res.result;
-      });
+        this.selectModule = res.result
+      })
     },
-    getGroupPower() {
+    getGroupPower () {
       this.axios.get(`/powers?id=${this.form1.id}`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          return;
+          return
         }
-        this.selectedList = res.result;
-      });
+        this.selectedList = res.result
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -44,68 +44,68 @@
 </template>
 
 <script>
-import md5 from "js-md5";
-import { mapState } from "vuex";
+import md5 from 'js-md5'
+import { mapState } from 'vuex'
 export default {
-  data: function() {
+  data: function () {
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
+      if (value === '') {
+        callback(new Error('请输入密码'))
       } else {
-        if (this.ruleForm2.checkPass !== "") {
-          this.$refs.ruleForm2.validateField("checkPass");
+        if (this.ruleForm2.checkPass !== '') {
+          this.$refs.ruleForm2.validateField('checkPass')
         }
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.ruleForm2.pass) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       ruleForm2: {
-        username: "",
-        pass: "",
-        checkPass: "",
-        password: ""
+        username: '',
+        pass: '',
+        checkPass: '',
+        password: ''
       },
       rules2: {
-        pass: [{ validator: validatePass, trigger: "blur" }],
-        checkPass: [{ validator: validatePass2, trigger: "blur" }]
+        pass: [{ validator: validatePass, trigger: 'blur' }],
+        checkPass: [{ validator: validatePass2, trigger: 'blur' }]
       }
-    };
+    }
   },
   methods: {
-    submitForm(formName) {
+    submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          this.$message.error("缺少必要验证");
-          return;
+          this.$message.error('缺少必要验证')
+          return
         }
-        this.ruleForm2.password = md5(this.ruleForm2["pass"]);
-        this.$store.commit("SHOW_LOADING");
-        this.axios.post("save", this.ruleForm2).then(res => {
-          res = res.data;
+        this.ruleForm2.password = md5(this.ruleForm2['pass'])
+        this.$store.commit('SHOW_LOADING')
+        this.axios.post('save', this.ruleForm2).then(res => {
+          res = res.data
           if (!res || !res.status) {
-            this.$message.error(res.msg || "出错了");
-            return;
+            this.$message.error(res.msg || '出错了')
+            return
           }
-          this.$message.success(res.msg);
-          sessionStorage.removeItem("ms_username");
+          this.$message.success(res.msg)
+          sessionStorage.removeItem('ms_username')
           setTimeout(() => {
-            this.$store.commit("HIDE_LOADING");
-            this.$router.push("/login");
-          }, 3.5e3);
-        });
-      });
+            this.$store.commit('HIDE_LOADING')
+            this.$router.push('/login')
+          }, 3.5e3)
+        })
+      })
     },
-    back() {
-      this.$router.back();
+    back () {
+      this.$router.back()
     }
   },
   computed: {
@@ -113,10 +113,10 @@ export default {
       user: state => state.mutations.logined
     })
   },
-  created() {
-    this.ruleForm2.username = this.user.username;
+  created () {
+    this.ruleForm2.username = this.user.username
   }
-};
+}
 </script>
 
 <style scoped>

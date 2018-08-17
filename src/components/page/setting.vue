@@ -90,68 +90,68 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 export default {
-  data() {
+  data () {
     let validateUrl = (rule, value, callback) => {
       let strRegex =
-        "^((https|http|ftp|rtsp|mms)://)?[a-z0-9A-Z]{3}.[a-z0-9A-Z][a-z0-9A-Z]{0,61}?[a-z0-9A-Z].com|net|cn|cc (:s[0-9]{1-4})?/$";
-      let re = new RegExp(strRegex);
+        '^((https|http|ftp|rtsp|mms)://)?[a-z0-9A-Z]{3}.[a-z0-9A-Z][a-z0-9A-Z]{0,61}?[a-z0-9A-Z].com|net|cn|cc (:s[0-9]{1-4})?/$'
+      let re = new RegExp(strRegex)
       if (!value) {
-        callback(new Error("请填写地址"));
-        return;
+        callback(new Error('请填写地址'))
+        return
       }
       if (!re.test(value)) {
-        callback(new Error("请填写正确的地址"));
-        return;
+        callback(new Error('请填写正确的地址'))
+        return
       }
-      callback();
-    };
+      callback()
+    }
     let validateImage = (rule, value, callback) => {
       if (!this.ruleForm.logo) {
-        callback(new Error("请上传图片"));
-        return;
+        callback(new Error('请上传图片'))
+        return
       }
-      callback();
-    };
+      callback()
+    }
     return {
       fileList: [],
       ruleForm: {
         id: 0,
-        title: "",
-        url: "",
-        logo: "",
+        title: '',
+        url: '',
+        logo: '',
         delivery: false,
-        keywords: "",
-        description: "",
-        company: "",
-        address: "",
-        conact: "",
-        icp: "",
-        copyright: "",
-        shard: "",
-        code: "",
+        keywords: '',
+        description: '',
+        company: '',
+        address: '',
+        conact: '',
+        icp: '',
+        copyright: '',
+        shard: '',
+        code: '',
         status: false
       },
       rules: {
-        title: [{ required: true, message: "请输入网站名称", trigger: "blur" }],
+        title: [{ required: true, message: '请输入网站名称', trigger: 'blur' }],
         url: [
           {
             validator: validateUrl,
-            trigger: "blur"
+            trigger: 'blur'
           }
         ],
         checklogo: [
           {
             validator: validateImage,
-            trigger: "change"
+            trigger: 'change'
           }
         ]
       }
-    };
+    }
   },
-  created() {
-    this.getData();
+  created () {
+    this.getData()
   },
   computed: {
     ...mapState({
@@ -159,82 +159,82 @@ export default {
     })
   },
   methods: {
-    getData() {
-      this.axios.get("/setting").then(res => {
-        res = res.data;
+    getData () {
+      this.axios.get('/setting').then(res => {
+        res = res.data
         if (res.status) {
-          this.ruleForm = res.result;
+          this.ruleForm = res.result
           if (res.result.logo) {
             this.fileList.push({
-              title: "logo",
+              title: 'logo',
               url: res.result.logo
-            });
+            })
           }
         }
-      });
+      })
     },
-    submitForm(formName) {
+    submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          return false;
+          return false
         }
-        this.$store.commit("SHOW_LOADING");
-        this.axios.post("/setting", this.ruleForm).then(res => {
-          res = res.data;
-          this.$store.commit("HIDE_LOADING");
+        this.$store.commit('SHOW_LOADING')
+        this.axios.post('/setting', this.ruleForm).then(res => {
+          res = res.data
+          this.$store.commit('HIDE_LOADING')
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.$refs[formName].resetFields();
-          this.getData();
-          this.$message.success(res.msg);
-        });
-      });
+          this.$refs[formName].resetFields()
+          this.getData()
+          this.$message.success(res.msg)
+        })
+      })
     },
-    goback(formName) {
-      this.$router.back();
+    goback (formName) {
+      this.$router.back()
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload (file) {
       const isJPG =
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+        file.type === 'image/jpeg' ||
+        file.type === 'image/jpg' ||
+        file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 jpeg/jpg/png 格式!");
+        this.$message.error('上传头像图片只能是 jpeg/jpg/png 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
-    handleRemove(file) {
+    handleRemove (file) {
       if (file.response) {
-        let path = file.response.path;
-        this.deleteImage(path);
+        let path = file.response.path
+        this.deleteImage(path)
       } else {
-        this.deleteImage(file.path);
+        this.deleteImage(file.path)
       }
     },
-    handleSuccess(file) {
-      if (!file.status) return;
-      this.ruleForm.logo = file.path;
+    handleSuccess (file) {
+      if (!file.status) return
+      this.ruleForm.logo = file.path
     },
-    deleteImage(path) {
+    deleteImage (path) {
       this.axios.delete(`../posts`, { params: { path: path } }).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
-          return;
+          this.$message.error(res.msg)
+          return
         }
-        this.$message.success(res.msg);
-        this.ruleForm.logo = "";
-      });
+        this.$message.success(res.msg)
+        this.ruleForm.logo = ''
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

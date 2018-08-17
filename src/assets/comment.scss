@@ -1,0 +1,22 @@
+/*
+ * File: g:\vue\admin.jswsei.cn\src\assets\comment.scss
+ * Created Date: 2018-08-17 9:26:45
+ * Author: 魏巍
+ * -----
+ * Last Modified: 魏巍
+ * Modified By: 2018-08-17 9:32:37
+ * -----
+ * Copyright (c) 2018 魏巍
+ * ------
+ * All shall be well and all shall be well and all manner of things shall be well.
+ * We're doomed!
+ */
+
+ .scrollbar {
+  height: 98%;
+  overflow: hidden;
+  padding-bottom: 10px;
+  .el-scrollbar__wrap {
+    overflow-x: hidden !important;
+  }
+}

@@ -25,75 +25,75 @@ import {
 } from './mutation-type'
 
 const state = {
-    loading: false,
-    logined: null,
-    header: true,
-    footer: true,
-    loadingText: '请稍后...',
-    navbar: [],
-    activeBar: null
-};
+  loading: false,
+  logined: null,
+  header: true,
+  footer: true,
+  loadingText: '请稍后...',
+  navbar: [],
+  activeBar: null
+}
 
 const mutations = {
-    /*loading*/
-    [HIDE_LOADING](state) {
-        state.loading = false;
-    },
-    [SHOW_LOADING](state) {
-        state.loading = true;
-    },
-    [STE_LOADING_TEXT](state, text) {
-        state.loadingText = text || '请稍后...';
-    },
-    [SET_LOGIN](state, userInfo) {
-        state.logined = userInfo;
-    },
-    [SHOW_HEADER](state) {
-        state.header = true
-    },
-    [SHOW_FOOTER](state) {
-        state.footer = true
-    },
-    [HIDE_HEADER](state) {
-        state.header = false
-    },
-    [HIDE_FOOTER](state) {
-        state.footer = false
-    },
-    [SET_NAVBAR](state, navbar) {
-        state.navbar = navbar
-    },
-    [SET_ACTIVE_NAVBAR](state, navbar) {
-        state.activeBar = navbar
-    }
-};
+    /* loading */
+  [HIDE_LOADING] (state) {
+    state.loading = false
+  },
+  [SHOW_LOADING] (state) {
+    state.loading = true
+  },
+  [STE_LOADING_TEXT] (state, text) {
+    state.loadingText = text || '请稍后...'
+  },
+  [SET_LOGIN] (state, userInfo) {
+    state.logined = userInfo
+  },
+  [SHOW_HEADER] (state) {
+    state.header = true
+  },
+  [SHOW_FOOTER] (state) {
+    state.footer = true
+  },
+  [HIDE_HEADER] (state) {
+    state.header = false
+  },
+  [HIDE_FOOTER] (state) {
+    state.footer = false
+  },
+  [SET_NAVBAR] (state, navbar) {
+    state.navbar = navbar
+  },
+  [SET_ACTIVE_NAVBAR] (state, navbar) {
+    state.activeBar = navbar
+  }
+}
 
 const getters = {
-    getLoadingState(state) {
-        return state.loading;
-    },
-    getLoginedState(state) {
-        return state.logined;
-    },
-    getHeaderState(state) {
-        return state.header;
-    },
-    getFooterState(state) {
-        return state.footer;
-    },
-    getLoadingTextState(state) {
-        return state.loadingText;
-    },
-    getNavbarState(state) {
-        return state.navbar;
-    },
-    getActiveBarState(state) {
-        return state.activeBar;
-    }
-};
+  getLoadingState (state) {
+    return state.loading
+  },
+  getLoginedState (state) {
+    return state.logined
+  },
+  getHeaderState (state) {
+    return state.header
+  },
+  getFooterState (state) {
+    return state.footer
+  },
+  getLoadingTextState (state) {
+    return state.loadingText
+  },
+  getNavbarState (state) {
+    return state.navbar
+  },
+  getActiveBarState (state) {
+    return state.activeBar
+  }
+}
 
 export default {
-    state,
-    mutations,
-    getters
+  state,
+  mutations,
+  getters
 }

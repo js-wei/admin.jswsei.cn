@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-30 10:17:56
+ * Modified By: 2018-08-17 10:29:33
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -164,24 +164,24 @@
 
 <script>
 export default {
-  data() {
+  data () {
     let validateUrl = (rule, value, callback) => {
       let strRegex =
-        "^((https|http|ftp|rtsp|mms)://)?[a-z0-9A-Z]{3}.[a-z0-9A-Z][a-z0-9A-Z]{0,61}?[a-z0-9A-Z].com|net|cn|cc (:s[0-9]{1-4})?/$";
-      let re = new RegExp(strRegex);
-      if (value != "" && !re.test(value)) {
-        callback(new Error("请填写正确的地址"));
-        return;
+        '^((https|http|ftp|rtsp|mms)://)?[a-z0-9A-Z]{3}.[a-z0-9A-Z][a-z0-9A-Z]{0,61}?[a-z0-9A-Z].com|net|cn|cc (:s[0-9]{1-4})?/$'
+      let re = new RegExp(strRegex)
+      if (value !== '' && !re.test(value)) {
+        callback(new Error('请填写正确的地址'))
+        return
       }
-      callback();
-    };
+      callback()
+    }
     let validateImage = (rule, value, callback) => {
       if (!this.form.image) {
-        callback(new Error("请上传图片"));
-        return;
+        callback(new Error('请上传图片'))
+        return
       }
-      callback();
-    };
+      callback()
+    }
 
     return {
       fileList: [],
@@ -195,150 +195,148 @@ export default {
       current_page: 1,
       per_page: 5,
       totals: 0,
-      select_word: "",
-      select_type: "",
-      select_date: "",
+      select_word: '',
+      select_type: '',
+      select_date: '',
       row: [],
       form: {
         id: 0,
-        title: "",
-        url: "",
-        description: "",
-        image: "",
+        title: '',
+        url: '',
+        description: '',
+        image: '',
         sort: 100,
-        status: "正常"
+        status: '正常'
       },
       rules: {
         title: [
           {
             required: true,
-            message: "请输入模块名称",
-            trigger: "blur"
+            message: '请输入模块名称',
+            trigger: 'blur'
           }
         ],
-        url: [{ validator: validateUrl, trigger: "blur" }],
+        url: [{ validator: validateUrl, trigger: 'blur' }],
         image: [
           {
             validator: validateImage,
-            message: "请上传图片",
-            trigger: "change"
+            message: '请上传图片',
+            trigger: 'change'
           }
         ]
       }
-    };
+    }
   },
-  created() {
-    this.getData();
+  created () {
+    this.getData()
   },
   computed: {
-    metaTitle() {
-      return this.$route.meta.title;
+    metaTitle () {
+      return this.$route.meta.title
     },
-    metaIcon() {
-      return `icon ${this.$route.meta.icon}`;
+    metaIcon () {
+      return `icon ${this.$route.meta.icon}`
     }
   },
   methods: {
-    checkPic() {
-      this.isCarousel = true;
+    checkPic () {
+      this.isCarousel = true
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload (file) {
       const isJPG =
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/png";
+        file.type === 'image/jpeg' ||
+        file.type === 'image/jpg' ||
+        file.type === 'image/png'
 
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 jpeg/jpg/png 格式!");
+        this.$message.error('上传头像图片只能是 jpeg/jpg/png 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
-    handleRemove(file) {
+    handleRemove (file) {
       if (file.response) {
-        let path = file.response.path;
-        this.deleteImage(path);
-        this.rules.image;
+        let path = file.response.path
+        this.deleteImage(path)
       } else {
-        this.deleteImage(file.url);
+        this.deleteImage(file.url)
       }
     },
-    handleSuccess(file) {
-      if (!file) return;
-      this.form.image = file.path;
-      this.rules.image;
+    handleSuccess (file) {
+      if (!file) return
+      this.form.image = file.path
     },
-    deleteImage(path) {
-      this.axios.delete("../posts", { params: { path: path } }).then(res => {
-        res = res.data;
+    deleteImage (path) {
+      this.axios.delete('../posts', { params: { path: path } }).then(res => {
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
-          return;
+          this.$message.error(res.msg)
+          return
         }
-        this.$message.success(res.msg);
-        this.form.image = "";
-      });
+        this.$message.success(res.msg)
+        this.form.image = ''
+      })
     },
-    getData() {
+    getData () {
       this.axios
-        .get("/carousel", {
+        .get('/carousel', {
           params: {
             p: this.current_page,
             where: [
-              { field: "title", op: "like", value: this.select_word },
-              { field: "status", op: "eq", value: this.select_type },
-              { field: "create_time", op: "between", value: this.select_date }
+              { field: 'title', op: 'like', value: this.select_word },
+              { field: 'status', op: 'eq', value: this.select_type },
+              { field: 'create_time', op: 'between', value: this.select_date }
             ]
           }
         })
         .then(res => {
-          res = res.data;
+          res = res.data
           if (res.status) {
-            res = res.result;
-            this.tableData = res.data;
-            this.cur_page = res.current_page;
-            this.totals = res.total;
+            res = res.result
+            this.tableData = res.data
+            this.cur_page = res.current_page
+            this.totals = res.total
           }
-        });
+        })
     },
-    changeStatus(scope) {
-      let status = scope.status == "正常" ? "禁用" : "正常";
+    changeStatus (scope) {
+      let status = scope.status === '正常' ? '禁用' : '正常'
       this.axios.put(`/carousel/${scope.id}?status=${status}`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
-          return;
+          this.$message.error(res.msg)
+          return
         }
-        this.getData();
-      });
+        this.getData()
+      })
     },
-    currentChange(value) {
-      this.current_page = value;
-      this.getData(value);
+    currentChange (value) {
+      this.current_page = value
+      this.getData(value)
     },
-    search() {
-      this.getData();
+    search () {
+      this.getData()
     },
-    handleEdit(index, row) {
-      this.fileList = [];
+    handleEdit (index, row) {
+      this.fileList = []
       this.axios.get(`/carousel/${row.id}/edit`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
+          this.$message.error(res.msg)
         }
-        let data = res.result;
-        if (data.type == 6) {
-          this.isRedirect = true;
-          this.last_url = data.url;
+        let data = res.result
+        if (data.type === 6) {
+          this.isRedirect = true
+          this.last_url = data.url
         }
         this.fileList.push({
           name: data.title,
           url: data.image
-        });
+        })
         this.form = {
           id: data.id,
           title: data.title,
@@ -347,97 +345,97 @@ export default {
           url: data.url,
           sort: data.sort,
           status: data.status
-        };
-      });
-      this.editVisible = true;
+        }
+      })
+      this.editVisible = true
     },
-    handleDelete(index, row) {
-      this.idx = index;
-      this.row = row;
-      this.delVisible = true;
+    handleDelete (index, row) {
+      this.idx = index
+      this.row = row
+      this.delVisible = true
     },
-    delAll() {
+    delAll () {
       if (!this.delList.length) {
-        this.$message.error("至少选择一条数据");
-        return;
+        this.$message.error('至少选择一条数据')
+        return
       }
-      this.isDelAll = true;
-      this.delVisible = true;
+      this.isDelAll = true
+      this.delVisible = true
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       val.forEach(item => {
-        this.delList.push(item.id);
-      });
+        this.delList.push(item.id)
+      })
     },
     // 保存编辑
-    saveEdit(formName = "form") {
+    saveEdit (formName = 'form') {
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          return false;
+          return false
         }
-        this.editVisible = false;
-        this.$store.commit("SHOW_LOADING");
-        this.axios.post("/carousel", this.form).then(res => {
-          res = res.data;
-          this.$store.commit("HIDE_LOADING");
+        this.editVisible = false
+        this.$store.commit('SHOW_LOADING')
+        this.axios.post('/carousel', this.form).then(res => {
+          res = res.data
+          this.$store.commit('HIDE_LOADING')
           if (!res.status) {
-            this.$message.error(res.msg);
+            this.$message.error(res.msg)
           }
-          this.$refs[formName].resetFields();
-          this.form.keywords = "";
-          this.form.description = "";
-          this.getData();
-          this.$message.success(res.msg);
-        });
-      });
+          this.$refs[formName].resetFields()
+          this.form.keywords = ''
+          this.form.description = ''
+          this.getData()
+          this.$message.success(res.msg)
+        })
+      })
     },
     // 确定删除
-    deleteRow() {
-      this.$store.commit("SHOW_LOADING");
+    deleteRow () {
+      this.$store.commit('SHOW_LOADING')
       if (!this.isDelAll) {
         this.axios.delete(`/carousel/${this.row.id}`).then(res => {
-          this.$store.commit("HIDE_LOADING");
-          res = res.data;
+          this.$store.commit('HIDE_LOADING')
+          res = res.data
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.tableData.splice(this.idx, 1);
-          this.$message.success(res.msg);
-        });
+          this.tableData.splice(this.idx, 1)
+          this.$message.success(res.msg)
+        })
       } else {
-        this.axios.delete(`/carousel/${this.delList.join("_")}`).then(res => {
-          res = res.data;
-          this.$store.commit("HIDE_LOADING");
+        this.axios.delete(`/carousel/${this.delList.join('_')}`).then(res => {
+          res = res.data
+          this.$store.commit('HIDE_LOADING')
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.delList = [];
-          this.getData();
-          this.$message.success(res.msg);
-        });
+          this.delList = []
+          this.getData()
+          this.$message.success(res.msg)
+        })
       }
-      this.delVisible = false;
+      this.delVisible = false
     },
-    add() {
-      this.fileList = [];
-      this.form.id = 0;
-      this.form.srot = 100;
-      this.form.description = "";
-      this.form.image = "";
-      this.editVisible = true;
+    add () {
+      this.fileList = []
+      this.form.id = 0
+      this.form.srot = 100
+      this.form.description = ''
+      this.form.image = ''
+      this.editVisible = true
     },
-    cancel(formName) {
-      this.fileList = [];
-      this.$refs[formName].resetFields();
-      this.form.id = 0;
-      this.form.description = "";
-      this.form.image = "";
-      this.editVisible = false;
+    cancel (formName) {
+      this.fileList = []
+      this.$refs[formName].resetFields()
+      this.form.id = 0
+      this.form.description = ''
+      this.form.image = ''
+      this.editVisible = false
     }
   }
-};
+}
 </script>
 <style>
 .el-input__suffix {

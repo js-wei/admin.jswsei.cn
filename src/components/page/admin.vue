@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-30 1:28:20
+ * Modified By: 2018-08-17 10:18:18
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -152,17 +152,17 @@
 </template>
 
 <script>
-import md5 from "js-md5";
+import md5 from 'js-md5'
 export default {
-  data() {
+  data () {
     return {
       tableData: [],
       editVisible: false,
       delVisible: false,
       detailVisible: false,
-      select_word: "",
-      select_type: "",
-      select_date: "",
+      select_word: '',
+      select_type: '',
+      select_date: '',
       current_page: 1,
       last_page: 0,
       per_page: 5,
@@ -173,219 +173,219 @@ export default {
       detail: [],
       form: {
         id: 0,
-        pass: "",
-        username: "",
-        password: "",
-        status: "正常",
+        pass: '',
+        username: '',
+        password: '',
+        status: '正常',
         gid: []
       },
       rules: {
-        username: [{ required: true, message: "请输入账号", trigger: "blur" }],
+        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         pass: [
-          { required: true, message: "请输入密码", trigger: ["blur", "change"] }
+          { required: true, message: '请输入密码', trigger: ['blur', 'change'] }
         ]
       },
       idx: 0
-    };
+    }
   },
-  created() {
-    this.getData();
+  created () {
+    this.getData()
   },
   computed: {
-    metaTitle() {
-      return this.$route.meta.title;
+    metaTitle () {
+      return this.$route.meta.title
     },
-    metaIcon() {
-      return "icon " + this.$route.meta.icon;
+    metaIcon () {
+      return 'icon ' + this.$route.meta.icon
     }
   },
   methods: {
-    createPassword() {
+    createPassword () {
       let text = [
-        "abcdefghijklmnopqrstuvwxyz",
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        "1234567890"
-      ];
-      let rand = function(min, max) {
-        return Math.floor(Math.max(min, Math.random() * (max + 1)));
-      };
-      let len = 16;
-      let pw = "";
-      for (let i = 0; i < len; ++i) {
-        let strpos = rand(0, 2);
-        pw += text[strpos].charAt(rand(0, text[strpos].length));
+        'abcdefghijklmnopqrstuvwxyz',
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        '1234567890'
+      ]
+      let rand = function (min, max) {
+        return Math.floor(Math.max(min, Math.random() * (max + 1)))
       }
-      this.form.pass = pw;
+      let len = 16
+      let pw = ''
+      for (let i = 0; i < len; ++i) {
+        let strpos = rand(0, 2)
+        pw += text[strpos].charAt(rand(0, text[strpos].length))
+      }
+      this.form.pass = pw
     },
-    handleEdit(index, scope) {
+    handleEdit (index, scope) {
       this.axios.get(`/admin/${scope.id}/edit`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
-          return;
+          this.$message.error(res.msg)
+          return
         }
-        let data = res.result;
+        let data = res.result
         this.form = {
           id: data.id,
           pass: data.pass,
           username: data.username,
           status: data.status,
           gid: data.gid
-        };
-        this.selectUser = data.mid;
-        this.editVisible = true;
-      });
+        }
+        this.selectUser = data.mid
+        this.editVisible = true
+      })
     },
-    delAll() {
+    delAll () {
       if (!this.delList.length) {
-        this.$message.error("至少选择一条数据");
-        return;
+        this.$message.error('至少选择一条数据')
+        return
       }
-      this.isDelAll = true;
-      this.delVisible = true;
+      this.isDelAll = true
+      this.delVisible = true
     },
-    handleDelete(index, scope) {
-      this.row = scope;
-      this.idx = index;
-      this.delVisible = true;
+    handleDelete (index, scope) {
+      this.row = scope
+      this.idx = index
+      this.delVisible = true
     },
-    deleteRow() {
-      this.$store.commit("SHOW_LOADING");
+    deleteRow () {
+      this.$store.commit('SHOW_LOADING')
       if (!this.isDelAll) {
         this.axios.delete(`/admin/${this.row.id}`).then(res => {
-          this.$store.commit("HIDE_LOADING");
-          res = res.data;
+          this.$store.commit('HIDE_LOADING')
+          res = res.data
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.tableData.splice(this.idx, 1);
-          this.$message.success(res.msg);
-        });
+          this.tableData.splice(this.idx, 1)
+          this.$message.success(res.msg)
+        })
       } else {
-        let id = this.delList.join("_");
+        let id = this.delList.join('_')
         this.axios.delete(`/admin/${id}`).then(res => {
-          this.$store.commit("HIDE_LOADING");
-          res = res.data;
+          this.$store.commit('HIDE_LOADING')
+          res = res.data
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.delList = [];
-          this.isDelAll = false;
-          this.getData();
-          this.$message.success(res.msg);
-        });
+          this.delList = []
+          this.isDelAll = false
+          this.getData()
+          this.$message.success(res.msg)
+        })
       }
-      this.delVisible = false;
+      this.delVisible = false
     },
-    changeStatus(scope) {
-      let status = scope.status == "正常" ? 1 : 0;
+    changeStatus (scope) {
+      let status = scope.status === '正常' ? 1 : 0
       this.axios.put(`/admin/${scope.id}?status=${status}`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
-          return;
+          this.$message.error(res.msg)
+          return
         }
-        this.getData();
-      });
+        this.getData()
+      })
     },
-    search() {
-      this.getData();
+    search () {
+      this.getData()
     },
-    currentChange(value) {
-      this.current_page = value;
-      this.getData();
+    currentChange (value) {
+      this.current_page = value
+      this.getData()
     },
-    handleChange(value, direction, movedKeys) {
+    handleChange (value, direction, movedKeys) {
       if (!this.selectUser) {
-        this.rules.userList;
+        // this.rules.userList
       }
     },
-    handleSelectionChange(values) {
-      this.delList = [];
+    handleSelectionChange (values) {
+      this.delList = []
       values.forEach(item => {
-        this.delList.push(item.id);
-      });
+        this.delList.push(item.id)
+      })
     },
-    saveEdit(formName) {
+    saveEdit (formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          return false;
+          return false
         }
-        this.editVisible = false;
-        this.form.status = this.form.sta == "正常" ? 1 : 2;
-        this.form.password = md5(this.form.pass);
-        this.$store.commit("SHOW_LOADING");
-        this.axios.post("/admin", this.form).then(res => {
-          res = res.data;
-          this.$store.commit("HIDE_LOADING");
+        this.editVisible = false
+        this.form.status = this.form.sta === '正常' ? 1 : 2
+        this.form.password = md5(this.form.pass)
+        this.$store.commit('SHOW_LOADING')
+        this.axios.post('/admin', this.form).then(res => {
+          res = res.data
+          this.$store.commit('HIDE_LOADING')
           if (!res.status) {
-            this.$message.error(res.msg);
-            return;
+            this.$message.error(res.msg)
+            return
           }
-          this.$refs[formName].resetFields();
-          this.$message.success(res.msg);
-          this.getData();
-        });
-      });
+          this.$refs[formName].resetFields()
+          this.$message.success(res.msg)
+          this.getData()
+        })
+      })
     },
-    add() {
-      this.selectUser = [];
-      this.editVisible = true;
-      this.form.id = 0;
-      this.form.gid = [];
-      this.form.region = "";
-      this.form.username = "";
+    add () {
+      this.selectUser = []
+      this.editVisible = true
+      this.form.id = 0
+      this.form.gid = []
+      this.form.region = ''
+      this.form.username = ''
     },
-    see(index, scope) {
+    see (index, scope) {
       this.axios.get(`/admin/${scope.id}`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          return;
+          return
         }
-        this.detail = res.result;
-        this.detailVisible = true;
-      });
+        this.detail = res.result
+        this.detailVisible = true
+      })
     },
-    cancel(formName) {
-      this.$refs[formName].resetFields();
-      this.form.sta = "正常";
-      this.editVisible = false;
-      this.form.id = 0;
+    cancel (formName) {
+      this.$refs[formName].resetFields()
+      this.form.sta = '正常'
+      this.editVisible = false
+      this.form.id = 0
     },
-    getData() {
+    getData () {
       this.axios
-        .get("/admin", {
+        .get('/admin', {
           params: {
             p: this.current_page,
             where: [
-              { field: "username", op: "like", value: this.select_word },
-              { field: "status", op: "eq", value: this.select_type },
-              { field: "update_time", op: "between", value: this.select_date }
+              { field: 'username', op: 'like', value: this.select_word },
+              { field: 'status', op: 'eq', value: this.select_type },
+              { field: 'update_time', op: 'between', value: this.select_date }
             ]
           }
         })
         .then(res => {
-          res = res.data;
-          if (!res.status) return;
-          res = res.result;
-          this.tableData = res.data;
-          this.current_page = res.current_page;
-          this.totals = res.total;
-          this.per_page = res.per_page;
-          this.last_page = res.last_page;
-        });
+          res = res.data
+          if (!res.status) return
+          res = res.result
+          this.tableData = res.data
+          this.current_page = res.current_page
+          this.totals = res.total
+          this.per_page = res.per_page
+          this.last_page = res.last_page
+        })
     },
-    handleAuth(index, scope) {
-      console.log(index, scope);
+    handleAuth (index, scope) {
+      console.log(index, scope)
     },
-    resetPassword(index, scope) {},
-    checkGroup(scope) {
-      console.log(scope);
+    resetPassword (index, scope) {},
+    checkGroup (scope) {
+      console.log(scope)
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 @import "../../assets/base";

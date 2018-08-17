@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-30 4:50:19
+ * Modified By: 2018-08-17 10:34:43
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -113,63 +113,64 @@
 </template>
 
 <script>
-import hljs from "highlight.js";
-import "highlight.js/styles/monokai-sublime.css";
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-import { quillEditor, Quill } from "vue-quill-editor";
-import { container, ImageExtend, QuillWatch } from "quill-image-extend-module";
-Quill.register("modules/ImageExtend", ImageExtend);
-const Font = Quill.import("formats/font");
-Font.whitelist = ["Arial", "serif", "sans-serif", "宋体", "黑体", "微软雅黑"];
-Quill.register(Font, true);
+import hljs from 'highlight.js'
+import 'highlight.js/styles/monokai-sublime.css'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor, Quill } from 'vue-quill-editor'
+import { ImageExtend, QuillWatch } from 'quill-image-extend-module'
+/* container, */
+Quill.register('modules/ImageExtend', ImageExtend)
+const Font = Quill.import('formats/font')
+Font.whitelist = ['Arial', 'serif', 'sans-serif', '宋体', '黑体', '微软雅黑']
+Quill.register(Font, true)
 export default {
-  data() {
+  data () {
     var validateFid = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请选择所属栏目"));
-        return;
+      if (value === '') {
+        callback(new Error('请选择所属栏目'))
+        return
       }
-      callback();
-    };
+      callback()
+    }
     const toolbarOptions = [
-      ["bold", "italic", "underline", "strike"], // toggled buttons
-      ["blockquote", "code-block"],
+      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+      ['blockquote', 'code-block'],
 
       [{ header: 1 }, { header: 2 }], // custom button values
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ script: "sub" }, { script: "super" }], // superscript/subscript
-      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-      [{ direction: "rtl" }], // text direction
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+      [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+      [{ direction: 'rtl' }], // text direction
 
-      [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+      [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
       [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-      [{font: ["Arial", "serif", "sans-serif", "宋体", "黑体", "微软雅黑"]}],
+      [{font: ['Arial', 'serif', 'sans-serif', '宋体', '黑体', '微软雅黑']}],
       [{ align: [] }],
-      ["clean"],
-      ["image", "video"]
-    ];
+      ['clean'],
+      ['image', 'video']
+    ]
     return {
       id: this.$route.params.id,
       editorOption: {
-        placeholder: "请输入内容",
+        placeholder: '请输入内容',
         modules: {
           ImageExtend: {
             loading: true,
-            name: "image",
-            action: "http://api.jswei.cn/posts/",
+            name: 'image',
+            action: 'http://api.jswei.cn/posts/',
             response: res => {
-              return res.path;
+              return res.path
             }
           },
           toolbar: {
             container: toolbarOptions,
             handlers: {
-              image: function() {
-                QuillWatch.emit(this.quill.id);
+              image: function () {
+                QuillWatch.emit(this.quill.id)
               }
             }
           },
@@ -186,106 +187,106 @@ export default {
       delVisible: false,
       isDelAll: false,
       isRedirect: false,
-      last_url: "",
+      last_url: '',
       type: 1,
       row: [],
       form: {
         id: 0,
-        title: "",
-        name: "",
-        fid: "",
-        keywords: "",
-        description: "",
-        content: "",
+        title: '',
+        name: '',
+        fid: '',
+        keywords: '',
+        description: '',
+        content: '',
         sort: 100,
-        status: "正常",
-        type: "列表页",
-        url: ""
+        status: '正常',
+        type: '列表页',
+        url: ''
       },
       rules: {
-        title: [{ required: true, message: "请输入栏目名称", trigger: "blur" }],
-        name: [{ required: true, message: "请输入栏目标识", trigger: "blur" }],
-        fid: [{ validator: validateFid, trigger: "change" }]
+        title: [{ required: true, message: '请输入栏目名称', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入栏目标识', trigger: 'blur' }],
+        fid: [{ validator: validateFid, trigger: 'change' }]
       }
-    };
+    }
   },
   components: {
     quillEditor
   },
-  created() {
-    this.getColumn();
+  created () {
+    this.getColumn()
   },
   watch: {
-    $route(newValue, oldValue) {
-      this.getColumn(newValue.params.id);
+    $route (newValue, oldValue) {
+      this.getColumn(newValue.params.id)
     }
   },
   methods: {
-    getColumn(id = null) {
-      id = id ? id : this.id;
-      this.axios.get("/column_one", { params: { name: id } }).then(res => {
-        res = res.data;
+    getColumn (id = null) {
+      id = id || this.id
+      this.axios.get('/column_one', { params: { name: id } }).then(res => {
+        res = res.data
         if (!res.status) {
-          return;
+          return
         }
-        this.current = res.result;
-      });
+        this.current = res.result
+      })
     },
-    onEditorChange({ editor, html, text }) {
-      this.form.content = html;
-      console.log(html);
+    onEditorChange ({ editor, html, text }) {
+      this.form.content = html
+      console.log(html)
     },
-    getData() {
+    getData () {
       this.axios
-        .get("/column", {
+        .get('/column', {
           where: [
-            { field: "title", op: "eq", value: this.select_word },
-            { field: "status", op: "eq", value: this.select_cate },
-            { field: "date", op: "between", value: this.select_date }
+            { field: 'title', op: 'eq', value: this.select_word },
+            { field: 'status', op: 'eq', value: this.select_cate },
+            { field: 'date', op: 'between', value: this.select_date }
           ]
         })
         .then(res => {
-          res = res.data;
+          res = res.data
           if (res.status) {
-            this.tableData = res.result;
-            this.cur_page = res.current_page;
-            this.totals = res.last_page;
+            this.tableData = res.result
+            this.cur_page = res.current_page
+            this.totals = res.last_page
           }
-        });
-      this.axios.get("/navbar?tree=1&status=1").then(res => {
-        res = res.data;
+        })
+      this.axios.get('/navbar?tree=1&status=1').then(res => {
+        res = res.data
         if (!res.status) {
-          return;
+          return
         }
-        let data = res.result;
-        this.$store.commit("SET_NAVBAR", data);
-      });
+        let data = res.result
+        this.$store.commit('SET_NAVBAR', data)
+      })
     },
-    changeStatus(scope) {
-      let status = scope.status == "正常" ? 1 : 0;
+    changeStatus (scope) {
+      let status = scope.status === '正常' ? 1 : 0
       this.axios.put(`/column/${scope.id}?status=${status}`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
-          return;
+          this.$message.error(res.msg)
+          return
         }
-        this.getData();
-      });
+        this.getData()
+      })
     },
-    search() {
-      this.getData();
+    search () {
+      this.getData()
     },
-    handleEdit(index, row) {
-      this.getCateList();
+    handleEdit (index, row) {
+      this.getCateList()
       this.axios.get(`/column/${row.id}/edit`).then(res => {
-        res = res.data;
+        res = res.data
         if (!res.status) {
-          this.$message.error(res.msg);
+          this.$message.error(res.msg)
         }
-        let data = res.result;
-        if (data.type == 6) {
-          this.isRedirect = true;
-          this.last_url = data.url;
+        let data = res.result
+        if (data.type === 6) {
+          this.isRedirect = true
+          this.last_url = data.url
         }
         this.form = {
           id: data.id,
@@ -298,103 +299,103 @@ export default {
           sta: data.status,
           type: data.type,
           url: data.url
-        };
-      });
-      this.editVisible = true;
+        }
+      })
+      this.editVisible = true
     },
-    handleDelete(index, row) {
-      this.idx = index;
-      this.row = row;
-      this.delVisible = true;
+    handleDelete (index, row) {
+      this.idx = index
+      this.row = row
+      this.delVisible = true
     },
-    delAll() {
+    delAll () {
       if (!this.delList.length) {
-        this.$message.error("至少选择一条数据");
-        return;
+        this.$message.error('至少选择一条数据')
+        return
       }
-      this.isDelAll = true;
-      this.delVisible = true;
+      this.isDelAll = true
+      this.delVisible = true
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       val.forEach(item => {
-        this.delList.push(item.id);
-      });
+        this.delList.push(item.id)
+      })
     },
     // 保存编辑
-    saveEdit(formName) {
+    saveEdit (formName) {
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          return false;
+          return false
         }
-        this.editVisible = false;
-        this.form.status = this.form.sta == "正常" ? 0 : 1;
-        this.form.type = this.type;
-        this.$store.commit("SHOW_LOADING");
-        this.axios.post("/column", this.form).then(res => {
-          res = res.data;
-          this.$store.commit("HIDE_LOADING");
+        this.editVisible = false
+        this.form.status = this.form.sta === '正常' ? 0 : 1
+        this.form.type = this.type
+        this.$store.commit('SHOW_LOADING')
+        this.axios.post('/column', this.form).then(res => {
+          res = res.data
+          this.$store.commit('HIDE_LOADING')
           if (!res.status) {
-            this.$message.error(res.msg);
+            this.$message.error(res.msg)
           }
-          this.$refs[formName].resetFields();
-          this.form.keywords = "";
-          this.form.description = "";
-          this.getData();
-          this.$message.success(res.msg);
-        });
-      });
+          this.$refs[formName].resetFields()
+          this.form.keywords = ''
+          this.form.description = ''
+          this.getData()
+          this.$message.success(res.msg)
+        })
+      })
     },
     // 确定删除
-    deleteRow() {
-      this.$store.commit("SHOW_LOADING");
+    deleteRow () {
+      this.$store.commit('SHOW_LOADING')
       if (!this.isDelAll) {
         this.axios.delete(`/column/${this.row.id}`).then(res => {
-          this.$store.commit("HIDE_LOADING");
-          res = res.data;
+          this.$store.commit('HIDE_LOADING')
+          res = res.data
           if (!res.status) {
-            this.$message.error(res.msg);
+            this.$message.error(res.msg)
           }
-          this.tableData.splice(this.idx, 1);
-          this.$message.success(res.msg);
-        });
+          this.tableData.splice(this.idx, 1)
+          this.$message.success(res.msg)
+        })
       } else {
-        this.axios.delete(`/column/${this.delList.join("_")}`).then(res => {
-          res = res.data;
-          this.$store.commit("HIDE_LOADING");
+        this.axios.delete(`/column/${this.delList.join('_')}`).then(res => {
+          res = res.data
+          this.$store.commit('HIDE_LOADING')
           if (!res.status) {
-            this.$message.error(res.msg);
+            this.$message.error(res.msg)
           }
-          this.delList = [];
-          this.getData();
-          this.$message.success(res.msg);
-        });
+          this.delList = []
+          this.getData()
+          this.$message.success(res.msg)
+        })
       }
-      this.delVisible = false;
+      this.delVisible = false
     },
-    add() {
-      this.getCateList();
-      this.form.id = 0;
-      this.form.type = "列表页";
-      this.form.srot = 100;
-      this.editVisible = true;
+    add () {
+      this.getCateList()
+      this.form.id = 0
+      this.form.type = '列表页'
+      this.form.srot = 100
+      this.editVisible = true
     },
-    cancel(formName) {
-      this.$refs[formName].resetFields();
-      this.form.keywords = "";
-      this.form.description = "";
-      this.editVisible = false;
+    cancel (formName) {
+      this.$refs[formName].resetFields()
+      this.form.keywords = ''
+      this.form.description = ''
+      this.editVisible = false
     },
-    getCateList() {
-      this.axios.get("/column_list").then(res => {
-        res = res.data;
+    getCateList () {
+      this.axios.get('/column_list').then(res => {
+        res = res.data
         if (!res.status) {
-          return;
+          return
         }
-        this.cate_list = res.result;
-      });
+        this.cate_list = res.result
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

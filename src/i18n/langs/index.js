@@ -11,9 +11,9 @@
  * Javascript will save your soul!
  */
 
-import en from './en';
-import cn from './cn';
+import en from './en'
+import cn from './cn'
 export default {
-    en: en,
-    cn: cn
+  en: en,
+  cn: cn
 }

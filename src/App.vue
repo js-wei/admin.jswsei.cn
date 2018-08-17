@@ -78,30 +78,30 @@ html {
 }
 </style>
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 export default {
-  name: "async",
-  metaInfo() {
+  name: 'async',
+  metaInfo () {
     return {
       title: this.metaTile
-    };
-  },
-  data() {
-    return {
-      metaTile:''
     }
   },
-  mounted() {
-    this.$Progress.finish();
-    this.axios.get("/setting").then(res => {
-      res = res.data;
-      if (res.status) {
-        this.metaTile = res.result.title;
-      }
-    });
+  data () {
+    return {
+      metaTile: ''
+    }
   },
-  created() {
-    this.progress();
+  mounted () {
+    this.$Progress.finish()
+    this.axios.get('/setting').then(res => {
+      res = res.data
+      if (res.status) {
+        this.metaTile = res.result.title
+      }
+    })
+  },
+  created () {
+    this.progress()
   },
   computed: {
     ...mapState({
@@ -110,20 +110,20 @@ export default {
     })
   },
   methods: {
-    progress() {
-      this.$Progress.start();
+    progress () {
+      this.$Progress.start()
       this.$router.beforeEach((to, from, next) => {
         if (to.meta.progress !== undefined) {
-          let meta = to.meta.progress;
-          this.$Progress.parseMeta(meta);
+          let meta = to.meta.progress
+          this.$Progress.parseMeta(meta)
         }
-        this.$Progress.start();
-        next();
-      });
+        this.$Progress.start()
+        next()
+      })
       this.$router.afterEach((to, from) => {
-        this.$Progress.finish();
-      });
+        this.$Progress.finish()
+      })
     }
   }
-};
+}
 </script>

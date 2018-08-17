@@ -12,9 +12,9 @@
                                     <div>{{user.gid === -1 ? "超级管理员" : "普通用户"}}</div>
                                 </div>
                             </div>
-                            <div class="user-info-list">最后登录时间：<span>{{user.last_date|formart_date}}</span></div>
-                            <div class="user-info-list">最后登录的IP：<span>{{user.last_ip}}</span></div>
-                            <div class="user-info-list">最后登录地点：<span>{{user.last_address}}</span></div>                            
+                            <div class="user-info-list">最后登录时间：<span>{{user.last_date|formartDate}}</span></div>
+                            <div class="user-info-list">最后登录的IP：<span>{{user.last_address|filterAddress}}</span></div>
+                            <div class="user-info-list">最后登录地点：<span>{{user.last_address|filterAddress(1)}}</span></div>                            
                         </el-card>
                         <el-card shadow="hover" class="statistics">
                             <div slot="header" class="clearfix">
@@ -106,35 +106,42 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 export default {
-  data() {
+  data () {
     return {
       todoList: [
-        { title: "测试", status: false },
-        { title: "测试2", status: true },
-        { title: "测试3", status: false }
+        { title: '测试', status: false },
+        { title: '测试2', status: true },
+        { title: '测试3', status: false }
       ],
-      msgCount:15,
-    };
+      msgCount: 15
+    }
   },
   computed: {
     ...mapState({
       user: state => state.mutations.logined
     })
   },
-  created() {
+  created () {
     this.$notify({
-      title: "消息通知",
+      title: '消息通知',
       duration: 10e3,
       dangerouslyUseHTMLString: true,
       message: `您有
         <a href="/message" style="font-size:16px;" class="text-danger pointer">${this.msgCount}</a>
         条,新的消息等待处理!!<video src="../../../static/11.wav" autoplay class="hide"></video>`,
-      position: "top-right"
-    });
+      position: 'top-right'
+    })
+  },
+  filters: {
+    filterAddress: function (value, index = 0) {
+      if (!value) return
+      value = value.split(',')
+      return value[index]
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

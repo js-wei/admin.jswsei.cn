@@ -22,62 +22,62 @@
 </template>
 
 <script>
-import md5 from "js-md5";
+import md5 from 'js-md5'
 export default {
-  data: function() {
+  data: function () {
     var validPassword = (rule, value, callback) => {
-        if (!value && !this.pass) {
-          return callback(new Error('请输入密码'));
-        }
-        callback();
-      };
+      if (!value && !this.pass) {
+        return callback(new Error('请输入密码'))
+      }
+      callback()
+    }
     return {
       ruleForm: {
-        username: "524314430@qq.com",
-        password: "123456"
+        username: '524314430@qq.com',
+        password: '123456'
       },
       rules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
+          { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        password: [{ validator: validPassword, trigger: ["blur,change"] }]
+        password: [{ validator: validPassword, trigger: ['blur,change'] }]
       }
-    };
+    }
   },
-  created() {},
+  created () {},
   methods: {
-    submitForm(formName) {
-      const self = this;
+    submitForm (formName) {
+      const self = this
       this.$refs[formName].validate(valid => {
         if (!valid) {
-          return;
+          return
         }
-        this.ruleForm.pass = md5(this.ruleForm.password);
-        delete this.ruleForm.password;
-        this.$store.commit("SHOW_LOADING");
-        this.$store.commit("STE_LOADING_TEXT", "正在登陆中...");
-        this.axios.post("/user", this.ruleForm).then(res => {
+        this.ruleForm.pass = md5(this.ruleForm.password)
+        delete this.ruleForm.password
+        this.$store.commit('SHOW_LOADING')
+        this.$store.commit('STE_LOADING_TEXT', '正在登陆中...')
+        this.axios.post('/user', this.ruleForm).then(res => {
+          this.$store.commit('HIDE_LOADING')
           if (res.status !== 200) {
-            this.$message.error("服务器错误");
-            return;
+            this.$message.error('服务器错误')
+            return
           }
-          res = res.data;
+          res = res.data
           if (!res.status) {
-            this.$message.error(res.msg);
+            this.$message.error(res.msg)
           }
-          this.$store.commit("SET_LOGIN", res.result);
+          this.$store.commit('SET_LOGIN', res.result)
           setTimeout(() => {
-            this.$message.success(res.msg);
-            this.$store.commit("STE_LOADING_TEXT", null);
-	    this.$store.commit("HIDE_LOADING");
-            let redirect = this.$route.query.redirect || "/";
-            self.$router.push(redirect);
-          }, 2e3);
-        });
-      });
+            this.$message.success(res.msg)
+            this.$store.commit('STE_LOADING_TEXT', null)
+            let redirect = this.$route.query.redirect || '/'
+            self.$router.push(redirect)
+          }, 2e3)
+        })
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

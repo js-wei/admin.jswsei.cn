@@ -7,14 +7,13 @@
  * @Last modified time: 2017-11-06T10:49:39+08:00
  */
 
-
-import {is_formart_date,sub_string,is_default,is_mobile_safe,formart_date,time_ago} from './format';
+import {isFormartDate, subString, isDefault, isMobileSafe, formartDate, timeAgo} from './format'
 
 export default {
-	is_formart_date,
-	sub_string,
-	is_default,
-	is_mobile_safe,
-	formart_date,
-	time_ago
-};
+  isFormartDate,
+  subString,
+  isDefault,
+  isMobileSafe,
+  formartDate,
+  timeAgo
+}

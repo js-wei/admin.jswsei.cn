@@ -11,33 +11,32 @@
  * Javascript will save your soul!
  */
 
-
 export default [{
-        icon: 'el-icon-setting',
-        index: 'dashboard',
-        title: '系统首页'
-    },
-    {
-        icon: 'icon-mokuai',
-        title: '模块管理',
-        index: 'module'
-    },
-    {
-        icon: 'icon-lanmu',
-        title: '栏目管理',
-        index: 'column'
-    },
-    {
-        icon: 'el-icon-message',
-        index: 'message',
-        title: '消息管理'
-    },
-    {
-        icon: 'icon-shouye',
-        index: 'member',
-        title: '会员管理'
-    }
-];
+  icon: 'el-icon-setting',
+  index: 'dashboard',
+  title: '系统首页'
+},
+{
+  icon: 'icon-mokuai',
+  title: '模块管理',
+  index: 'module'
+},
+{
+  icon: 'icon-lanmu',
+  title: '栏目管理',
+  index: 'column'
+},
+{
+  icon: 'el-icon-message',
+  index: 'message',
+  title: '消息管理'
+},
+{
+  icon: 'icon-shouye',
+  index: 'member',
+  title: '会员管理'
+}
+]
 // {
 //     icon: 'el-icon-tickets',
 //     index: 'table',

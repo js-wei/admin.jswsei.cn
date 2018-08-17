@@ -15,16 +15,16 @@
 <script>
 export default {
   computed: {
-    current_route() {
-      return this.$route.redirectedFrom;
+    current_route () {
+      return this.$route.redirectedFrom
     }
   },
   methods: {
-    goBack() {
-      this.$router.back();
+    goBack () {
+      this.$router.back()
     }
   }
-};
+}
 </script>
 
 
