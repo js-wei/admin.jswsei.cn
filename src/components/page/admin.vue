@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-17 10:18:18
+ * Modified By: 2018-08-18 2:57:39
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -14,9 +14,9 @@
 <template>
     <div class="message">
       <div class="crumbs">
-          <el-breadcrumb separator="/">
-              <el-breadcrumb-item><i :class="metaIcon"></i> {{metaTitle}}</el-breadcrumb-item>
-          </el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item><i :class="metaIcon"></i> {{metaTitle}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </div>
       <div class="container">
         <div class="handle-box">
@@ -62,8 +62,8 @@
                 <el-tag
                   :type="scope.row.gid == -1 ? 'danger' : 'primary'" 
                   disable-transitions>
-                  <span v-if="scope.row.gid==-1">超级管理员</span>
-                  <span v-else>{{scope.row.gid}}</span>
+                  <span v-if="scope.row.gid == -1">超级管理员</span>
+                  <span v-else>{{groupList|filterGroup(scope.row.gid)}}</span>
                 </el-tag>
               </a>
             </template>
@@ -71,9 +71,9 @@
           <el-table-column prop="tag" label="状态" width="120">
             <template slot-scope="scope">
               <a @click="changeStatus(scope.row)" class="pointer">
-                  <el-tag
-                    :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
-                    disable-transitions>
+                <el-tag
+                  :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
+                  disable-transitions>
                   {{scope.row.status}}
                 </el-tag>
               </a>
@@ -183,7 +183,8 @@ export default {
           { required: true, message: '请输入密码', trigger: ['blur', 'change'] }
         ]
       },
-      idx: 0
+      idx: 0,
+      groupList: []
     }
   },
   created () {
@@ -374,6 +375,13 @@ export default {
           this.per_page = res.per_page
           this.last_page = res.last_page
         })
+      this.axios
+        .get('/group').then(res => {
+          res = res.data
+          if (res.status === 1) {
+            this.groupList = res.result.data
+          }
+        })
     },
     handleAuth (index, scope) {
       console.log(index, scope)
@@ -381,6 +389,12 @@ export default {
     resetPassword (index, scope) {},
     checkGroup (scope) {
       console.log(scope)
+    }
+  },
+  filters: {
+    filterGroup: function (items, id) {
+      items = items.filter(item => item.id === id)[0]
+      return items.title
     }
   }
 }

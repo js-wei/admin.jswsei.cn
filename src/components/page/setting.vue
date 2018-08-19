@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-30 11:11:49
+ * Modified By: 2018-08-18 3:03:51
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -27,7 +27,7 @@
         <el-form-item label="网站名称" prop="title" class="w-60">
           <el-input v-model="ruleForm.title" placeholder="网站名称"></el-input>
         </el-form-item>
-        <el-form-item label="网站LOGO" prop="logo">
+        <el-form-item label="网站LOGO" prop="logo" class="w-60">
           <el-upload
             action="http://api.jswei.cn/posts/"
             :on-remove="handleRemove"
@@ -44,10 +44,10 @@
         <el-form-item label="网站域名" prop="url" class="w-80">
           <el-input v-model="ruleForm.url" placeholder="网站域名(eg:https://baidu.com)"></el-input>
         </el-form-item>
-        <el-form-item label="网站关键词" class="textarea">
+        <el-form-item label="网站关键词" class="big">
           <el-input type="textarea" v-model="ruleForm.keywords" placeholder="网站关键词"></el-input>
         </el-form-item>
-        <el-form-item label="网站说明" class="textarea">
+        <el-form-item label="网站说明" class="big">
           <el-input type="textarea" v-model="ruleForm.description" 
             placeholder="网站说明"></el-input>
         </el-form-item>
@@ -60,10 +60,10 @@
         <el-form-item label="版权信息" class="w-60">
           <el-input v-model="ruleForm.copyright" placeholder="版权信息"></el-input>
         </el-form-item>
-        <el-form-item label="分享代码" class="textarea">
+        <el-form-item label="分享代码" class="big">
           <el-input type="textarea" v-model="ruleForm.shard" placeholder="分享代码"></el-input>
         </el-form-item>
-        <el-form-item label="统计代码" class="textarea">
+        <el-form-item label="统计代码" class="big">
           <el-input type="textarea" v-model="ruleForm.code" placeholder="统计代码"></el-input>
         </el-form-item>
         <h2 class="conact-title">网站联系人信息</h2>
@@ -74,10 +74,10 @@
         <el-form-item label="联系方式" class="w-60">
           <el-input v-model="ruleForm.tel" placeholder="联系方式(手机或固话)"></el-input>
         </el-form-item>
-        <el-form-item label="公司名称" class="w-60">
+        <el-form-item label="公司名称" class="w-80">
           <el-input v-model="ruleForm.company" placeholder="公司名称"></el-input>
         </el-form-item>
-        <el-form-item label="公司地址" class="w-60">
+        <el-form-item label="公司地址" class="w-80">
           <el-input v-model="ruleForm.address" placeholder="公司地址"></el-input>
         </el-form-item>
         <el-form-item>

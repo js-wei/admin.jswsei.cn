@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-18 1:57:12
+ * Modified By: 2018-08-18 2:41:47
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -87,7 +87,7 @@
           </span>
         </el-dialog>
         <!-- 配置权限 -->
-        <el-dialog :title="metaTitle+'配置'" :visible.sync="powerVisible" width="40%" :close-on-click-modal="false">
+        <el-dialog :title="metaTitle+'配置'" :visible.sync="powerVisible" width="55%" :close-on-click-modal="false">
           <el-form ref="form1" :model="form1" label-width="100px" :rules="rules1" style="margin-left:50px;" autocomplete="off">
               <el-form-item label="权限配置" prop="power">
                   <el-transfer  :titles="['可选', '已选']"

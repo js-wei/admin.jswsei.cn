@@ -1,125 +1,125 @@
 <template>
-    <div>
-        <el-row :gutter="20">
-            <el-col :xs="24" :sm="24" :lg="8" class="user">
-                <el-row>
-                    <el-col>
-                        <el-card shadow="hover" class="user-info">
-                            <div class="head">
-                                <img src="static/images/10104372.gif" class="user-avator">
-                                <div class="user-info-cont">
-                                    <p>{{user.username}}</p>
-                                    <div>{{user.gid === -1 ? "超级管理员" : "普通用户"}}</div>
-                                </div>
-                            </div>
-                            <div class="user-info-list">
-                              <div class="tip">
-                                最后登录时间：
-                              </div>
-                              <div class="ttp">{{user.last_date|formartDate}}</div>
-                            </div>
-                            <div class="user-info-list">
-                              <div class="tip">
-                                最后登录的IP：
-                              </div>
-                              <div class="pull-right ttp">{{user.last_ip}}</div>
-                            </div>
-                            <div class="user-info-list">
-                              <div class="tip">
-                                最后登录地点：
-                              </div>
-                              <div class="ttp">
-                                {{user.last_address}}
-                              </div>
-                            </div>                            
-                        </el-card>
-                        <el-card shadow="hover" class="statistics">
-                            <div slot="header" class="clearfix">
-                                <span>订单统计</span>
-                            </div>
-                           <div class="progress">
-                                订单总数(3000)
-                            <el-progress :percentage="100" color="#f56c6c" ></el-progress>
-                            订单支付(2800)
-                            <el-progress :percentage="Math.round(2800 / 3000 * 10000) / 100.00" 
-                                color="#42b983"></el-progress>
-                            取消订单(120)
-                            <el-progress :percentage="Math.round(120 / 3000 * 10000) / 100.00"></el-progress>
-                            无效订单(80)
-                            <el-progress :percentage="Math.round(80 / 3000 * 10000) / 100.00" 
-                            color="#f56c6c"></el-progress>
-                           </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :xs="24" :sm="24" :lg="16" class="grid">
-                <el-row :gutter="20">
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-1">
-                                <i class="el-icon-view grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-2">
-                                <i class="el-icon-message grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-3">
-                                <i class="el-icon-goods grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
-                <el-row class="todo">
-                    <el-card shadow="hover" :body-style="{ height: '304px'}">
-                    <div slot="header" class="clearfix">
-                        <span class="text-primary">最新消息</span>
-                        <router-link to="/message" class="text-primary pull-right">更多</router-link>
-                    </div>
-                    <el-table :data="todoList" :show-header="false" height="304">
-                        <el-table-column width="40">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.status"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column>
-                            <template slot-scope="scope">
-                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">
-                                    {{scope.row.title}}
-                                </div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="60">
-                            <template slot-scope="scope">
-                                <i class="el-icon-edit"></i>
-                                <i class="el-icon-delete"></i>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </el-card>
-                </el-row>
-            </el-col>
+  <div>
+    <el-row :gutter="20">
+      <el-col :xs="24" :sm="24" :lg="8" class="user">
+        <el-row>
+          <el-col>
+            <el-card shadow="hover" class="user-info">
+              <div class="head">
+                <img src="static/images/10104372.gif" class="user-avator">
+                <div class="user-info-cont">
+                    <p>{{user.username}}</p>
+                    <div>{{user.gid === -1 ? "超级管理员" : "普通用户"}}</div>
+                </div>
+              </div>
+              <div class="user-info-list">
+                <div class="tip">
+                  最后登录时间：
+                </div>
+                <div class="ttp">{{user.last_date|formartDate}}</div>
+              </div>
+              <div class="user-info-list">
+                <div class="tip">
+                  最后登录的IP：
+                </div>
+                <div class="pull-right ttp">{{user.last_ip}}</div>
+              </div>
+              <div class="user-info-list">
+                <div class="tip">
+                  最后登录地点：
+                </div>
+                <div class="ttp">
+                  {{user.last_address}}
+                </div>
+              </div>                            
+            </el-card>
+            <el-card shadow="hover" class="statistics">
+              <div slot="header" class="clearfix">
+                <span>订单统计</span>
+              </div>
+              <div class="progress">
+                订单总数({{totalNum}})
+                <el-progress :percentage="100" color="#f56c6c" ></el-progress>
+                订单支付({{payFor}})
+                <el-progress :percentage="Math.round(payFor / totalNum * 10000) / 100.00" 
+                color="#42b983"></el-progress>
+                取消订单({{cancelNum}})
+                <el-progress :percentage="Math.round(cancelNum / totalNum * 10000) / 100.00"></el-progress>
+                无效订单({{disOrder}})
+                <el-progress :percentage="Math.round(disOrder / totalNum * 10000) / 100.00" 
+                color="#f56c6c"></el-progress>
+              </div>
+            </el-card>
+          </el-col>
         </el-row>
-    </div>
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="16" class="grid">
+        <el-row :gutter="20">
+            <el-col :span="8">
+              <el-card shadow="hover" :body-style="{padding: '0px'}">
+                <div class="grid-content grid-con-1">
+                  <i class="el-icon-view grid-con-icon"></i>
+                  <div class="grid-cont-right">
+                    <div class="grid-num">1234</div>
+                    <div>用户访问量</div>
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+            <el-col :span="8">
+              <el-card shadow="hover" :body-style="{padding: '0px'}">
+                <div class="grid-content grid-con-2">
+                  <i class="el-icon-message grid-con-icon"></i>
+                  <div class="grid-cont-right">
+                      <div class="grid-num">321</div>
+                      <div>系统消息</div>
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+            <el-col :span="8">
+              <el-card shadow="hover" :body-style="{padding: '0px'}">
+                <div class="grid-content grid-con-3">
+                  <i class="el-icon-goods grid-con-icon"></i>
+                  <div class="grid-cont-right">
+                    <div class="grid-num">5000</div>
+                    <div>数量</div>
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+          <el-row class="todo">
+            <el-card shadow="hover" :body-style="{ height: '304px'}">
+              <div slot="header" class="clearfix">
+                <span class="text-primary">最新消息</span>
+                <router-link to="/message" class="text-primary pull-right">更多</router-link>
+              </div>
+              <el-table :data="todoList" :show-header="false" height="304">
+                <el-table-column width="40">
+                  <template slot-scope="scope">
+                    <el-checkbox v-model="scope.row.status"></el-checkbox>
+                  </template>
+                </el-table-column>
+                <el-table-column>
+                  <template slot-scope="scope">
+                    <div class="todo-item" :class="{'todo-item-del': scope.row.status}">
+                      {{scope.row.title}}
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column width="60">
+                  <template slot-scope="scope">
+                    <i class="el-icon-edit"></i>
+                    <i class="el-icon-delete"></i>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-card>
+        </el-row>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -132,7 +132,11 @@ export default {
         { title: '测试2', status: true },
         { title: '测试3', status: false }
       ],
-      msgCount: 15
+      msgCount: 0,
+      totalNum: 3000,
+      payFor: 2800,
+      cancelNum: 120,
+      disOrder: 80
     }
   },
   computed: {
@@ -141,15 +145,19 @@ export default {
     })
   },
   created () {
-    this.$notify({
-      title: '消息通知',
-      duration: 10e3,
-      dangerouslyUseHTMLString: true,
-      message: `您有
-        <a href="/message" style="font-size:16px;" class="text-danger pointer">${this.msgCount}</a>
-        条,新的消息等待处理!!<video src="../../../static/11.wav" autoplay class="hide"></video>`,
-      position: 'top-right'
-    })
+    if (this.msgCount) {
+      this.$notify({
+        title: '消息通知',
+        duration: 5e3,
+        dangerouslyUseHTMLString: true,
+        message: `您有
+          <a href="/message" style="font-size:16px;" class="text-danger pointer">${
+            this.msgCount
+          }</a>
+          条,新的消息等待处理!!<video src="../../../static/11.wav" autoplay class="hide"></video>`,
+        position: 'top-right'
+      })
+    }
   },
   filters: {
     filterAddress: function (value, index = 0) {
@@ -195,15 +203,15 @@ export default {
       font-size: 1.2rem;
       color: #999;
       line-height: 1.8rem;
-      margin-left: .8px;
+      margin-left: 0.8px;
       display: flex;
-      div{
+      div {
         flex-direction: row;
-        &:nth-of-type(1){
+        &:nth-of-type(1) {
           width: 35%;
         }
-        &:nth-of-type(2){
-          width:65%;
+        &:nth-of-type(2) {
+          width: 65%;
           text-align: right;
         }
       }

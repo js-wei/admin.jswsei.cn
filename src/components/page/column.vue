@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-17 10:31:07
+ * Modified By: 2018-08-18 1:45:14
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,93 +16,91 @@
   <div>
     <div class="crumbs">
       <el-breadcrumb separator="/">
-          <el-breadcrumb-item><i class="el-icon-date"></i>栏目</el-breadcrumb-item>
-          <el-breadcrumb-item>栏目列表</el-breadcrumb-item>
+        <el-breadcrumb-item><i class="el-icon-date"></i>栏目</el-breadcrumb-item>
+        <el-breadcrumb-item>栏目列表</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="container">
       <div class="handle-box">
-          <el-button type="primary" class="handle-del mr10" 
-          @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
-          <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加栏目</el-button>
+        <el-button type="primary" class="handle-del mr10" 
+        @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
+        <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加栏目</el-button>
       </div>
       <el-table :data="tableData" border ref="multipleTable" 
         @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="title" label="栏目名称">
-            <template slot-scope="scope">
-              <span v-html="scope.row.html"></span>
-              <span>{{scope.row.title}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="name" label="栏目标识">
-          </el-table-column>
-          <el-table-column prop="type" label="栏目类型">
-          </el-table-column>
-          <el-table-column prop="tag" label="状态">
-            <template slot-scope="scope">
-              <a @click="changeStatus(scope.row)" class="pointer">
-                <el-tag
-                  :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
-                  {{scope.row.status}}
-                </el-tag>
-              </a>
-            </template>
-          </el-table-column>
-          <el-table-column prop="sort" label="排序" sortable></el-table-column>
-          <el-table-column prop="update_time" label="操作时间" sortable width="200">
-          </el-table-column>
-          <el-table-column label="操作" width="150">
-              <template slot-scope="scope">
-                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-              </template>
-          </el-table-column>
+        <el-table-column type="selection" width="40"></el-table-column>
+        <el-table-column prop="title" label="栏目名称">
+          <template slot-scope="scope">
+            <span v-html="scope.row.html"></span>
+            <span>{{scope.row.title}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="栏目标识"></el-table-column>
+        <el-table-column prop="type" label="栏目类型"></el-table-column>
+        <el-table-column prop="sort" label="排序" sortable width="80"></el-table-column>
+        <el-table-column prop="tag" label="状态" width="70">
+          <template slot-scope="scope">
+            <a @click="changeStatus(scope.row)" class="pointer">
+              <el-tag
+                :type="scope.row.status === '禁用' ? 'primary' : 'success'" disable-transitions>
+                {{scope.row.status}}
+              </el-tag>
+            </a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="update_time" label="操作时间" sortable width="150">
+        </el-table-column>
+        <el-table-column label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <!-- 编辑弹出框 -->
-    <el-dialog title="栏目管理" :visible.sync="editVisible" width="40%" 
+    <el-dialog title="栏目管理" :visible.sync="editVisible" width="45%" 
       :close-on-click-modal="false">
-        <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
-          <el-form-item label="栏目名称" prop="title">
-            <el-input v-model="form.title" placeholder="栏目名称"></el-input>
-          </el-form-item>
-          <el-form-item label="栏目标识" prop="name">
-            <el-input v-model="form.name" placeholder="栏目标识"></el-input>
-          </el-form-item>
-          <el-form-item label="所属栏目" prop="fid">
-            <el-select v-model="form.fid" placeholder="所属栏目" class="handle-select mr10">
-              <el-option key="0" label="顶级栏目" value="0"></el-option>
-              <el-option :label="item.html+item.title" :value="item.id" 
-                v-for="item in cate_list" :key="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="关键词">
-              <el-input type="textarea" v-model="form.keywords" placeholder="关键词"></el-input>
-          </el-form-item>
-          <el-form-item label="说明">
-              <el-input type="textarea" v-model="form.description" placeholder="说明"></el-input>
-          </el-form-item>
-          <el-form-item label="类型">
-            <el-radio-group v-model="form.type">
-              <el-radio label="列表页" value="1"></el-radio>
-              <el-radio label="下载页" value="2"></el-radio>
-              <el-radio label="单页面" value="3"></el-radio>
-              <el-radio label="封面页" value="4"></el-radio>
-              <el-radio label="表单页" value="5"></el-radio>
-              <el-radio label="跳转页" value="6"></el-radio>
-            </el-radio-group>
-            <el-input v-model="form.url" v-if="isRedirect" placeholder="跳转地址(http://baidu.com)" class="mt-10"></el-input>
-          </el-form-item>
-          <el-form-item label="栏目排序">
-            <el-input v-model="form.sort" placeholder="栏目排序"></el-input>
-          </el-form-item>
-          <el-form-item label="启用">
-            <el-radio-group v-model="form.sta">
-              <el-radio label="正常" value="0"></el-radio>
-              <el-radio label="禁用" value="1"></el-radio>
-            </el-radio-group>
-          </el-form-item>
+      <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
+        <el-form-item label="栏目名称" prop="title">
+          <el-input v-model="form.title" placeholder="栏目名称"></el-input>
+        </el-form-item>
+        <el-form-item label="栏目标识" prop="name">
+          <el-input v-model="form.name" placeholder="栏目标识"></el-input>
+        </el-form-item>
+        <el-form-item label="所属栏目" prop="fid">
+          <el-select v-model="form.fid" placeholder="所属栏目" class="handle-select mr10">
+            <el-option key="0" label="顶级栏目" value="0"></el-option>
+            <el-option :label="item.html+item.title" :value="item.id" 
+              v-for="item in cate_list" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="关键词" class="small">
+          <el-input type="textarea" v-model="form.keywords" placeholder="关键词"></el-input>
+        </el-form-item>
+        <el-form-item label="说明" class="small">
+          <el-input type="textarea" v-model="form.description" placeholder="说明"></el-input>
+        </el-form-item>
+        <el-form-item label="类型">
+          <el-radio-group v-model="form.type">
+            <el-radio label="列表页" value="1"></el-radio>
+            <el-radio label="下载页" value="2"></el-radio>
+            <el-radio label="单页面" value="3"></el-radio>
+            <el-radio label="封面页" value="4"></el-radio>
+            <el-radio label="表单页" value="5"></el-radio>
+            <el-radio label="跳转页" value="6"></el-radio>
+          </el-radio-group>
+          <el-input v-model="form.url" v-if="isRedirect" placeholder="跳转地址(http://baidu.com)" class="mt-10"></el-input>
+        </el-form-item>
+        <el-form-item label="栏目排序">
+          <el-input v-model="form.sort" placeholder="栏目排序"></el-input>
+        </el-form-item>
+        <el-form-item label="启用">
+          <el-radio-group v-model="form.sta">
+            <el-radio label="正常" value="0"></el-radio>
+            <el-radio label="禁用" value="1"></el-radio>
+          </el-radio-group>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancel('form')">取 消</el-button>
@@ -110,7 +108,7 @@
       </span>
     </el-dialog>
     <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+    <el-dialog title="提示" :visible.sync="delVisible" width="20%" center>
       <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
           <el-button @click="delVisible = false">取 消</el-button>

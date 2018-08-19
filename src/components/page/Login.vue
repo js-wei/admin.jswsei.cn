@@ -47,14 +47,12 @@ export default {
   created () {},
   methods: {
     submitForm (formName) {
-      const self = this
       this.$refs[formName].validate(valid => {
         if (!valid) {
           return
         }
         this.ruleForm.pass = md5(this.ruleForm.password)
         delete this.ruleForm.password
-        this.$store.commit('SHOW_LOADING')
         this.$store.commit('STE_LOADING_TEXT', '正在登陆中...')
         this.axios.post('/user', this.ruleForm).then(res => {
           this.$store.commit('HIDE_LOADING')
@@ -63,15 +61,13 @@ export default {
             return
           }
           res = res.data
-          if (!res.status) {
-            this.$message.error(res.msg)
-          }
-          this.$store.commit('SET_LOGIN', res.result)
+          this.$message.success(res.msg)
+          this.$store.commit('SET_TOKEN', res.result.token)
           setTimeout(() => {
-            this.$message.success(res.msg)
+            this.$store.commit('SET_LOGIN', res.result)
             this.$store.commit('STE_LOADING_TEXT', null)
             let redirect = this.$route.query.redirect || '/'
-            self.$router.push(redirect)
+            this.$router.push(redirect)
           }, 2e3)
         })
       })

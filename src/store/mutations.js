@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:24:18
  * Author: 魏巍
  * -----
- * Last Modified: '2018-05-29 1:53:05
+ * Last Modified: '2018-08-18 7:52:00
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -21,7 +21,8 @@ import {
     HIDE_FOOTER,
     STE_LOADING_TEXT,
     SET_NAVBAR,
-    SET_ACTIVE_NAVBAR
+    SET_ACTIVE_NAVBAR,
+    SET_TOKEN
 } from './mutation-type'
 
 const state = {
@@ -31,11 +32,14 @@ const state = {
   footer: true,
   loadingText: '请稍后...',
   navbar: [],
-  activeBar: null
+  activeBar: null,
+  token: null
 }
 
 const mutations = {
-    /* loading */
+  [SET_TOKEN] (state, token) {
+    state.token = token
+  },
   [HIDE_LOADING] (state) {
     state.loading = false
   },
@@ -89,6 +93,9 @@ const getters = {
   },
   getActiveBarState (state) {
     return state.activeBar
+  },
+  getTokenState (state) {
+    return state.token
   }
 }
 

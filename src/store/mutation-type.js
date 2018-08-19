@@ -3,7 +3,7 @@
  * Created Date: '2018-01-25 4:28:03
  * Author: 魏巍
  * -----
- * Last Modified: '2018-05-24 11:52:16
+ * Last Modified: '2018-08-18 7:50:00
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -21,3 +21,4 @@ export const HIDE_FOOTER = 'HIDE_FOOTER'
 export const STE_LOADING_TEXT = 'STE_LOADING_TEXT'
 export const SET_NAVBAR = 'SET_NAVBAR'
 export const SET_ACTIVE_NAVBAR = 'SET_ACTIVE_NAVBAR'
+export const SET_TOKEN = 'SET_TOKEN'

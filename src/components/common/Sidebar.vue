@@ -56,6 +56,7 @@ export default {
       if (!res.status) {
         return
       }
+      console.log(res)
       let data = res.result
       this.$store.commit('SET_NAVBAR', data)
     })
@@ -74,7 +75,7 @@ export default {
   overflow: hidden;
 }
 .sidebar-el-menu:not(.el-menu--collapse) {
-  width: 250px;
+  width: 220px;
 }
 .sidebar > ul {
   height: 100%;

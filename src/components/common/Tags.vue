@@ -1,25 +1,25 @@
 <template>
-    <div class="tags" v-if="showTags">
-        <ul>
-            <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
-                <router-link :to="item.path" class="tags-li-title">
-                    {{item.title}}<span v-if="!item.title">管理</span>
-                </router-link>
-                <span class="tags-li-icon" @click="closeTags(index)"><i class="el-icon-close"></i></span>
-            </li>
-        </ul>
-        <div class="tags-close-box">
-            <el-dropdown @command="handleTags">
-                <el-button size="mini" type="primary">
-                    标签选项<i class="el-icon-arrow-down el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu size="small" slot="dropdown">
-                    <el-dropdown-item command="other">关闭其他</el-dropdown-item>
-                    <el-dropdown-item command="all">关闭所有</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-        </div>
+  <div class="tags" v-if="showTags">
+    <ul>
+      <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
+        <router-link :to="item.path" class="tags-li-title">
+          {{item.title}}<span v-if="!item.title">管理</span>
+        </router-link>
+        <span class="tags-li-icon" @click="closeTags(index)"><i class="el-icon-close"></i></span>
+      </li>
+    </ul>
+    <div class="tags-close-box">
+      <el-dropdown @command="handleTags">
+        <el-button size="mini" type="primary">
+          标签选项<i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button>
+        <el-dropdown-menu size="small" slot="dropdown">
+          <el-dropdown-item command="other">关闭其他</el-dropdown-item>
+          <el-dropdown-item command="all">关闭所有</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
+  </div>
 </template>
 
 <script>
@@ -138,11 +138,11 @@ export default {
 }
 </script>
 
-
 <style>
 .tags {
   position: relative;
-  height: 30px;
+  padding-top:2px;
+  height: 35px;
   overflow: hidden;
   background: #fff;
   padding-right: 120px;
@@ -198,7 +198,7 @@ export default {
 .tags-close-box {
   position: absolute;
   right: 0;
-  top: 0;
+  top: 4px;
   box-sizing: border-box;
   padding-top: 1px;
   text-align: center;
