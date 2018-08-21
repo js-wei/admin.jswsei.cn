@@ -5,13 +5,9 @@
     <div class="content-box" :class="{'content-collapse':collapse}">
       <v-tags></v-tags>
       <div class="content">
-        <transition name="move" mode="out-in">
-          <keep-alive>
-            <el-scrollbar class="scrollbars">
-              <router-view></router-view>
-            </el-scrollbar>
-          </keep-alive>
-        </transition>
+        <el-scrollbar class="scrollbars">
+          <router-view></router-view>
+        </el-scrollbar>
       </div>
     </div>
   </div>
@@ -44,8 +40,8 @@ export default {
 <style lang="scss">
 .scrollbars{
   height: 100%;
-  .el-scrollbar__wrap{
-    overflow-x: hidden;
-  }
+}
+.el-scrollbar__wrap {
+  overflow-x: hidden;
 }
 </style>

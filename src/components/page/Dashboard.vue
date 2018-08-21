@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row :gutter="20">
+    <el-row :gutter="5">
       <el-col :xs="24" :sm="24" :lg="8" class="user">
         <el-row>
           <el-col>
@@ -289,7 +289,10 @@ export default {
 }
 </style>
 <style>
-.el-progress-bar {
+.progress .el-progress-bar {
   width: 98%;
+}
+.el-scrollbar__bar.is-horizontal{
+  overflow: hidden;
 }
 </style>

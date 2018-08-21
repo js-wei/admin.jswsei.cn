@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-18 1:39:05
+ * Modified By: 2018-08-21 10:32:02
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -34,14 +34,14 @@
             <span>{{scope.row.title}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" :label="metaTitle+'标识'">
+        <el-table-column prop="index" :label="metaTitle+'标识'">
         </el-table-column>
-        <el-table-column prop="ico" label="图标">
+        <el-table-column prop="icon" label="图标">
           <template slot-scope="scope">
-            <i :class="'icon icon_cell '+scope.row.ico"></i>
+            <i :class="`icon icon_cell ${scope.row.icon}`"></i>
           </template>
         </el-table-column>
-        <el-table-column prop="tag" label="状态">
+        <el-table-column prop="tag" label="状态" width="70" sortable>
           <template slot-scope="scope">
             <a @click="changeStatus(scope.row)" class="pointer">
               <el-tag
