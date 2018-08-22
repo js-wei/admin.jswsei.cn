@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-17 10:15:59
+ * Modified By: 2018-08-23 2:31:08
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -104,7 +104,7 @@
             </el-form-item>
             <el-form-item :label="metaTitle+'图片'" prop="logo">
               <el-upload
-                action="http://api.jswei.cn/posts/"
+                :action="$upload"
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
                 :on-success="handleSuccess"
@@ -250,7 +250,6 @@ export default {
     },
     deleteImage (path) {
       this.axios.delete(`../posts`, { params: { path: path } }).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -272,7 +271,6 @@ export default {
           }
         })
         .then(res => {
-          res = res.data
           if (res.status) {
             res = res.result
             this.tableData = res.data
@@ -284,7 +282,6 @@ export default {
     changeStatus (scope) {
       let status = scope.status === '正常' ? '禁用' : '正常'
       this.axios.put(`/blogroll/${scope.id}?status=${status}`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -304,7 +301,7 @@ export default {
       this.$store.commit('SHOW_LOADING')
       this.axios.get(`/blogroll/${row.id}/edit`).then(res => {
         this.$store.commit('HIDE_LOADING')
-        res = res.data
+
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -357,7 +354,6 @@ export default {
         this.editVisible = false
         this.$store.commit('SHOW_LOADING')
         this.axios.post('/blogroll', this.form).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -376,7 +372,7 @@ export default {
       if (!this.isDelAll) {
         this.axios.delete(`/blogroll/${this.row.id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
+
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -386,7 +382,6 @@ export default {
         })
       } else {
         this.axios.delete(`/blogroll/${this.delList.join('_')}`).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)

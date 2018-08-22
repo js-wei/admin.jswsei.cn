@@ -3,7 +3,7 @@
  * Created Date: '2018-08-19 9:36:13
  * Author: 魏巍
  * -----
- * Last Modified: '2018-08-19 10:03:15
+ * Last Modified: '2018-08-23 3:51:52
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -55,7 +55,7 @@ axios.interceptors.response.use(
         })
       }
     }
-    return response
+    return data
   },
   error => {
     store.commit('HIDE_LOADING')

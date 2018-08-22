@@ -56,11 +56,6 @@ export default {
         this.$store.commit('STE_LOADING_TEXT', '正在登陆中...')
         this.axios.post('/user', this.ruleForm).then(res => {
           this.$store.commit('HIDE_LOADING')
-          if (res.status !== 200) {
-            this.$message.error('服务器错误')
-            return
-          }
-          res = res.data
           this.$message.success(res.msg)
           this.$store.commit('SET_TOKEN', res.result.token)
           setTimeout(() => {

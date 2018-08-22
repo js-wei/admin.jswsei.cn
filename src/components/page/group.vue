@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-18 2:41:47
+ * Modified By: 2018-08-23 2:30:44
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -198,7 +198,6 @@ export default {
           ]
         })
         .then(res => {
-          res = res.data
           if (res.status) {
             res = res.result
             this.tableData = res.data
@@ -210,7 +209,6 @@ export default {
     changeStatus (scope) {
       let status = scope.status === '正常' ? 2 : 1
       this.axios.put(`/group/${scope.id}?status=${status}`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -223,7 +221,6 @@ export default {
     },
     handleEdit (index, row) {
       this.axios.get(`/group/${row.id}/edit`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -269,7 +266,6 @@ export default {
         this.editVisible = false
         this.$store.commit('SHOW_LOADING')
         this.axios.post('/group', this.form).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -294,7 +290,6 @@ export default {
             power: this.selectedList.join(',')
           })
           .then(res => {
-            res = res.data
             if (!res.status) {
               this.$message.error(res.msg)
               return
@@ -313,7 +308,7 @@ export default {
       if (!this.isDelAll) {
         this.axios.delete(`/group/${this.row.id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
+
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -323,7 +318,6 @@ export default {
         })
       } else {
         this.axios.delete(`/group/${this.delList.join('_')}`).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -351,7 +345,6 @@ export default {
         return
       }
       this.axios.get(`/check?id=${scope}`).then(res => {
-        res = res.data
         if (!res.status) {
           return
         }
@@ -373,7 +366,6 @@ export default {
     },
     getModuleList () {
       this.axios.get(`/modules`).then(res => {
-        res = res.data
         if (!res.status) {
           return
         }
@@ -382,7 +374,6 @@ export default {
     },
     getGroupPower () {
       this.axios.get(`/powers?id=${this.form1.id}`).then(res => {
-        res = res.data
         if (!res.status) {
           return
         }

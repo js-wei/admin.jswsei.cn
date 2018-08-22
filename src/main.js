@@ -34,6 +34,8 @@ const options = {
   inverse: false
 }
 
+Vue.prototype.$api = process.env.baseUrl
+Vue.prototype.$upload = process.env.uploadUrl
 Vue.use(VueProgressBar, options)
 
 Vue.use(ElementUI, {

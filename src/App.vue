@@ -31,7 +31,6 @@ export default {
   mounted () {
     this.$Progress.finish()
     this.axios.get('/setting').then(res => {
-      res = res.data
       if (res.status) {
         this.metaTile = res.result.title
       }

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-18 3:03:51
+ * Modified By: 2018-08-23 2:31:08
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -29,7 +29,7 @@
         </el-form-item>
         <el-form-item label="网站LOGO" prop="logo" class="w-60">
           <el-upload
-            action="http://api.jswei.cn/posts/"
+            :action="$upload"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
             :before-upload="beforeAvatarUpload"
@@ -161,7 +161,7 @@ export default {
     getData () {
       this.axios.get('/setting').then(res => {
         this.fileList = []
-        res = res.data
+
         if (res.status) {
           this.ruleForm = res.result
           if (res.result.logo) {
@@ -181,7 +181,6 @@ export default {
         this.$store.commit('SHOW_LOADING')
         this.ruleForm.status = (this.ruleForm.status === true) ? 1 : 0
         this.axios.post('/settings', this.ruleForm).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -225,7 +224,6 @@ export default {
     },
     deleteImage (path) {
       this.axios.delete(`../posts`, { params: { path: path } }).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return

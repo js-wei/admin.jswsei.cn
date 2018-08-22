@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-18 1:51:28
+ * Modified By: 2018-08-23 2:31:08
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -234,7 +234,6 @@ export default {
     },
     handleEdit (index, scope) {
       this.axios.get(`/member/${scope.id}/edit`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -270,7 +269,7 @@ export default {
       if (!this.isDelAll) {
         this.axios.delete(`/member/${this.row.id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
+
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -282,7 +281,7 @@ export default {
         let id = this.delList.join('_')
         this.axios.delete(`/member/${id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
+
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -298,7 +297,6 @@ export default {
     changeStatus (scope) {
       let status = scope.status === '正常' ? 2 : 1
       this.axios.put(`/member/${scope.id}?status=${status}`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -333,7 +331,6 @@ export default {
         this.form.password = md5(this.form.pass)
         this.$store.commit('SHOW_LOADING')
         this.axios.post('/member', this.form).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -363,7 +360,6 @@ export default {
     },
     see (index, scope) {
       this.axios.get(`/member/${scope.id}`).then(res => {
-        res = res.data
         if (!res.status) {
           return
         }
@@ -392,7 +388,6 @@ export default {
           }
         })
         .then(res => {
-          res = res.data
           if (!res.status) return
           res = res.result
           this.tableData = res.data

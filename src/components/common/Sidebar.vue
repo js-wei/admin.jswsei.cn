@@ -52,11 +52,9 @@ export default {
       this.collapse = msg
     })
     this.axios.get('/navbar?tree=1&status=1').then(res => {
-      res = res.data
       if (!res.status) {
         return
       }
-      console.log(res)
       let data = res.result
       this.$store.commit('SET_NAVBAR', data)
     })

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-18 2:57:39
+ * Modified By: 2018-08-23 2:25:19
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -218,7 +218,6 @@ export default {
     },
     handleEdit (index, scope) {
       this.axios.get(`/admin/${scope.id}/edit`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -253,7 +252,7 @@ export default {
       if (!this.isDelAll) {
         this.axios.delete(`/admin/${this.row.id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
+
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -265,7 +264,7 @@ export default {
         let id = this.delList.join('_')
         this.axios.delete(`/admin/${id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
+
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -281,7 +280,6 @@ export default {
     changeStatus (scope) {
       let status = scope.status === '正常' ? 1 : 0
       this.axios.put(`/admin/${scope.id}?status=${status}`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -317,7 +315,6 @@ export default {
         this.form.password = md5(this.form.pass)
         this.$store.commit('SHOW_LOADING')
         this.axios.post('/admin', this.form).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -339,7 +336,6 @@ export default {
     },
     see (index, scope) {
       this.axios.get(`/admin/${scope.id}`).then(res => {
-        res = res.data
         if (!res.status) {
           return
         }
@@ -366,7 +362,6 @@ export default {
           }
         })
         .then(res => {
-          res = res.data
           if (!res.status) return
           res = res.result
           this.tableData = res.data
@@ -377,7 +372,6 @@ export default {
         })
       this.axios
         .get('/group').then(res => {
-          res = res.data
           if (res.status === 1) {
             this.groupList = res.result.data
           }

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-18 1:40:04
+ * Modified By: 2018-08-23 4:02:25
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -114,7 +114,7 @@
           </el-form>
         </el-dialog>
         <!-- 删除提示框 -->
-        <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+        <el-dialog title="提示" :visible.sync="delVisible" width="30%" center>
           <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
           <span slot="footer" class="dialog-footer">
             <el-button @click="delVisible = false">取 消</el-button>
@@ -152,7 +152,7 @@ export default {
       select_word: '',
       select_type: '',
       select_date: '',
-      current_page: 0,
+      current_page: 1,
       per_page: 5,
       totals: 0,
       row: [],
@@ -190,7 +190,6 @@ export default {
   methods: {
     handleEdit (index, scope) {
       this.axios.get(`/message/${scope.id}/edit`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -225,7 +224,6 @@ export default {
       if (!this.isDelAll) {
         this.axios.delete(`/message/${this.row.id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -237,7 +235,6 @@ export default {
         let id = this.delList.join('_')
         this.axios.delete(`/message/${id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -253,7 +250,6 @@ export default {
     changeStatus (scope) {
       let status = scope.status === '正常' ? 2 : 1
       this.axios.put(`/message/${scope.id}?status=${status}`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -288,7 +284,6 @@ export default {
         this.form.mid = this.selectUser.join(',')
         this.$store.commit('SHOW_LOADING')
         this.axios.post('/message', this.form).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -309,7 +304,6 @@ export default {
     },
     see (index, scope) {
       this.axios.get(`/message/${scope.id}`).then(res => {
-        res = res.data
         if (!res.status) {
           return
         }
@@ -329,7 +323,7 @@ export default {
         .get('/message', {
           params: {
             p: p,
-            sql: 1,
+            sql: 0,
             where: [
               { field: 'title', op: 'like', value: this.select_word },
               { field: 'status', op: 'eq', value: this.select_type },
@@ -338,7 +332,6 @@ export default {
           }
         })
         .then(res => {
-          res = res.data
           if (!res.status) return
           res = res.result
           this.tableData = res.data

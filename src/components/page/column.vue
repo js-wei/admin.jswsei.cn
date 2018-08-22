@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-18 1:45:14
+ * Modified By: 2018-08-23 2:27:30
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -197,7 +197,6 @@ export default {
           ]
         })
         .then(res => {
-          res = res.data
           if (res.status) {
             this.tableData = res.result
             this.cur_page = res.current_page
@@ -205,7 +204,6 @@ export default {
           }
         })
       this.axios.get('/navbar?tree=1&status=1').then(res => {
-        res = res.data
         if (!res.status) {
           return
         }
@@ -216,7 +214,6 @@ export default {
     changeStatus (scope) {
       let status = scope.status === '正常' ? 1 : 0
       this.axios.put(`/column/${scope.id}?status=${status}`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -230,7 +227,6 @@ export default {
     handleEdit (index, row) {
       this.getCateList()
       this.axios.get(`/column/${row.id}/edit`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
         }
@@ -283,7 +279,6 @@ export default {
         this.form.type = this.type
         this.$store.commit('SHOW_LOADING')
         this.axios.post('/column', this.form).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -303,7 +298,7 @@ export default {
       if (!this.isDelAll) {
         this.axios.delete(`/column/${this.row.id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
+
           if (!res.status) {
             this.$message.error(res.msg)
           }
@@ -312,7 +307,6 @@ export default {
         })
       } else {
         this.axios.delete(`/column/${this.delList.join('_')}`).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -339,7 +333,6 @@ export default {
     },
     getCateList () {
       this.axios.get('/column_list').then(res => {
-        res = res.data
         if (!res.status) {
           return
         }

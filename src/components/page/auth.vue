@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-17 10:18:44
+ * Modified By: 2018-08-23 2:26:21
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -178,7 +178,6 @@ export default {
           ]
         })
         .then(res => {
-          res = res.data
           if (res.status) {
             this.tableData = res.result
             this.cur_page = res.current_page
@@ -189,7 +188,6 @@ export default {
     changeStatus (scope) {
       let status = scope.status === '正常' ? 1 : 0
       this.axios.put(`/module/${scope.id}?status=${status}`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -203,7 +201,6 @@ export default {
     handleEdit (index, row) {
       this.getCateList()
       this.axios.get(`/module/${row.id}/edit`).then(res => {
-        res = res.data
         if (!res.status) {
           this.$message.error(res.msg)
           return
@@ -254,7 +251,6 @@ export default {
         // this.form.status = this.form.sta == "正常" ? 0 : 1;
         this.$store.commit('SHOW_LOADING')
         this.axios.post('/module', this.form).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -273,7 +269,7 @@ export default {
       if (!this.isDelAll) {
         this.axios.delete(`/column/${this.row.id}`).then(res => {
           this.$store.commit('HIDE_LOADING')
-          res = res.data
+
           if (!res.status) {
             this.$message.error(res.msg)
             return
@@ -283,7 +279,6 @@ export default {
         })
       } else {
         this.axios.delete(`/column/${this.delList.join('_')}`).then(res => {
-          res = res.data
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
@@ -313,7 +308,6 @@ export default {
     },
     getCateList () {
       this.axios.get('/module_list').then(res => {
-        res = res.data
         if (!res.status) {
           return
         }

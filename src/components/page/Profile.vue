@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-05-23 9:55:39
+ * Modified By: 2018-08-23 2:31:08
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -90,7 +90,6 @@ export default {
         this.ruleForm2.password = md5(this.ruleForm2['pass'])
         this.$store.commit('SHOW_LOADING')
         this.axios.post('save', this.ruleForm2).then(res => {
-          res = res.data
           if (!res || !res.status) {
             this.$message.error(res.msg || '出错了')
             return

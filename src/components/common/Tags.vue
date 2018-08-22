@@ -76,7 +76,6 @@ export default {
     getOne (name, route, column = true) {
       if (column) {
         this.axios.get('column_one', { params: { name: name } }).then(res => {
-          res = res.data
           if (res.status) {
             let current = res.result
             if (current.index === route.params.id) {
@@ -94,7 +93,6 @@ export default {
         })
       } else {
         this.axios.get('module_one', { params: { name: name } }).then(res => {
-          res = res.data
           if (res.status) {
             let current = res.result
             if (current.index === route.params.id) {
