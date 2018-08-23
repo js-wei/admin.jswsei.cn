@@ -5,7 +5,7 @@
     <div class="content-box" :class="{'content-collapse':collapse}">
       <v-tags></v-tags>
       <div class="content">
-        <el-scrollbar class="scrollbars">
+        <el-scrollbar class="scrollbar">
           <router-view></router-view>
         </el-scrollbar>
       </div>
@@ -36,12 +36,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.scrollbars{
-  height: 100%;
-}
-.el-scrollbar__wrap {
-  overflow-x: hidden;
-}
-</style>

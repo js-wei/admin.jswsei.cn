@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-23 2:25:19
+ * Modified By: 2018-08-23 9:47:50
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -135,12 +135,10 @@
         width="30%">
         <div>
           <p>账号:{{detail.username}}</p>
-          <p>密码:{{detail.pass}}</p>
-          <p>生成方式:{{detail.type}}</p>
-          <p>常用地址:{{detail.region}}</p>
+          <p>常用地址:{{detail.last_address}}</p>
           <p>添加时间:{{detail.create_time}}</p>
-          <p>最后登录IP:{{detail.last_login_ip}}</p>
-          <p>最后登录时间:{{detail.last_login_time|isDefault('未登录')}}</p>
+          <p>最后登录IP:{{detail.last_ip}}</p>
+          <p>最后登录时间:{{detail.last_date|isDefault('未登录')}}</p>
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button type="primary" @click="detailVisible=false">确 定</el-button>

@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-      <router-view v-loading="loading" 
+      <router-view
+        v-loading="loading" 
         element-loading-spinner="el-icon-loading"
         :element-loading-text="loadingText"
         element-loading-background="rgba(0, 0, 0, 0.8)">

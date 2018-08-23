@@ -21,27 +21,17 @@ import store from './store'
 import i18n from './i18n'
 
 const options = {
-  color: '#409EFF',
-  failedColor: '#874b4b',
+  color: '#a94442',
+  failedColor: '#a94442',
   thickness: '2px',
-  transition: {
-    speed: '0.2s',
-    opacity: '0.6s',
-    termination: 300
-  },
-  autoRevert: true,
-  location: 'top',
-  inverse: false
+  location: 'top'
 }
 
 Vue.prototype.$api = process.env.baseUrl
 Vue.prototype.$upload = process.env.uploadUrl
-Vue.use(VueProgressBar, options)
 
-Vue.use(ElementUI, {
-  size: 'small',
-  debug: false
-})
+Vue.use(VueProgressBar, options)
+Vue.use(ElementUI, {size: 'small'})
 Vue.use(MetaInfo)
 Vue.use(VueAxios, axios)
 

@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-23 4:02:25
+ * Modified By: 2018-08-23 10:17:22
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -13,124 +13,127 @@
  */
 <template>
     <div class="message">
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-message"></i> 消息管理</el-breadcrumb-item>
-            </el-breadcrumb>
+      <div class="crumbs">
+          <el-breadcrumb separator="/">
+              <el-breadcrumb-item><i class="el-icon-message"></i> 消息管理</el-breadcrumb-item>
+          </el-breadcrumb>
+      </div>
+      <div class="container">
+        <div class="handle-box">
+            <div class="pull-left">
+                <el-button type="primary" class="handle-del" @click="delAll"><i class="icon icon-shanchu"></i> 批量删除</el-button>
+                <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i> 发布消息</el-button>
+            </div>
+            <div class="pull-right">
+                <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
+                <el-date-picker
+                    v-model="select_date"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :value-format="'yyyy-MM-dd HH:mm:ss'">
+                </el-date-picker>
+                <el-select v-model="select_type" placeholder="状态" class="handle-select">
+                    <el-option  label="全部" value=""></el-option>
+                    <el-option  label="正常" value="1"></el-option>
+                    <el-option  label="禁用" value="2"></el-option>
+                </el-select>
+                <el-button type="primary" icon="search" @click="search">搜索</el-button>
+            </div>
         </div>
-        <div class="container">
-          <div class="handle-box">
-              <div class="pull-left">
-                  <el-button type="primary" class="handle-del" @click="delAll"><i class="icon icon-shanchu"></i> 批量删除</el-button>
-                  <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i> 发布消息</el-button>
-              </div>
-              <div class="pull-right">
-                  <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input"></el-input>
-                  <el-date-picker
-                      v-model="select_date"
-                      type="daterange"
-                      range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
-                      :value-format="'yyyy-MM-dd HH:mm:ss'">
-                  </el-date-picker>
-                  <el-select v-model="select_type" placeholder="状态" class="handle-select">
-                      <el-option  label="全部" value=""></el-option>
-                      <el-option  label="正常" value="1"></el-option>
-                      <el-option  label="禁用" value="2"></el-option>
-                  </el-select>
-                  <el-button type="primary" icon="search" @click="search">搜索</el-button>
-              </div>
-          </div>
-          <el-table :data="tableData" border ref="multipleTable" 
-            @selection-change="handleSelectionChange">
-              <el-table-column type="selection" width="50"></el-table-column>
-              <el-table-column prop="title" label="标题"></el-table-column>
-              <el-table-column prop="content" label="内容" width="200">
-                <template slot-scope="scope">
-                  <a class="pointer" @click="see(scope.$index,scope.row)">{{scope.row.content|subString(15,true)}}</a>
-                </template>
-              </el-table-column>
-              <el-table-column prop="tag" label="标签">
-                <template slot-scope="scope">
-                  <a @click="changeStatus(scope.row)" class="pointer">
-                    <el-tag
-                      :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
-                      disable-transitions>
-                      {{scope.row.status}}
-                    </el-tag>
-                  </a>
-                </template>
-              </el-table-column>
-              <el-table-column prop="update_time" label="操作时间" align="right" sortable width="150">
-              </el-table-column>
-              <el-table-column label="操作" width="150">
-                <template slot-scope="scope">
-                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                </template>
-              </el-table-column>
-          </el-table>
-          <el-pagination v-if="tableData.length"
-            background
-            layout="prev, pager, next"
-            :total="totals"
-            :page-size="per_page"
-            class="mt-10"
-            @current-change="currentChange">
-          </el-pagination>
-        </div>
-        <!-- 编辑弹出框 -->
-        <el-dialog title="消息管理" :visible.sync="editVisible" width="50%" :close-on-click-modal="false">
-          <el-form :model="form" :rules="rules" ref="form" label-width="50px" class="form" auto-complete="off">
-            <el-form-item label="标题" prop="title" class="w-50">
-              <el-input  v-model="form.title" height="120"></el-input>
-            </el-form-item>
-            <el-form-item label="内容" prop="content">
-              <el-input type="textarea" v-model="form.content"></el-input>
-            </el-form-item>
-            <el-form-item label="用户" prop="userList">
-              <el-transfer  :titles="['可选用户', '已选用户']"
-                v-model="selectUser" :data="userList"  @change="handleChange"></el-transfer>
-            </el-form-item>
-            <el-form-item label="类型">
-              <el-radio-group v-model="form.type">                    
-                <el-radio label="系统" value="1"></el-radio>
-                <el-radio label="降价" value="2"></el-radio>
-                <el-radio label="优惠" value="3"></el-radio>
-                <el-radio label="其他" value="4"></el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="状态">
-              <el-radio-group v-model="form.sta">
-                <el-radio label="正常" value="0"></el-radio>
-                <el-radio label="禁用" value="1"></el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item class="mt-20">
-                <el-button type="primary" @click="saveEdit('form')">提交</el-button>
-                <el-button @click="cancel('form')">取消</el-button>
-            </el-form-item>
-          </el-form>
-        </el-dialog>
-        <!-- 删除提示框 -->
-        <el-dialog title="提示" :visible.sync="delVisible" width="30%" center>
-          <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="delVisible = false">取 消</el-button>
-            <el-button type="primary" @click="deleteRow">确 定</el-button>
-          </span>
-        </el-dialog>
-        <!-- 查看内容 -->
-        <el-dialog
-          :title="detail.title"
-          :visible.sync="detailVisible"
-          width="30%">
-          <span>{{detail.content}}</span>
-          <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="detailVisible=false">确 定</el-button>
-          </span>
-        </el-dialog>
+        <el-table :data="tableData" border ref="multipleTable" 
+          @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="50"></el-table-column>
+            <el-table-column prop="title" label="标题"></el-table-column>
+            <el-table-column prop="content" label="内容">
+              <template slot-scope="scope">
+                <a class="pointer" @click="see(scope.$index,scope.row)">{{scope.row.content|subString(15,true)}}</a>
+              </template>
+            </el-table-column>
+            <el-table-column prop="status" label="状态" width="70" sortable>
+              <template slot-scope="scope">
+                <a @click="changeStatus(scope.row)" class="pointer">
+                  <el-tag
+                    :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
+                    disable-transitions>
+                    {{scope.row.status}}
+                  </el-tag>
+                </a>
+              </template>
+            </el-table-column>
+            <el-table-column prop="update_time" label="操作时间" 
+              align="right" sortable width="150">
+            </el-table-column>
+            <el-table-column label="操作" width="200">
+              <template slot-scope="scope">
+                <el-button size="mini" 
+                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini" type="danger" 
+                  @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination v-if="tableData.length"
+          background
+          layout="prev, pager, next"
+          :total="totals"
+          :page-size="per_page"
+          class="mt-10"
+          @current-change="currentChange">
+        </el-pagination>
+      </div>
+      <!-- 编辑弹出框 -->
+      <el-dialog title="消息管理" :visible.sync="editVisible" width="50%" :close-on-click-modal="false">
+        <el-form :model="form" :rules="rules" ref="form" label-width="50px" class="form" auto-complete="off">
+          <el-form-item label="标题" prop="title" class="w-50">
+            <el-input  v-model="form.title" height="120"></el-input>
+          </el-form-item>
+          <el-form-item label="内容" prop="content">
+            <el-input type="textarea" v-model="form.content"></el-input>
+          </el-form-item>
+          <el-form-item label="用户" prop="userList">
+            <el-transfer  :titles="['可选用户', '已选用户']"
+              v-model="selectUser" :data="userList"  @change="handleChange"></el-transfer>
+          </el-form-item>
+          <el-form-item label="类型">
+            <el-radio-group v-model="form.type">                    
+              <el-radio label="系统" value="1"></el-radio>
+              <el-radio label="降价" value="2"></el-radio>
+              <el-radio label="优惠" value="3"></el-radio>
+              <el-radio label="其他" value="4"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-radio-group v-model="form.sta">
+              <el-radio label="正常" value="0"></el-radio>
+              <el-radio label="禁用" value="1"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item class="mt-20">
+              <el-button type="primary" @click="saveEdit('form')">提交</el-button>
+              <el-button @click="cancel('form')">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+      <!-- 删除提示框 -->
+      <el-dialog title="提示" :visible.sync="delVisible" width="30%" center>
+        <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="delVisible = false">取 消</el-button>
+          <el-button type="primary" @click="deleteRow">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 查看内容 -->
+      <el-dialog
+        :title="detail.title"
+        :visible.sync="detailVisible"
+        width="30%">
+        <span>{{detail.content}}</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="detailVisible=false">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-row :gutter="5">
-      <el-col :xs="24" :sm="24" :lg="8" class="user">
+    <el-row>
+      <el-col :xs="24" :sm="24" :lg="8" class="user mr-10">
         <el-row>
           <el-col>
             <el-card shadow="hover" class="user-info">
@@ -53,8 +53,8 @@
           </el-col>
         </el-row>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="16" class="grid">
-        <el-row :gutter="20">
+      <el-col :xs="24" :sm="24" :lg="15" class="grid">
+        <el-row :gutter="10">
             <el-col :span="8">
               <el-card shadow="hover" :body-style="{padding: '0px'}">
                 <div class="grid-content grid-con-1">
