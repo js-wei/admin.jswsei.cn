@@ -1,16 +1,13 @@
-/*
- * File: d:\works\admin.jswei.cn\src\components\page\message.vue
- * Created Date: 2018-05-16 10:17:17
- * Author: 魏巍
- * -----
- * Last Modified: 魏巍
- * Modified By: 2018-08-23 10:17:22
- * -----
- * Copyright (c) 2018 魏巍
- * ------
- * All shall be well and all shall be well and all manner of things shall be well.
- * We're doomed!
- */
+<!--
+@Author: 魏巍
+@Date:   2018-07-08T15:25:57+08:00
+@Email:  524314430@qq.com
+@Filename: message.vue
+@Last modified by:   魏巍
+@Last modified time: 2019-05-05T00:16:45+08:00
+@Copyright: free
+-->
+
 <template>
     <div class="message">
       <div class="crumbs">
@@ -42,7 +39,7 @@
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
             </div>
         </div>
-        <el-table :data="tableData" border ref="multipleTable" 
+        <el-table :data="tableData" border ref="multipleTable"
           @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column prop="title" label="标题"></el-table-column>
@@ -55,21 +52,21 @@
               <template slot-scope="scope">
                 <a @click="changeStatus(scope.row)" class="pointer">
                   <el-tag
-                    :type="scope.row.status === '禁用' ? 'primary' : 'success'" 
+                    :type="scope.row.status === '禁用' ? 'primary' : 'success'"
                     disable-transitions>
                     {{scope.row.status}}
                   </el-tag>
                 </a>
               </template>
             </el-table-column>
-            <el-table-column prop="update_time" label="操作时间" 
+            <el-table-column prop="update_time" label="操作时间"
               align="right" sortable width="150">
             </el-table-column>
             <el-table-column label="操作" width="200">
               <template slot-scope="scope">
-                <el-button size="mini" 
+                <el-button size="mini"
                   @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button size="mini" type="danger" 
+                <el-button size="mini" type="danger"
                   @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
             </el-table-column>
@@ -97,7 +94,7 @@
               v-model="selectUser" :data="userList"  @change="handleChange"></el-transfer>
           </el-form-item>
           <el-form-item label="类型">
-            <el-radio-group v-model="form.type">                    
+            <el-radio-group v-model="form.type">
               <el-radio label="系统" value="1"></el-radio>
               <el-radio label="降价" value="2"></el-radio>
               <el-radio label="优惠" value="3"></el-radio>
@@ -347,7 +344,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .message {
   .form {
     width: 90%;
@@ -377,4 +374,3 @@ textarea.el-textarea__inner {
   resize: none;
 }
 </style>
-

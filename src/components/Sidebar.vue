@@ -1,16 +1,26 @@
+<!--
+@Author: 魏巍
+@Date:   2018-07-08T15:25:57+08:00
+@Email:  524314430@qq.com
+@Filename: Sidebar.vue
+@Last modified by:   魏巍
+@Last modified time: 2019-05-05T00:14:07+08:00
+@Copyright: free
+-->
+
 <template>
     <div class="sidebar">
       <el-scrollbar class="scrollbar">
         <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
         text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened :router="true">
         <template v-for="item in items">
-            <template v-if="item.subs"> 
+            <template v-if="item.subs">
                 <el-submenu :index="item.index" :key="item.index">
                     <template slot="title">
                         <i class="icon" :class="item.icon"></i>
                         <span slot="title">{{ item.title }}</span>
                     </template>
-                    <el-menu-item :index="s.cate_type=='column'?'/'+s.cate_type+'/'+s.index:'/'+s.index" 
+                    <el-menu-item :index="`/${item.index}/${s.index}`"
                       v-for="(s,i) in item.subs" :key="i">
                         <i class="icon" :class="s.icon"></i>
                         <span slot="title">{{ s.title }}</span>
@@ -30,7 +40,7 @@
 </template>
 
 <script>
-import bus from '../common/bus'
+import bus from './bus'
 import { mapState } from 'vuex'
 export default {
   data () {

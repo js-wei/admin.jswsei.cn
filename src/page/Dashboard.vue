@@ -112,6 +112,7 @@
                   <template slot-scope="scope">
                     <i class="el-icon-edit"></i>
                     <i class="el-icon-delete"></i>
+                    {{scope}}
                   </template>
                 </el-table-column>
               </el-table>
@@ -158,6 +159,7 @@ export default {
         position: 'top-right'
       })
     }
+    console.log(this.todoList)
   },
   filters: {
     filterAddress: function (value, index = 0) {
@@ -170,7 +172,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .user {
   height: 550px;
   margin-bottom: 22px;

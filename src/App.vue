@@ -1,7 +1,17 @@
+<!--
+@Author: 魏巍
+@Date:   2018-07-08T15:25:57+08:00
+@Email:  524314430@qq.com
+@Filename: App.vue
+@Last modified by:   魏巍
+@Last modified time: 2019-05-05T00:09:17+08:00
+@Copyright: free
+-->
+
 <template>
     <div id="app">
       <router-view
-        v-loading="loading" 
+        v-loading="loading"
         element-loading-spinner="el-icon-loading"
         :element-loading-text="loadingText"
         element-loading-background="rgba(0, 0, 0, 0.8)">

@@ -385,7 +385,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .el-icon-date {
   padding-right: 4px;
 }

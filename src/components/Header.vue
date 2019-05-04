@@ -1,3 +1,13 @@
+<!--
+@Author: 魏巍
+@Date:   2018-07-08T15:25:57+08:00
+@Email:  524314430@qq.com
+@Filename: Header.vue
+@Last modified by:   魏巍
+@Last modified time: 2019-05-05T00:20:06+08:00
+@Copyright: free
+-->
+
 <template>
   <div class="header">
     <!-- 折叠按钮 -->
@@ -27,7 +37,7 @@
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link" v-if="user">
-            {{user.username}} 
+            {{user.username}}
             <i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -55,7 +65,7 @@
   </div>
 </template>
 <script>
-import bus from '../common/bus'
+import bus from './bus'
 import { mapState } from 'vuex'
 export default {
   data () {
@@ -125,7 +135,7 @@ export default {
 }
 </script>
 <style lang="scss">
-@import "../../assets/base";
+@import "../assets/base";
 .header {
   position: relative;
   box-sizing: border-box;

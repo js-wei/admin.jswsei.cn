@@ -402,7 +402,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .message {
   .form {
     width: 90%;

@@ -1,14 +1,11 @@
 /**
- * File: g:\vue\admin.jswsei.cn\src\router\index.js
- * Created Date: '2018-07-15 10:26:53
- * Author: 魏巍
- * -----
- * Last Modified: '2018-08-17 11:01:51
- * Modified By: 魏巍
- * -----
- * Copyright (c) 2018 魏巍
- * ------------------------------------
- * Javascript will save your soul!
+ * @Author: 魏巍
+ * @Date:   2018-07-15T22:26:53+08:00
+ * @Email:  524314430@qq.com
+ * @Filename: index.js
+ * @Last modified by:   魏巍
+ * @Last modified time: 2019-05-05T00:08:02+08:00
+ * @Copyright: free
  */
 
 import router from './router'

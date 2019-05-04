@@ -22,7 +22,7 @@
       <div class="container">
         <div class="handle-box">
           <div class="pull-left">
-            <el-button type="primary" class="handle-del mr10" 
+            <el-button type="primary" class="handle-del mr10"
               @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
             <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
             <el-button type="success" class="handle-del mr10"  disabled v-if="!tableData.length"
@@ -48,7 +48,7 @@
               <el-button type="primary" icon="el-icon-search" @click="search" class="pull-right ml-5">搜索</el-button>
           </div>
         </div>
-        <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+        <el-table :data="tableData" border style="width: 100%" ref="multipleTable"
           @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50"></el-table-column>
           <el-table-column prop="title" :label="metaTitle+'名称'">
@@ -98,7 +98,7 @@
       </div>
       <!-- 编辑弹出框 -->
       <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="40%" :close-on-click-modal="false">
-        <el-form ref="form" :model="form" label-width="90px" :rules="rules" 
+        <el-form ref="form" :model="form" label-width="90px" :rules="rules"
           style="width:85%;margin:0 auto;" autocomplete="off">
           <el-form-item :label="metaTitle+'名称'" prop="title">
             <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
@@ -434,7 +434,7 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .el-icon-date {
   padding-right: 4px;
 }

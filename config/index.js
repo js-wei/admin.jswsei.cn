@@ -11,16 +11,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api':{
-          target:'http://jsonplaceholder.typicode.com',
-          changeOrigin:true,
+      '/admin':{
+          target: process.env.baseUrl,
+          changeOrigin: true,
           pathRewrite:{
-              '/api':''
+              '^/api':''
           }
-      },
-      '/ms':{
-          target: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128',
-          changeOrigin: true
       }
     },
     // Various Dev Server settings

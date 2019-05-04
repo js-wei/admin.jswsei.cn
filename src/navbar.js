@@ -1,14 +1,11 @@
 /**
- * File: d:\works\admin.jswei.cn\src\navbar.js
- * Created Date: '2018-05-14 8:12:52
- * Author: 魏巍
- * -----
- * Last Modified: '2018-05-21 9:46:27
- * Modified By: 魏巍
- * -----
- * Copyright (c) 2018 魏巍
- * ------------------------------------
- * Javascript will save your soul!
+ * @Author: 魏巍
+ * @Date:   2018-07-08T15:25:57+08:00
+ * @Email:  524314430@qq.com
+ * @Filename: navbar.js
+ * @Last modified by:   魏巍
+ * @Last modified time: 2019-05-05T00:09:45+08:00
+ * @Copyright: free
  */
 
 export default [{

@@ -5,15 +5,15 @@
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm"
               class="ruleForm" autocomplete="off">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="请输入用户名"
-                      autocomplete="off"></el-input>
+                  <el-input v-model="ruleForm.username" placeholder="请输入用户名"
+                    autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password"
-                      @keyup.enter.native="submitForm('ruleForm')" autocomplete="off"></el-input>
+                  <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password"
+                    @keyup.enter.native="submitForm('ruleForm')" autocomplete="off"></el-input>
                 </el-form-item>
                 <div class="login-btn">
-                    <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+                  <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
                 <!-- <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p> -->
             </el-form>
@@ -40,7 +40,7 @@ export default {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
-        password: [{ validator: validPassword, trigger: ['blur', 'change'] }]
+        password: [{ validator: validPassword, trigger: 'blur' }]
       }
     }
   },
@@ -48,23 +48,24 @@ export default {
   methods: {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
-        if (!valid) {
-          return
+        if (valid) {
+          this.ruleForm.pass = md5(this.ruleForm.password)
+          delete this.ruleForm.password
+          this.$store.commit('STE_LOADING_TEXT', '正在登陆中...')
+          this.axios.post('/user', this.ruleForm).then(res => {
+            this.$store.commit('HIDE_LOADING')
+            this.$message.success(res.msg)
+            this.$store.commit('SET_TOKEN', res.result.token)
+            setTimeout(() => {
+              this.$store.commit('SET_LOGIN', res.result)
+              this.$store.commit('STE_LOADING_TEXT', null)
+              let redirect = this.$route.query.redirect || '/'
+              this.$router.push(redirect)
+            }, 2e3)
+          })
+        } else {
+          this.$refs[formName].reset()
         }
-        this.ruleForm.pass = md5(this.ruleForm.password)
-        delete this.ruleForm.password
-        this.$store.commit('STE_LOADING_TEXT', '正在登陆中...')
-        this.axios.post('/user', this.ruleForm).then(res => {
-          this.$store.commit('HIDE_LOADING')
-          this.$message.success(res.msg)
-          this.$store.commit('SET_TOKEN', res.result.token)
-          setTimeout(() => {
-            this.$store.commit('SET_LOGIN', res.result)
-            this.$store.commit('STE_LOADING_TEXT', null)
-            let redirect = this.$route.query.redirect || '/'
-            this.$router.push(redirect)
-          }, 2e3)
-        })
       })
     }
   }

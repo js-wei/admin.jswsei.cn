@@ -4,7 +4,7 @@
  * Author: 魏巍
  * -----
  * Last Modified: 魏巍
- * Modified By: 2018-08-23 2:27:30
+ * Modified By: 2018-08-23 2:29:09
  * -----
  * Copyright (c) 2018 魏巍
  * ------
@@ -16,8 +16,8 @@
   <div>
     <div class="crumbs">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item><i class="el-icon-date"></i>栏目</el-breadcrumb-item>
-        <el-breadcrumb-item>栏目列表</el-breadcrumb-item>
+        <el-breadcrumb-item><i :class="current.icon"></i>栏目</el-breadcrumb-item>
+        <el-breadcrumb-item>{{current.title}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="container">
@@ -28,17 +28,18 @@
       </div>
       <el-table :data="tableData" border ref="multipleTable" 
         @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="40"></el-table-column>
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="title" label="栏目名称">
           <template slot-scope="scope">
             <span v-html="scope.row.html"></span>
             <span>{{scope.row.title}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="栏目标识"></el-table-column>
-        <el-table-column prop="type" label="栏目类型"></el-table-column>
-        <el-table-column prop="sort" label="排序" sortable width="80"></el-table-column>
-        <el-table-column prop="tag" label="状态" width="70">
+        <el-table-column prop="name" label="栏目标识">
+        </el-table-column>
+        <el-table-column prop="type" label="栏目类型">
+        </el-table-column>
+        <el-table-column prop="tag" label="状态" width="80">
           <template slot-scope="scope">
             <a @click="changeStatus(scope.row)" class="pointer">
               <el-tag
@@ -48,9 +49,10 @@
             </a>
           </template>
         </el-table-column>
+        <el-table-column prop="sort" label="排序" sortable width="80"></el-table-column>
         <el-table-column prop="update_time" label="操作时间" sortable width="150">
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -59,66 +61,68 @@
       </el-table>
     </div>
     <!-- 编辑弹出框 -->
-    <el-dialog title="栏目管理" :visible.sync="editVisible" width="45%" 
+    <el-dialog :title="current.title" :visible.sync="editVisible" width="60%" 
       :close-on-click-modal="false">
-      <el-form ref="form" :model="form" label-width="90px" :rules="rules" style="width:85%;margin:0 auto;" autocomplete="off">
-        <el-form-item label="栏目名称" prop="title">
-          <el-input v-model="form.title" placeholder="栏目名称"></el-input>
-        </el-form-item>
-        <el-form-item label="栏目标识" prop="name">
-          <el-input v-model="form.name" placeholder="栏目标识"></el-input>
-        </el-form-item>
-        <el-form-item label="所属栏目" prop="fid">
-          <el-select v-model="form.fid" placeholder="所属栏目" class="handle-select mr10">
-            <el-option key="0" label="顶级栏目" value="0"></el-option>
-            <el-option :label="item.html+item.title" :value="item.id" 
-              v-for="item in cate_list" :key="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="关键词" class="small">
-          <el-input type="textarea" v-model="form.keywords" placeholder="关键词"></el-input>
-        </el-form-item>
-        <el-form-item label="说明" class="small">
-          <el-input type="textarea" v-model="form.description" placeholder="说明"></el-input>
-        </el-form-item>
-        <el-form-item label="类型">
-          <el-radio-group v-model="form.type">
-            <el-radio label="列表页" value="1"></el-radio>
-            <el-radio label="下载页" value="2"></el-radio>
-            <el-radio label="单页面" value="3"></el-radio>
-            <el-radio label="封面页" value="4"></el-radio>
-            <el-radio label="表单页" value="5"></el-radio>
-            <el-radio label="跳转页" value="6"></el-radio>
-          </el-radio-group>
-          <el-input v-model="form.url" v-if="isRedirect" placeholder="跳转地址(http://baidu.com)" class="mt-10"></el-input>
-        </el-form-item>
-        <el-form-item label="栏目排序">
-          <el-input v-model="form.sort" placeholder="栏目排序"></el-input>
-        </el-form-item>
-        <el-form-item label="启用">
-          <el-radio-group v-model="form.sta">
-            <el-radio label="正常" value="0"></el-radio>
-            <el-radio label="禁用" value="1"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel('form')">取 消</el-button>
-        <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
-      </span>
+        <el-form ref="form" :model="form" label-width="150px" :rules="rules" 
+          style="width:85%;margin:0 auto;" autocomplete="off">
+            <el-form-item label="标题" prop="title">
+              <el-input v-model="form.title" placeholder="栏目名称"></el-input>
+            </el-form-item>
+            <el-form-item label="所属栏目" prop="fid">
+              <el-select v-model="form.fid" placeholder="所属栏目" class="handle-select mr10">
+                <el-option key="0" label="顶级栏目" value="0"></el-option>
+                <el-option :label="item.html+item.title" :value="item.id" 
+                  v-for="item in cate_list" :key="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="关键词" style="height:120px;" class="w-80">
+                <el-input type="textarea" v-model="form.keywords" placeholder="关键词"></el-input>
+            </el-form-item>
+            <el-form-item label="说明" style="height:120px;" class="w-80">
+                <el-input type="textarea" v-model="form.description" placeholder="说明"></el-input>
+            </el-form-item>
+            <el-form-item label="内容" class="w-100">
+              <quill-editor ref="myTextEditor" v-model="form.content" :options="editorOption" @change="onEditorChange"></quill-editor>
+            </el-form-item>
+            <el-form-item label="排序">
+              <el-input v-model="form.sort"  placeholder="排序"></el-input>
+            </el-form-item>
+            <el-form-item label="启用">
+              <el-radio-group v-model="form.status">
+                <el-radio label="正常" value="0"></el-radio>
+                <el-radio label="禁用" value="1"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancel('form')">取 消</el-button>
+          <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
+        </span>
     </el-dialog>
     <!-- 删除提示框 -->
     <el-dialog title="提示" :visible.sync="delVisible" width="20%" center>
       <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
-          <el-button @click="delVisible = false">取 消</el-button>
-          <el-button type="primary" @click="deleteRow">确 定</el-button>
+        <el-button @click="delVisible = false">取 消</el-button>
+        <el-button type="primary" @click="deleteRow">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import hljs from 'highlight.js'
+import 'highlight.js/styles/monokai-sublime.css'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor, Quill } from 'vue-quill-editor'
+import { ImageExtend, QuillWatch } from 'quill-image-extend-module'
+/* container, */
+Quill.register('modules/ImageExtend', ImageExtend)
+const Font = Quill.import('formats/font')
+Font.whitelist = ['Arial', 'serif', 'sans-serif', '宋体', '黑体', '微软雅黑']
+Quill.register(Font, true)
 export default {
   data () {
     var validateFid = (rule, value, callback) => {
@@ -128,10 +132,55 @@ export default {
       }
       callback()
     }
+    const toolbarOptions = [
+      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+      ['blockquote', 'code-block'],
+
+      [{ header: 1 }, { header: 2 }], // custom button values
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+      [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+      [{ direction: 'rtl' }], // text direction
+
+      [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{font: ['Arial', 'serif', 'sans-serif', '宋体', '黑体', '微软雅黑']}],
+      [{ align: [] }],
+      ['clean'],
+      ['image', 'video']
+    ]
     return {
+      id: this.$route.params.id,
+      editorOption: {
+        placeholder: '请输入内容',
+        modules: {
+          ImageExtend: {
+            loading: true,
+            name: 'image',
+            action: 'http://api.jswei.cn/posts/',
+            response: res => {
+              return res.path
+            }
+          },
+          toolbar: {
+            container: toolbarOptions,
+            handlers: {
+              image: function () {
+                QuillWatch.emit(this.quill.id)
+              }
+            }
+          },
+          syntax: {
+            highlight: text => hljs.highlightAuto(text).value
+          }
+        }
+      },
       tableData: [],
       cate_list: [],
       delList: [],
+      current: {},
       editVisible: false,
       delVisible: false,
       isDelAll: false,
@@ -146,8 +195,9 @@ export default {
         fid: '',
         keywords: '',
         description: '',
+        content: '',
         sort: 100,
-        sta: '正常',
+        status: '正常',
         type: '列表页',
         url: ''
       },
@@ -158,35 +208,31 @@ export default {
       }
     }
   },
+  components: {
+    quillEditor
+  },
   created () {
-    this.getData()
+    this.getColumn()
   },
   watch: {
-    'form.type' (newValue, oldValue) {
-      this.isRedirect = false
-      switch (newValue) {
-        case '下载页':
-          this.type = 2
-          break
-        case '单页面':
-          this.type = 3
-          break
-        case '封面页':
-          this.type = 4
-          break
-        case '表单页':
-          this.type = 5
-          break
-        case '跳转页':
-          this.type = 6
-          this.isRedirect = true
-          break
-        default:
-          this.type = 1
-      }
+    $route (newValue, oldValue) {
+      this.getColumn(newValue.params.id)
     }
   },
   methods: {
+    getColumn (id = null) {
+      id = id || this.id
+      this.axios.get('/column_one', { params: { name: id } }).then(res => {
+        if (!res.status) {
+          return
+        }
+        this.current = res.result
+      })
+    },
+    onEditorChange ({ editor, html, text }) {
+      this.form.content = html
+      console.log(html)
+    },
     getData () {
       this.axios
         .get('/column', {
@@ -282,7 +328,6 @@ export default {
           this.$store.commit('HIDE_LOADING')
           if (!res.status) {
             this.$message.error(res.msg)
-            return
           }
           this.$refs[formName].resetFields()
           this.form.keywords = ''
@@ -344,7 +389,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .el-icon-date {
   padding-right: 4px;
 }
@@ -371,6 +416,21 @@ export default {
   }
 }
 .el-radio {
-  margin: 10px 20px 0 0;
+  margin: 0 10px 0 0;
+}
+</style>
+<style>
+.el-input,
+.el-select {
+  width: 225px;
+}
+.el-textarea__inner {
+  height: 120px;
+}
+.el-input__suffix {
+  right: 2px;
+}
+.el-textarea__inner {
+  resize: none;
 }
 </style>

@@ -1,14 +1,11 @@
 /**
- * File: f:\vue\workonline.com\src\store\actions.js
- * Created Date: '2018-01-25 4:23:58
- * Author: 魏巍
- * -----
- * Last Modified: '2018-08-17 11:02:24
- * Modified By: 魏巍
- * -----
- * Copyright (c) 2018 魏巍
- * ------------------------------------
- * Javascript will save your soul!
+ * @Author: 魏巍
+ * @Date:   2018-07-08T15:25:57+08:00
+ * @Email:  524314430@qq.com
+ * @Filename: actions.js
+ * @Last modified by:   魏巍
+ * @Last modified time: 2019-05-05T00:08:28+08:00
+ * @Copyright: free
  */
 
 import * as types from './mutation-type'

@@ -3,7 +3,7 @@
  * @Date:   2017-10-24T10:53:05+08:00
  * @Email:  524314430@qq.com
  * @Last modified by:   魏巍
- * @Last modified time: 2017-11-24T09:33:02+08:00
+ * @Last modified time: 2019-05-05T00:06:28+08:00
  */
 export const formartDate = (phptime, fmt = 'yyyy-MM-dd hh:mm:ss') => {
   phptime = phptime.toString().length < 13 ? phptime * 1000 : phptime

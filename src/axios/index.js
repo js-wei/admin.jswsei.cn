@@ -3,7 +3,7 @@
  * Created Date: '2018-08-19 9:36:13
  * Author: 魏巍
  * -----
- * Last Modified: '2018-08-23 3:51:52
+ * Last Modified: '2019-01-19 2:24:36
  * Modified By: 魏巍
  * -----
  * Copyright (c) 2018 魏巍
@@ -48,12 +48,13 @@ axios.interceptors.response.use(
           store.commit('LOGOUT')
           location.href = '/login'
         }).catch(_ => {})
-      } else {
-        Message({
-          message: code[data.code],
-          type: 'warning'
-        })
       }
+    }
+    if (data.code === 200 && data.status === 1) {
+      Message({
+        message: data.msg,
+        type: 'success'
+      })
     }
     return data
   },

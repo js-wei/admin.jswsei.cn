@@ -29,7 +29,7 @@ export default {
 
 
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .error-page {
   display: flex;
   justify-content: center;

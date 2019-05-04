@@ -237,7 +237,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .ruleForm {
   width: 50%;
   margin-left: 50px;

@@ -1,3 +1,13 @@
+<!--
+@Author: 魏巍
+@Date:   2018-07-08T15:25:57+08:00
+@Email:  524314430@qq.com
+@Filename: Tags.vue
+@Last modified by:   魏巍
+@Last modified time: 2019-05-05T00:05:38+08:00
+@Copyright: free
+-->
+
 <template>
   <div class="tags" v-if="showTags">
     <ul>
@@ -36,6 +46,9 @@ export default {
     },
     // 关闭单个标签
     closeTags (index) {
+      if (this.tagsList.length) {
+        return false
+      }
       const delItem = this.tagsList.splice(index, 1)[0]
       const item = this.tagsList[index]
         ? this.tagsList[index]

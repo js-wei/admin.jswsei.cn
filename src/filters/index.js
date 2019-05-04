@@ -4,7 +4,7 @@
  * @Email:  524314430@qq.com
  * @Filename: index.js
  * @Last modified by:   魏巍
- * @Last modified time: 2017-11-06T10:49:39+08:00
+ * @Last modified time: 2019-05-05T00:06:35+08:00
  */
 
 import {isFormartDate, subString, isDefault, isMobileSafe, formartDate, timeAgo} from './format'

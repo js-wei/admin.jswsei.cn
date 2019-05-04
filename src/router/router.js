@@ -1,14 +1,11 @@
 /**
- * File: g:\vue\admin.jswsei.cn\src\router\router.js
- * Created Date: '2018-07-15 10:24:46
- * Author: 魏巍
- * -----
- * Last Modified: '2018-07-15 10:25:09
- * Modified By: 魏巍
- * -----
- * Copyright (c) 2018 魏巍
- * ------------------------------------
- * Javascript will save your soul!
+ * @Author: 魏巍
+ * @Date:   2018-07-15T22:24:46+08:00
+ * @Email:  524314430@qq.com
+ * @Filename: router.js
+ * @Last modified by:   魏巍
+ * @Last modified time: 2019-05-05T00:08:14+08:00
+ * @Copyright: free
  */
 
 import Vue from 'vue'
@@ -24,41 +21,41 @@ export default new Router({
   },
   {
     path: '/',
-    component: resolve => require(['../components/common/Home.vue'], resolve),
+    component: resolve => require(['@/components/Home.vue'], resolve),
     meta: {
       title: '自述文件'
     },
     children: [{
       path: '/dashboard',
-      component: resolve => require(['../components/page/Dashboard.vue'], resolve),
+      component: resolve => require(['@/page/Dashboard.vue'], resolve),
       meta: {
         title: '系统首页'
       }
     },
     {
       path: '/module',
-      component: resolve => require(['../components/page/module.vue'], resolve),
+      component: resolve => require(['@/page/module.vue'], resolve),
       meta: {
         title: '模块'
       }
     },
     {
       path: '/column',
-      component: resolve => require(['../components/page/column.vue'], resolve),
+      component: resolve => require(['@/page/column.vue'], resolve),
       meta: {
         title: '栏目管理'
       }
     },
     {
       path: '/column/:id',
-      component: resolve => require(['../components/page/columnPage.vue'], resolve),
+      component: resolve => require(['@/page/columnPage.vue'], resolve),
       meta: {
         title: '栏目管理'
       }
     },
     {
       path: '/group',
-      component: resolve => require(['../components/page/group.vue'], resolve),
+      component: resolve => require(['@/page/group.vue'], resolve),
       meta: {
         title: '权限组',
         icon: 'icon-qunzu'
@@ -66,7 +63,7 @@ export default new Router({
     },
     {
       path: '/admin',
-      component: resolve => require(['../components/page/admin.vue'], resolve),
+      component: resolve => require(['@/page/admin.vue'], resolve),
       meta: {
         title: '管理员',
         icon: 'icon-guanliyuan'
@@ -74,7 +71,7 @@ export default new Router({
     },
     {
       path: '/member',
-      component: resolve => require(['../components/page/member.vue'], resolve),
+      component: resolve => require(['@/page/member.vue'], resolve),
       meta: {
         title: '会员管理',
         icon: 'icon-shouye'
@@ -82,7 +79,7 @@ export default new Router({
     },
     {
       path: '/auth',
-      component: resolve => require(['../components/page/auth.vue'], resolve),
+      component: resolve => require(['@/page/auth.vue'], resolve),
       meta: {
         title: '权限',
         icon: 'icon-12quanxianguanli'
@@ -90,7 +87,7 @@ export default new Router({
     },
     {
       path: '/carousel',
-      component: resolve => require(['../components/page/carousel.vue'], resolve),
+      component: resolve => require(['@/page/carousel.vue'], resolve),
       meta: {
         title: '轮播',
         icon: 'el-icon-picture'
@@ -98,28 +95,28 @@ export default new Router({
     },
     {
       path: '/profile',
-      component: resolve => require(['../components/page/Profile.vue'], resolve),
+      component: resolve => require(['@/page/Profile.vue'], resolve),
       meta: {
         title: '基本信息'
       }
     },
     {
       path: '/table',
-      component: resolve => require(['../components/page/BaseTable.vue'], resolve),
+      component: resolve => require(['@/page/BaseTable.vue'], resolve),
       meta: {
         title: '基础表格'
       }
     },
     {
       path: '/message',
-      component: resolve => require(['../components/page/message.vue'], resolve),
+      component: resolve => require(['@/page/message.vue'], resolve),
       meta: {
         title: '消息管理'
       }
     },
     {
       path: '/blogroll',
-      component: resolve => require(['../components/page/blogroll.vue'], resolve),
+      component: resolve => require(['@/page/blogroll.vue'], resolve),
       meta: {
         title: '友情链接',
         icon: 'icon-icon'
@@ -127,11 +124,11 @@ export default new Router({
     },
     {
       path: '/setting',
-      component: resolve => require(['../components/page/setting.vue'], resolve)
+      component: resolve => require(['@/page/setting.vue'], resolve)
     },
     {
       path: '/form',
-      component: resolve => require(['../components/page/BaseForm.vue'], resolve),
+      component: resolve => require(['@/page/BaseForm.vue'], resolve),
       meta: {
         title: '基本表单'
       }
@@ -139,7 +136,7 @@ export default new Router({
     {
                     // 富文本编辑器组件
       path: '/editor',
-      component: resolve => require(['../components/page/VueEditor.vue'], resolve),
+      component: resolve => require(['@/page/VueEditor.vue'], resolve),
       meta: {
         title: '富文本编辑器'
       }
@@ -147,7 +144,7 @@ export default new Router({
     {
                     // markdown组件
       path: '/markdown',
-      component: resolve => require(['../components/page/Markdown.vue'], resolve),
+      component: resolve => require(['@/page/Markdown.vue'], resolve),
       meta: {
         title: 'markdown编辑器'
       }
@@ -155,7 +152,7 @@ export default new Router({
     {
                     // 图片上传组件
       path: '/upload',
-      component: resolve => require(['../components/page/Upload.vue'], resolve),
+      component: resolve => require(['@/page/Upload.vue'], resolve),
       meta: {
         title: '文件上传'
       }
@@ -163,7 +160,7 @@ export default new Router({
     {
                     // vue-schart组件
       path: '/charts',
-      component: resolve => require(['../components/page/BaseCharts.vue'], resolve),
+      component: resolve => require(['@/page/BaseCharts.vue'], resolve),
       meta: {
         title: 'schart图表'
       }
@@ -171,7 +168,7 @@ export default new Router({
     {
                     // 拖拽列表组件
       path: '/drag',
-      component: resolve => require(['../components/page/DragList.vue'], resolve),
+      component: resolve => require(['@/page/DragList.vue'], resolve),
       meta: {
         title: '拖拽列表'
       }
@@ -179,7 +176,7 @@ export default new Router({
     {
                     // 权限页面
       path: '/permission',
-      component: resolve => require(['../components/page/Permission.vue'], resolve),
+      component: resolve => require(['@/page/Permission.vue'], resolve),
       meta: {
         title: '权限测试',
         permission: true
@@ -189,15 +186,15 @@ export default new Router({
   },
   {
     path: '/login',
-    component: resolve => require(['../components/page/Login.vue'], resolve)
+    component: resolve => require(['@/page/Login.vue'], resolve)
   },
   {
     path: '/404',
-    component: resolve => require(['../components/page/404.vue'], resolve)
+    component: resolve => require(['@/page/404.vue'], resolve)
   },
   {
     path: '/403',
-    component: resolve => require(['../components/page/403.vue'], resolve)
+    component: resolve => require(['@/page/403.vue'], resolve)
   },
   {
     path: '*',

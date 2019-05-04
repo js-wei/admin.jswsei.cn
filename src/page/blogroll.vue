@@ -1,16 +1,12 @@
-/*
- * File: d:\works\admin.jswei.cn\src\components\page\column.vue
- * Created Date: 2018-05-14 8:33:49
- * Author: 魏巍
- * -----
- * Last Modified: 魏巍
- * Modified By: 2018-08-23 2:31:08
- * -----
- * Copyright (c) 2018 魏巍
- * ------
- * All shall be well and all shall be well and all manner of things shall be well.
- * We're doomed!
- */
+<!--
+@Author: 魏巍
+@Date:   2018-07-08T15:25:57+08:00
+@Email:  524314430@qq.com
+@Filename: blogroll.vue
+@Last modified by:   魏巍
+@Last modified time: 2019-05-05T00:17:54+08:00
+@Copyright: free
+-->
 
 <template>
     <div>
@@ -22,7 +18,7 @@
         <div class="container">
           <div class="handle-box">
             <div class="pull-left">
-              <el-button type="primary" class="handle-del mr10" 
+              <el-button type="primary" class="handle-del mr10"
                 @click="delAll"><i class="icon icon-shanchu"></i>批量删除</el-button>
               <el-button type="danger" @click="add"><i class="icon icon-tianjia"></i>添加{{metaTitle}}</el-button>
             </div>
@@ -44,7 +40,7 @@
               <el-button type="primary" icon="el-icon-search" @click="search" class="pull-right ml-5">搜索</el-button>
             </div>
           </div>
-          <el-table :data="tableData" border style="width: 100%" ref="multipleTable" 
+          <el-table :data="tableData" border style="width: 100%" ref="multipleTable"
             @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="50"></el-table-column>
               <el-table-column prop="title" :label="metaTitle+'名称'">
@@ -94,7 +90,7 @@
         </div>
         <!-- 编辑弹出框 -->
         <el-dialog :title="metaTitle+'管理'" :visible.sync="editVisible" width="40%" :close-on-click-modal="false">
-          <el-form ref="form" :model="form" label-width="120px" :rules="rules" 
+          <el-form ref="form" :model="form" label-width="120px" :rules="rules"
             style="width:85%;margin:0 auto;" autocomplete="off">
             <el-form-item :label="metaTitle+'名称'" prop="title">
               <el-input v-model="form.title" :placeholder="metaTitle+'名称'"></el-input>
@@ -419,7 +415,7 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-@import "../../assets/base";
+@import "../assets/base";
 .el-icon-date {
   padding-right: 4px;
 }

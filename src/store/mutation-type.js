@@ -1,14 +1,11 @@
 /**
- * File: f:\vue\workonline.com\src\store\mutation-type.js
- * Created Date: '2018-01-25 4:28:03
- * Author: 魏巍
- * -----
- * Last Modified: '2018-08-18 7:50:00
- * Modified By: 魏巍
- * -----
- * Copyright (c) 2018 魏巍
- * ------------------------------------
- * Javascript will save your soul!
+ * @Author: 魏巍
+ * @Date:   2018-07-08T15:25:57+08:00
+ * @Email:  524314430@qq.com
+ * @Filename: mutation-type.js
+ * @Last modified by:   魏巍
+ * @Last modified time: 2019-05-05T00:08:46+08:00
+ * @Copyright: free
  */
 
 export const HIDE_LOADING = 'HIDE_LOADING'
